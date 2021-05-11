@@ -15,7 +15,7 @@ void CPU::Reset(Memory& memory)
     memory.Initialize();
 }
 
-uint8_t CPU::FetchByte(uint32_t& cycles, Memory& memory)
+uint8_t CPU::FetchByte(int32_t& cycles, Memory& memory)
 {
     uint8_t data = memory[PC++];
     --cycles;
@@ -23,7 +23,7 @@ uint8_t CPU::FetchByte(uint32_t& cycles, Memory& memory)
     return data;
 }
 
-uint16_t CPU::FetchWord(uint32_t& cycles, Memory& memory)
+uint16_t CPU::FetchWord(int32_t& cycles, Memory& memory)
 {
     // CPU 6502 is little endian
     // first bute is more signifant one (first in WORD)
@@ -39,7 +39,7 @@ uint16_t CPU::FetchWord(uint32_t& cycles, Memory& memory)
     return data;
 }
 
-uint8_t CPU::Read(uint32_t& cycles, uint8_t& address, Memory& memory)
+uint8_t CPU::ReadByte(int32_t& cycles, const uint16_t& address, const Memory& memory)
 {
     uint8_t data = memory[address];
     --cycles;
@@ -47,8 +47,16 @@ uint8_t CPU::Read(uint32_t& cycles, uint8_t& address, Memory& memory)
     return data;
 }
 
+uint16_t CPU::ReadWord(int32_t& cycles, const uint16_t& address, const Memory& memory)
+{
+    uint8_t lowByte = ReadByte(cycles, address, memory);
+    uint8_t highByte = ReadByte(cycles, address + 1, memory);
+
+    return lowByte | (highByte << 8);
+}
+
 //return the number of cycles that were used
-int32_t CPU::Execute(uint32_t cycles, Memory& memory)
+int32_t CPU::Execute(int32_t cycles, Memory& memory)
 {
     const uint32_t cyclesRequested = cycles;
     while (cycles > 0)
@@ -66,7 +74,7 @@ int32_t CPU::Execute(uint32_t cycles, Memory& memory)
             case INS_LDA_ZP:
             {
                 uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
-                A = Read(cycles, zeroPageAddress, memory);
+                A = this->ReadByte(cycles, zeroPageAddress, memory);
                 LDASetStatus();
             }break;
             case INS_LDA_ZPX:
@@ -74,8 +82,46 @@ int32_t CPU::Execute(uint32_t cycles, Memory& memory)
                 uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
                 zeroPageAddress += X;
                 --cycles;
-                A = Read(cycles, zeroPageAddress, memory);
+                A = ReadByte(cycles, zeroPageAddress, memory);
                 LDASetStatus();
+            }break;
+            case INS_LDA_ABS:
+            {
+                uint16_t absoluteAddress = this->FetchWord(cycles, memory);
+                A = this->ReadByte(cycles, absoluteAddress, memory);
+            }break;
+            case INS_LDA_ABSX:
+            {
+                uint16_t absoluteAddress = this->FetchWord(cycles, memory);
+                uint16_t absoluteAddressX = absoluteAddress + X;
+                A = this->ReadByte(cycles, absoluteAddressX, memory);
+                if (absoluteAddressX - absoluteAddress >= 0xFF)
+                    --cycles;
+            }break;
+            case INS_LDA_ABSY:
+            {
+                uint16_t absoluteAddress = this->FetchWord(cycles, memory);
+                uint16_t absoluteAddressY = absoluteAddress + Y;
+                A = this->ReadByte(cycles, absoluteAddressY, memory);
+                if (absoluteAddressY - absoluteAddress >= 0xFF)
+                    --cycles;
+            }break;
+            case INS_LDA_INDX:
+            {
+                uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
+                zeroPageAddress += X;
+                --cycles;
+                uint16_t effectiveAddress = this->ReadWord(cycles, zeroPageAddress, memory);
+                A = this->ReadByte(cycles, effectiveAddress, memory);
+            }break;
+            case INS_LDA_INDY:
+            {
+                uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
+                uint16_t effectiveAddress = this->ReadWord(cycles, zeroPageAddress, memory);
+                uint16_t effectiveAddressY = effectiveAddress + Y;
+                A = this->ReadByte(cycles, effectiveAddressY, memory);
+                if (effectiveAddressY - effectiveAddress >= 0xFF)
+                    --cycles;
             }break;
             case INS_JSR:
             {
@@ -90,6 +136,7 @@ int32_t CPU::Execute(uint32_t cycles, Memory& memory)
             default:
             {
                 printf("Instruction not handled!\n");
+                throw -1;
             } break;
         }
     }

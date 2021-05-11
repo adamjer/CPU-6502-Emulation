@@ -20,7 +20,7 @@ uint8_t& Memory::operator[](uint32_t address)
     return this->Data[address];
 }
 
-void Memory::WriteWord(uint32_t& cycles, const uint16_t& value, const uint32_t& address)
+void Memory::WriteWord(int32_t& cycles, const uint16_t& value, const uint32_t& address)
 {
     this->Data[address] = value & 0xFF;
     this->Data[address + 1] = (value >> 8);
