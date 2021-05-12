@@ -1,15 +1,6 @@
 #include "pch.h"
 
 
-static void VerifyUnmodifiedFlagsFromLDA(const CPU& cpu, const CPU& copy)
-{
-    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
-    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
-    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
-    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
-    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
-}
-
 TEST_F(EmulationTest, TheCPUDoesNothingWhenWeExecuteZeroCycles) 
 {
     // given:
@@ -38,41 +29,34 @@ TEST_F(EmulationTest, CPUCanExecuteMoreCyclesThanRequestedIfRequiredByTheInstruc
     EXPECT_EQ(cyclesUsed, 2);
 }
 
-TEST_F(EmulationTest, ExecutingABadInstructionDoesNotPutUsInAnInfiniteLoop)
-{
-    // given:
-    // start - inline a little program
-    memory[0xFFFC] = 0x0; //invalid opcode
-    memory[0xFFFD] = 0x0;
-    // end -inline a little program
-    constexpr int32_t NUM_CYCLES = 2;
-
-    // when:
-    int32_t cyclesUsed = cpu.Execute(NUM_CYCLES, memory);
-
-    // then:
-    EXPECT_EQ(cyclesUsed, NUM_CYCLES);
-}
-
 TEST_F(EmulationTest, LDAImmediateCanLoadAValueIntoTheARegister) 
 {
+    TestLoadRegisterImmediate(CPU::INS_LDA_IM, &CPU::A);
+}
 
-    // given:
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_IM;
-    memory[0xFFFD] = 0x84;
-    // end -inline a little program
+TEST_F(EmulationTest, LDXImmediateCanLoadAValueIntoTheARegister)
+{
+    TestLoadRegisterImmediate(CPU::INS_LDX_IM, &CPU::X);
+}
 
-    // when:
-    CPU copy = cpu;
-    int32_t cyclesUsed = cpu.Execute(2, memory);
+TEST_F(EmulationTest, LDYImmediateCanLoadAValueIntoTheARegister)
+{
+    TestLoadRegisterImmediate(CPU::INS_LDY_IM, &CPU::Y);
+}
 
-    // then:
-    EXPECT_EQ(cpu.A, 0x84);
-    EXPECT_EQ(cyclesUsed, 2);
-    EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedFlagsFromLDA(cpu, copy);
+TEST_F(EmulationTest, LDAZeroPageCanLoadAValueIntoTheARegister)
+{
+    TestLoadRegisterZeroPage(CPU::INS_LDA_ZP, &CPU::A);
+}
+
+TEST_F(EmulationTest, LDXZeroPageCanLoadAValueIntoTheXRegister)
+{
+    TestLoadRegisterZeroPage(CPU::INS_LDX_ZP, &CPU::X);
+}
+
+TEST_F(EmulationTest, LDYZeroPageCanLoadAValueIntoTheYRegister)
+{
+    TestLoadRegisterZeroPage(CPU::INS_LDY_ZP, &CPU::Y);
 }
 
 TEST_F(EmulationTest, LDAImmediateCanAffectZeroFlag)
@@ -95,51 +79,19 @@ TEST_F(EmulationTest, LDAImmediateCanAffectZeroFlag)
     VerifyUnmodifiedFlagsFromLDA(cpu, copy);
 }
 
-TEST_F(EmulationTest, LDAZeroPageCanLoadAValueIntoTheARegister) 
-{
-
-    // given:
-    int address = 0x42;
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_ZP;
-    memory[0xFFFD] = address;
-    memory[address] = 0x37;
-    // end -inline a little program
-
-    // when:
-    CPU copy = cpu;
-    int32_t cyclesUsed = cpu.Execute(3, memory);
-
-    // then:
-    EXPECT_EQ(cpu.A, 0x37);
-    EXPECT_EQ(cyclesUsed, 3);
-    EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedFlagsFromLDA(cpu, copy);
-}
-
 TEST_F(EmulationTest, LDAZeroPageXCanLoadAValueIntoTheARegister) 
 {
+    TestLoadRegisterZeroPageX(CPU::INS_LDA_ZPX, &CPU::A);
+}
 
-    // given:
-    cpu.X = 5;
-    int address = 0x42;
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_ZPX;
-    memory[0xFFFD] = address;
-    memory[address + cpu.X] = 0x37;
-    // end -inline a little program
+TEST_F(EmulationTest, LDXZeroPageYCanLoadAValueIntoTheXRegister)
+{
+    TestLoadRegisterZeroPageY(CPU::INS_LDA_ZPY, &CPU::Y);
+}
 
-    // when:
-    CPU copy = cpu;
-    int32_t cyclesUsed = cpu.Execute(4, memory);
-
-    // then:
-    EXPECT_EQ(cpu.A, 0x37);
-    EXPECT_EQ(cyclesUsed, 4);
-    EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedFlagsFromLDA(cpu, copy);
+TEST_F(EmulationTest, LDYZeroPageXCanLoadAValueIntoTheARegister)
+{
+    TestLoadRegisterZeroPageX(CPU::INS_LDY_ZPX, &CPU::X);
 }
 
 TEST_F(EmulationTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps) 
@@ -168,126 +120,57 @@ TEST_F(EmulationTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps)
 
 TEST_F(EmulationTest, LDAAbsoluteCanLoadAValueIntoTheARegister)
 {
+    TestLoadRegisterAbsolute(CPU::INS_LDA_ABS, &CPU::A);
+}
 
-    // given:
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_ABS;
-    memory[0xFFFD] = 0x80;
-    memory[0xFFFE] = 0x44;
-    memory[0x4480] = 0x37;
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 4;
-    CPU copy = cpu;
+TEST_F(EmulationTest, LDXAbsoluteCanLoadAValueIntoTheXRegister)
+{
+    TestLoadRegisterAbsolute(CPU::INS_LDX_ABS, &CPU::X);
+}
 
-    // when:    
-    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
-
-    // then:
-    EXPECT_EQ(cpu.A, 0x37);
-    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
-    EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedFlagsFromLDA(cpu, copy);
+TEST_F(EmulationTest, LDYAbsoluteCanLoadAValueIntoTheYRegister)
+{
+    TestLoadRegisterAbsolute(CPU::INS_LDY_ABS, &CPU::Y);
 }
 
 TEST_F(EmulationTest, LDAAbsoluteXCanLoadAValueIntoTheARegister)
 {
+    TestLoadRegisterAbsoluteX(CPU::INS_LDA_ABSX, &CPU::A);
+}
 
-    // given:
-    cpu.X = 0x1;
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_ABSX;
-    memory[0xFFFD] = 0x80;
-    memory[0xFFFE] = 0x44;
-    memory[0x4481] = 0x37; //0x4480 + 0x01
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 4;
-    CPU copy = cpu;
+TEST_F(EmulationTest, LDXAbsoluteYCanLoadAValueIntoTheXRegister)
+{
+    TestLoadRegisterAbsoluteY(CPU::INS_LDX_ABSY, &CPU::X);
+}
 
-    // when:    
-    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
-
-    // then:
-    EXPECT_EQ(cpu.A, 0x37);
-    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
-    EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedFlagsFromLDA(cpu, copy);
+TEST_F(EmulationTest, LDYAbsoluteXCanLoadAValueIntoTheYRegister)
+{
+    TestLoadRegisterAbsoluteX(CPU::INS_LDY_ABSX, &CPU::Y);
 }
 
 TEST_F(EmulationTest, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
 {
+    TestLoadRegisterAbsoluteXWhenCrossingBoundary(CPU::INS_LDA_ABSX, &CPU::A);
+}
 
-    // given:
-    cpu.X = 0xFF;
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_ABSX;
-    memory[0xFFFD] = 0x02;
-    memory[0xFFFE] = 0x44;
-    memory[0x4501] = 0x37; //0x4402+0xFF crosses page boundary
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 5;
-    CPU copy = cpu;
-
-    // when:    
-    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
-
-    // then:
-    EXPECT_EQ(cpu.A, 0x37);
-    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
-    EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedFlagsFromLDA(cpu, copy);
+TEST_F(EmulationTest, LDYAbsoluteXCanLoadAValueIntoTheYRegisterWhenItCrossesPageBoundary)
+{
+    TestLoadRegisterAbsoluteXWhenCrossingBoundary(CPU::INS_LDY_ABSX, &CPU::Y);
 }
 
 TEST_F(EmulationTest, LDAAbsoluteYCanLoadAValueIntoTheARegister)
 {
+    TestLoadRegisterAbsoluteY(CPU::INS_LDA_ABSY, &CPU::A);
+}
 
-    // given:
-    cpu.Y = 0x1;
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_ABSY;
-    memory[0xFFFD] = 0x80;
-    memory[0xFFFE] = 0x44;
-    memory[0x4481] = 0x37;
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 4;
-    CPU copy = cpu;
-
-    // when:    
-    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
-
-    // then:
-    EXPECT_EQ(cpu.A, 0x37);
-    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
-    EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedFlagsFromLDA(cpu, copy);
+TEST_F(EmulationTest, LDXAbsoluteYCanLoadAValueIntoTheXRegisterWhenItCrossesPageBoundary)
+{
+    TestLoadRegisterAbsoluteYWhenCrossingBoundary(CPU::INS_LDA_ABSY, &CPU::A);
 }
 
 TEST_F(EmulationTest, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
 {
-
-    // given:
-    cpu.Y = 0xFF;
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_ABSY;
-    memory[0xFFFD] = 0x02;
-    memory[0xFFFE] = 0x44;
-    memory[0x4501] = 0x37; //0x4402+0xFF crosses page boundary
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 5;
-    CPU copy = cpu;
-
-    // when:    
-    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
-
-    // then:
-    EXPECT_EQ(cpu.A, 0x37);
-    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
-    EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedFlagsFromLDA(cpu, copy);
+    TestLoadRegisterAbsoluteYWhenCrossingBoundary(CPU::INS_LDX_ABSY, &CPU::X);
 }
 
 TEST_F(EmulationTest, LDAIndirectXCanLoadAValueIntoTheARegister)
