@@ -44,11 +44,17 @@ public:
     void ResetRegisters();
     void Reset(Memory&);
     int32_t Execute(int32_t, Memory&);
-    void LDASetStatus();
+    void LoadRegisterSetStatus( uint8_t);
 
     uint8_t FetchByte(int32_t&, Memory&);   
     uint16_t FetchWord(int32_t&, Memory&);
     uint8_t ReadByte(int32_t&, const uint16_t&, const Memory&);
     uint16_t ReadWord(int32_t&, const uint16_t&, const Memory&);
+    uint16_t AddressZeroPage(int32_t&, Memory&);
+    uint16_t AddressZeroPageX(int32_t&, Memory&);
+    uint16_t AddressZeroPageY(int32_t&, Memory&);
+    uint16_t AddressAbsolute(int32_t&, Memory&);
+    uint16_t AddressAbsoluteX(int32_t&, Memory&);
+    uint16_t AddressAbsoluteY(int32_t&, Memory&);
 };
 

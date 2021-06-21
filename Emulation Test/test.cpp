@@ -86,12 +86,12 @@ TEST_F(EmulationTest, LDAZeroPageXCanLoadAValueIntoTheARegister)
 
 TEST_F(EmulationTest, LDXZeroPageYCanLoadAValueIntoTheXRegister)
 {
-    TestLoadRegisterZeroPageY(CPU::INS_LDA_ZPY, &CPU::Y);
+    TestLoadRegisterZeroPageY(CPU::INS_LDX_ZPY, &CPU::X);
 }
 
 TEST_F(EmulationTest, LDYZeroPageXCanLoadAValueIntoTheARegister)
 {
-    TestLoadRegisterZeroPageX(CPU::INS_LDY_ZPX, &CPU::X);
+    TestLoadRegisterZeroPageX(CPU::INS_LDY_ZPX, &CPU::Y);
 }
 
 TEST_F(EmulationTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps) 

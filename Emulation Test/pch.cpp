@@ -17,6 +17,8 @@ void EmulationTest::Teardown()
 void EmulationTest::TestLoadRegisterImmediate(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
+    cpu.Flags.Z = true;
+    cpu.Flags.N = false;
     memory[0xFFFC] = opcodeToTest;
     memory[0xFFFD] = 0x84;
 
@@ -35,6 +37,7 @@ void EmulationTest::TestLoadRegisterImmediate(uint8_t opcodeToTest, uint8_t CPU:
 void EmulationTest::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
+    cpu.Flags.Z = cpu.Flags.N = true;
     int address = 0x42;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
@@ -57,6 +60,7 @@ void EmulationTest::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::
 void EmulationTest::TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
+    cpu.Flags.Z = cpu.Flags.N = true;
     cpu.X = 5;
     int address = 0x42;
     // start - inline a little program
@@ -80,12 +84,13 @@ void EmulationTest::TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t CPU:
 void EmulationTest::TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
+    cpu.Flags.Z = cpu.Flags.N = true;
     cpu.Y = 5;
     int address = 0x42;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
     memory[0xFFFD] = address;
-    memory[address + cpu.X] = 0x37;
+    memory[address + cpu.Y] = 0x37;
     // end -inline a little program
 
     // when:
@@ -103,6 +108,7 @@ void EmulationTest::TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t CPU:
 void EmulationTest::TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
+    cpu.Flags.Z = cpu.Flags.N = true;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
     memory[0xFFFD] = 0x80;
@@ -126,6 +132,7 @@ void EmulationTest::TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CPU::
 void EmulationTest::TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
+    cpu.Flags.Z = cpu.Flags.N = true;
     cpu.X = 0x1;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
@@ -150,6 +157,7 @@ void EmulationTest::TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t CPU:
 void EmulationTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
+    cpu.Flags.Z = cpu.Flags.N = true;
     cpu.X = 0xFF;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
@@ -174,6 +182,7 @@ void EmulationTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opcode
 void EmulationTest::TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
+    cpu.Flags.Z = cpu.Flags.N = true;
     cpu.Y = 0x1;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
@@ -198,6 +207,7 @@ void EmulationTest::TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t CPU:
 void EmulationTest::TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
+    cpu.Flags.Z = cpu.Flags.N = true;
     cpu.Y = 0xFF;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
