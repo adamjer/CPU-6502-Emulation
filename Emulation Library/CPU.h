@@ -38,6 +38,23 @@ public:
         INS_LDY_ZPX = 0xB4,
         INS_LDY_ABS = 0xAC,
         INS_LDY_ABSX = 0xBC,
+        //STA
+        INS_STA_ZP = 0x85,
+        INS_STA_ABS = 0x8D,
+        INS_STA_ZPX = 0x95,
+        //STX
+        INS_STX_ZP = 0x86,
+        INS_STX_ABS = 0x8E,
+        INS_STX_ABSX = 0x9D,
+        INS_STX_ABSY = 0x99,
+        INS_STX_INDX = 0x81,
+        INS_STX_INDY = 0x91,
+        //STY
+        INS_STY_ZP = 0x84,
+        INS_STY_ABS = 0x8C,
+        INS_STY_ZPX = 0x94,
+
+
         INS_JSR = 0x20;
 
 

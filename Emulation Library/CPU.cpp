@@ -113,6 +113,13 @@ uint16_t CPU::AddressAbsoluteY(int32_t& cycles, Memory& memory)
 //return the number of cycles that were used
 int32_t CPU::Execute(int32_t cycles, Memory& memory)
 {
+    //Load a register with the value from memory address
+    auto LoadRegister = [&cycles, &memory, this](uint16_t address, uint8_t& registry)
+    {
+        registry = this->ReadByte(cycles, address, memory);
+        LoadRegisterSetStatus(registry);
+    };
+
     const uint32_t cyclesRequested = cycles;
     while (cycles > 0)
     {
@@ -138,80 +145,67 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
             case INS_LDA_ZP:
             {
                 uint16_t address = this->AddressZeroPage(cycles, memory);
-                A = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(A);
+                LoadRegister(address, A);
             }break;
             case INS_LDX_ZP:
             {
                 uint16_t address = this->AddressZeroPage(cycles, memory);
-                X = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(X);
+                LoadRegister(address, X);
             }break;
             case INS_LDY_ZP:
             {
                 uint16_t address = this->AddressZeroPage(cycles, memory);
-                Y = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(Y);
+                LoadRegister(address, Y);
             }break;
             case INS_LDA_ZPX:
             {
                 uint16_t address = this->AddressZeroPageX(cycles, memory);
-                A = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(A);
+                LoadRegister(address, A);
             }break;
             case INS_LDX_ZPY:
             {
                 uint16_t address = this->AddressZeroPageY(cycles, memory);
-                X = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(X);
+                LoadRegister(address, X);
             }break;
             case INS_LDY_ZPX:
             {
                 uint16_t address = this->AddressZeroPageX(cycles, memory);
-                Y = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(Y);
+                LoadRegister(address, Y);
             }break;
             case INS_LDA_ABS:
             {
                 uint16_t address = this->AddressAbsolute(cycles, memory);
-                A = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(A);
+                LoadRegister(address, A);
             }break;
             case INS_LDX_ABS:
             {
                 uint16_t address = this->AddressAbsolute(cycles, memory);
-                X = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(X);
+                LoadRegister(address, X);
             }break;
             case INS_LDY_ABS:
             {
                 uint16_t address = this->AddressAbsolute(cycles, memory);
-                Y = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(Y);
+                LoadRegister(address, Y);
             }break;
             case INS_LDA_ABSX:
             {
                 uint16_t address = this->AddressAbsoluteX(cycles, memory);
-                A = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(A);
+                LoadRegister(address, A);
             }break;
             case INS_LDY_ABSX:
             {
                 uint16_t address = this->AddressAbsoluteX(cycles, memory);
-                Y = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(Y);
+                LoadRegister(address, Y);
             }break;
             case INS_LDA_ABSY:
             {
                 uint16_t address = this->AddressAbsoluteY(cycles, memory);
-                A = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(A);
+                LoadRegister(address, A);
             }break;
             case INS_LDX_ABSY:
             {
                 uint16_t address = this->AddressAbsoluteY(cycles, memory);
-                X = this->ReadByte(cycles, address, memory);
-                LoadRegisterSetStatus(X);
+                LoadRegister(address, X);
             }break;
             case INS_LDA_INDX:
             {
@@ -219,18 +213,16 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
                 zeroPageAddress += X;
                 --cycles;
                 uint16_t effectiveAddress = this->ReadWord(cycles, zeroPageAddress, memory);
-                A = this->ReadByte(cycles, effectiveAddress, memory);
-                LoadRegisterSetStatus(A);
+                LoadRegister(effectiveAddress, A);
             }break;
             case INS_LDA_INDY:
             {
                 uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
                 uint16_t effectiveAddress = this->ReadWord(cycles, zeroPageAddress, memory);
                 uint16_t effectiveAddressY = effectiveAddress + Y;
-                A = this->ReadByte(cycles, effectiveAddressY, memory);
                 if (effectiveAddressY - effectiveAddress >= 0xFF)
                     --cycles;
-                LoadRegisterSetStatus(A);
+                LoadRegister(effectiveAddressY, A);
             }break;
             case INS_JSR:
             {
