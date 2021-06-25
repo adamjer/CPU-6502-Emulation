@@ -42,13 +42,13 @@ public:
         INS_STA_ZP = 0x85,
         INS_STA_ABS = 0x8D,
         INS_STA_ZPX = 0x95,
+        INS_STA_ABSX = 0x9D,
+        INS_STA_ABSY = 0x99,
+        INS_STA_INDX = 0x81,
+        INS_STA_INDY = 0x91,
         //STX
         INS_STX_ZP = 0x86,
         INS_STX_ABS = 0x8E,
-        INS_STX_ABSX = 0x9D,
-        INS_STX_ABSY = 0x99,
-        INS_STX_INDX = 0x81,
-        INS_STX_INDY = 0x91,
         //STY
         INS_STY_ZP = 0x84,
         INS_STY_ABS = 0x8C,
@@ -67,11 +67,15 @@ public:
     uint16_t FetchWord(int32_t&, Memory&);
     uint8_t ReadByte(int32_t&, const uint16_t&, const Memory&);
     uint16_t ReadWord(int32_t&, const uint16_t&, const Memory&);
+    void WriteByte(int32_t&, const uint16_t&, Memory&, uint8_t);
+    void WriteWord(int32_t&, const uint16_t&, Memory&, uint8_t);
     uint16_t AddressZeroPage(int32_t&, Memory&);
     uint16_t AddressZeroPageX(int32_t&, Memory&);
     uint16_t AddressZeroPageY(int32_t&, Memory&);
     uint16_t AddressAbsolute(int32_t&, Memory&);
     uint16_t AddressAbsoluteX(int32_t&, Memory&);
     uint16_t AddressAbsoluteY(int32_t&, Memory&);
+    uint16_t AddressIndirectX(int32_t&, Memory&);
+    uint16_t AddressIndirectY(int32_t&, Memory&);
 };
 

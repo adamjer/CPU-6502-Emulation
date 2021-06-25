@@ -101,24 +101,24 @@ TEST_F(StoreRegisterTest, STYAbsoluteCanStoreTheYRegisterIntoMemory)
 
 TEST_F(StoreRegisterTest, STAZeroPageXCanStoreTheARegisterIntoMemory)
 {
-    TestStoreRegisterZeroPage(CPU::INS_STA_ZPX, &CPU::A);
+    TestStoreRegisterZeroPageX(CPU::INS_STA_ZPX, &CPU::A);
 }
 
 TEST_F(StoreRegisterTest, STYZeroPageXCanStoreTheARegisterIntoMemory)
 {
-    TestStoreRegisterZeroPage(CPU::INS_STY_ZPX, &CPU::Y);
+    TestStoreRegisterZeroPageX(CPU::INS_STY_ZPX, &CPU::Y);
 }
 
-TEST_F(StoreRegisterTest, STXAbsoluteXCanStoreTheARegisterIntoMemory)
+TEST_F(StoreRegisterTest, STAAbsoluteXCanStoreTheARegisterIntoMemory)
 {
     //given:
     cpu.A = 0x42;
     cpu.X = 0x0F;
-    memory[0xFFFC] = CPU::INS_STX_ABSX;
+    memory[0xFFFC] = CPU::INS_STA_ABSX;
     memory[0xFFFD] = 0x00;
     memory[0xFFFE] = 0x80;
-    memory[0x008F] = 0x00;
-    constexpr uint32_t EXPECTED_CYCLES = 4;
+    memory[0x800F] = 0x00;
+    constexpr uint32_t EXPECTED_CYCLES = 5;
     CPU cpuCopy = cpu;
 
     //when:
@@ -126,20 +126,20 @@ TEST_F(StoreRegisterTest, STXAbsoluteXCanStoreTheARegisterIntoMemory)
 
     //then:
     EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
-    EXPECT_EQ(memory[0x008F], 0x42);
+    EXPECT_EQ(memory[0x800F], 0x42);
     VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
 }
 
-TEST_F(StoreRegisterTest, STXAbsoluteYCanStoreTheARegisterIntoMemory)
+TEST_F(StoreRegisterTest, STAAbsoluteYCanStoreTheARegisterIntoMemory)
 {
     //given:
     cpu.A = 0x42;
     cpu.Y = 0x0F;
-    memory[0xFFFC] = CPU::INS_STX_ABSY;
+    memory[0xFFFC] = CPU::INS_STA_ABSY;
     memory[0xFFFD] = 0x00;
     memory[0xFFFE] = 0x80;
-    memory[0x008F] = 0x00;
-    constexpr uint32_t EXPECTED_CYCLES = 4;
+    memory[0x800F] = 0x00;
+    constexpr uint32_t EXPECTED_CYCLES = 5;
     CPU cpuCopy = cpu;
 
     //when:
@@ -147,16 +147,16 @@ TEST_F(StoreRegisterTest, STXAbsoluteYCanStoreTheARegisterIntoMemory)
 
     //then:
     EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
-    EXPECT_EQ(memory[0x008F], 0x42);
+    EXPECT_EQ(memory[0x800F], 0x42);
     VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
 }
 
-TEST_F(StoreRegisterTest, STXIndirectXCanStoreTheARegisterIntoMemory)
+TEST_F(StoreRegisterTest, STAIndirectXCanStoreTheARegisterIntoMemory)
 {
     //given:
     cpu.A = 0x42;
     cpu.X = 0x0F;
-    memory[0xFFFC] = CPU::INS_STX_INDX;
+    memory[0xFFFC] = CPU::INS_STA_INDX;
     memory[0xFFFD] = 0x20;
     memory[0x002F] = 0x00;
     memory[0x0030] = 0x80;
@@ -173,12 +173,12 @@ TEST_F(StoreRegisterTest, STXIndirectXCanStoreTheARegisterIntoMemory)
     VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
 }
 
-TEST_F(StoreRegisterTest, STXIndirectYCanStoreTheARegisterIntoMemory)
+TEST_F(StoreRegisterTest, STAIndirectYCanStoreTheARegisterIntoMemory)
 {
     //given:
     cpu.A = 0x42;
     cpu.Y = 0x0F;
-    memory[0xFFFC] = CPU::INS_STX_INDY;
+    memory[0xFFFC] = CPU::INS_STA_INDY;
     memory[0xFFFD] = 0x20;
     memory[0x0020] = 0x00;
     memory[0x0021] = 0x80;
