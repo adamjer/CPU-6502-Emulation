@@ -8,7 +8,7 @@ class CPU
 {
 public:
     uint16_t PC; // program counter
-    uint16_t SP; // stack pointer
+    uint8_t SP; // stack pointer
 
     uint8_t A, X, Y; // registers (accumulator, register X, register Y)
 
@@ -54,28 +54,33 @@ public:
         INS_STY_ABS = 0x8C,
         INS_STY_ZPX = 0x94,
 
-
-        INS_JSR = 0x20;
+        INS_JSR = 0x20,
+        INS_RTS = 0x60;
 
 
     void ResetRegisters();
     void Reset(Memory&);
+    void Reset(const uint16_t&, Memory&);
     int32_t Execute(int32_t, Memory&);
     void LoadRegisterSetStatus( uint8_t);
 
-    uint8_t FetchByte(int32_t&, Memory&);   
-    uint16_t FetchWord(int32_t&, Memory&);
+    uint8_t FetchByte(int32_t&, const Memory&);   
+    uint16_t FetchWord(int32_t&, const Memory&);
     uint8_t ReadByte(int32_t&, const uint16_t&, const Memory&);
     uint16_t ReadWord(int32_t&, const uint16_t&, const Memory&);
-    void WriteByte(int32_t&, const uint16_t&, Memory&, uint8_t);
-    void WriteWord(int32_t&, const uint16_t&, Memory&, uint8_t);
-    uint16_t AddressZeroPage(int32_t&, Memory&);
-    uint16_t AddressZeroPageX(int32_t&, Memory&);
-    uint16_t AddressZeroPageY(int32_t&, Memory&);
-    uint16_t AddressAbsolute(int32_t&, Memory&);
-    uint16_t AddressAbsoluteX(int32_t&, Memory&);
-    uint16_t AddressAbsoluteY(int32_t&, Memory&);
-    uint16_t AddressIndirectX(int32_t&, Memory&);
-    uint16_t AddressIndirectY(int32_t&, Memory&);
+    void WriteByte(int32_t&, const uint16_t&, Memory&, const uint8_t);
+    void WriteWord(int32_t&, const uint16_t&, Memory&, const uint16_t);
+    uint16_t StackPointerToAddress() const;
+    void PushProgramCounterToStack(int32_t&, Memory&);
+    uint16_t PopWordFromStack(int32_t& cycles, Memory& memory);
+
+    uint16_t AddressZeroPage(int32_t&, const Memory&);
+    uint16_t AddressZeroPageX(int32_t&, const Memory&);
+    uint16_t AddressZeroPageY(int32_t&, const Memory&);
+    uint16_t AddressAbsolute(int32_t&, const Memory&);
+    uint16_t AddressAbsoluteX(int32_t&, const Memory&, bool);
+    uint16_t AddressAbsoluteY(int32_t&, const Memory&, bool);
+    uint16_t AddressIndirectX(int32_t&, const Memory&);
+    uint16_t AddressIndirectY(int32_t&, const Memory&, bool);
 };
 

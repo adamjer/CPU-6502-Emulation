@@ -8,14 +8,24 @@ void CPU::ResetRegisters()
 void CPU::Reset(Memory& memory)
 {
 	this->PC = 0xFFFC;
-	this->SP = 0x0100;
+	this->SP = 0xFF;
 	this->Flags.Reset();
 	this->ResetRegisters();
 
 	memory.Initialize();
 }
 
-uint8_t CPU::FetchByte(int32_t& cycles, Memory& memory)
+void CPU::Reset(const uint16_t& offset, Memory& memory)
+{
+	this->PC = offset;
+	this->SP = 0xFF;
+	this->Flags.Reset();
+	this->ResetRegisters();
+
+	memory.Initialize();
+}
+
+uint8_t CPU::FetchByte(int32_t& cycles, const Memory& memory)
 {
 	uint8_t data = memory[PC++];
 	--cycles;
@@ -23,18 +33,13 @@ uint8_t CPU::FetchByte(int32_t& cycles, Memory& memory)
 	return data;
 }
 
-uint16_t CPU::FetchWord(int32_t& cycles, Memory& memory)
+uint16_t CPU::FetchWord(int32_t& cycles, const Memory& memory)
 {
 	// CPU 6502 is little endian
-	// first bute is more signifant one (first in WORD)
+	// first byte is more signifant one (first in WORD)
 	uint16_t data = memory[PC++];
 	data |= (memory[PC++] << 8);
 	cycles -= 2;
-
-	// if you wanted to handle endianess
-	// you would have to swap bytes here
-	//     if (PLATFORM_BIG_ENDIAN)
-	//         SwapBytesInWord(data);
 
 	return data;
 }
@@ -55,27 +60,51 @@ uint16_t CPU::ReadWord(int32_t& cycles, const uint16_t& address, const Memory& m
 	return lowByte | (highByte << 8);
 }
 
-void CPU::WriteByte(int32_t& cycles, const uint16_t& address, Memory& memory, uint8_t value)
+/*  Write 1 byte to memory*/
+void CPU::WriteByte(int32_t& cycles, const uint16_t& address, Memory& memory, const uint8_t value)
 {
 	memory[address] = value;
 	--cycles;
 }
 
-void CPU::WriteWord(int32_t& cycles, const uint16_t& address, Memory& memory, uint8_t value)
+/*  Write 2 bytes to memory*/
+void CPU::WriteWord(int32_t& cycles, const uint16_t& address, Memory& memory, const uint16_t value)
 {
-	memory[address] = value;
+	memory[address] = value & 0xFF;
+	memory[address + 1] = (value >> 8);
+	cycles -= 2;
+}
+
+/*  Return the stack pointer as a full 16-bit address in the 1st page*/
+uint16_t CPU::StackPointerToAddress() const
+{
+	return 0x100 | this->SP;
+}
+
+/*  Push the PC-1 onto the stack*/
+void CPU::PushProgramCounterToStack(int32_t& cycles, Memory& memory)
+{
+	this->WriteWord(cycles, this->StackPointerToAddress() - 1, memory, this->PC - 1);
+	this->SP -= 2;
+}
+
+uint16_t CPU::PopWordFromStack(int32_t& cycles, Memory& memory)
+{
+	uint16_t value = ReadWord(cycles, this->StackPointerToAddress() + 1, memory);
+	this->SP += 2;
 	--cycles;
+	return value;
 }
 
 /*  Addresing mode - Zero page*/
-uint16_t CPU::AddressZeroPage(int32_t& cycles, Memory& memory)
+uint16_t CPU::AddressZeroPage(int32_t& cycles, const Memory& memory)
 {
 	uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
 	return zeroPageAddress;
 }
 
 /*  Addresing mode - Zero page with X offset*/
-uint16_t CPU::AddressZeroPageX(int32_t& cycles, Memory& memory)
+uint16_t CPU::AddressZeroPageX(int32_t& cycles, const Memory& memory)
 {
 	uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
 	zeroPageAddress += this->X;
@@ -84,7 +113,7 @@ uint16_t CPU::AddressZeroPageX(int32_t& cycles, Memory& memory)
 }
 
 /*  Addresing mode - Zero page with Y offset*/
-uint16_t CPU::AddressZeroPageY(int32_t& cycles, Memory& memory)
+uint16_t CPU::AddressZeroPageY(int32_t& cycles, const Memory& memory)
 {
 	uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
 	zeroPageAddress += this->Y;
@@ -93,36 +122,41 @@ uint16_t CPU::AddressZeroPageY(int32_t& cycles, Memory& memory)
 }
 
 /*  Addresing mode - Absolute*/
-uint16_t CPU::AddressAbsolute(int32_t& cycles, Memory& memory)
+uint16_t CPU::AddressAbsolute(int32_t& cycles, const Memory& memory)
 {
 	uint16_t absoluteAddress = this->FetchWord(cycles, memory);
 	return absoluteAddress;
 }
 
 /*  Addresing mode - Absolute with X offset*/
-uint16_t CPU::AddressAbsoluteX(int32_t& cycles, Memory& memory)
+uint16_t CPU::AddressAbsoluteX(int32_t& cycles, const Memory& memory, bool alwaysConsumeCycle = false)
 {
 	uint16_t absoluteAddress = this->FetchWord(cycles, memory);
 	uint16_t absoluteAddressX = absoluteAddress + this->X;
-	if (absoluteAddressX - absoluteAddress >= 0xFF)
+
+	if (alwaysConsumeCycle)
+		--cycles;
+	else if (absoluteAddressX - absoluteAddress >= 0xFF)
 		--cycles;
 
 	return absoluteAddressX;
 }
 
 /*  Addresing mode - Absolute with Y offset*/
-uint16_t CPU::AddressAbsoluteY(int32_t& cycles, Memory& memory)
+uint16_t CPU::AddressAbsoluteY(int32_t& cycles, const Memory& memory, bool alwaysConsumeCycle = false)
 {
 	uint16_t absoluteAddress = this->FetchWord(cycles, memory);
 	uint16_t absoluteAddressY = absoluteAddress + this->Y;
-	if (absoluteAddressY - absoluteAddress >= 0xFF)
+	if (alwaysConsumeCycle)
+		--cycles;
+	else if (absoluteAddressY - absoluteAddress >= 0xFF)
 		--cycles;
 
 	return absoluteAddressY;
 }
 
 /*  Addresing mode - Indirect X | Indexed Indirect X*/
-uint16_t CPU::AddressIndirectX(int32_t& cycles, Memory& memory)
+uint16_t CPU::AddressIndirectX(int32_t& cycles, const Memory& memory)
 {
 	uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
 	zeroPageAddress += this->X;
@@ -133,12 +167,14 @@ uint16_t CPU::AddressIndirectX(int32_t& cycles, Memory& memory)
 }
 
 /*  Addresing mode - Indirect Y | Indexed Indirect Y*/
-uint16_t CPU::AddressIndirectY(int32_t& cycles, Memory& memory)
+uint16_t CPU::AddressIndirectY(int32_t& cycles, const Memory& memory, bool alwaysConsumeCycle = false)
 {
 	uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
 	uint16_t effectiveAddress = this->ReadWord(cycles, zeroPageAddress, memory);
 	uint16_t effectiveAddressY = effectiveAddress + this->Y;
-	if (effectiveAddressY - effectiveAddress >= 0xFF)
+	if (alwaysConsumeCycle)
+		--cycles;
+	else if (effectiveAddressY - effectiveAddress >= 0xFF)
 		--cycles;
 
 	return effectiveAddressY;
@@ -301,16 +337,14 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			} break;
 			case INS_STA_ABSX:
 			{
-				uint16_t address = this->AddressAbsoluteX(cycles, memory);
+				uint16_t address = this->AddressAbsoluteX(cycles, memory, true);
 				this->WriteByte(cycles, address, memory, this->A);
-				--cycles;
 				// flags not affected
 			} break;
 			case INS_STA_ABSY:
 			{
-				uint16_t address = this->AddressAbsoluteY(cycles, memory);
+				uint16_t address = this->AddressAbsoluteY(cycles, memory, true);
 				this->WriteByte(cycles, address, memory, this->A);
-				--cycles; //TODO
 				// flags not affected
 			} break;
 			case INS_STA_INDX:
@@ -321,18 +355,23 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			} break;
 			case INS_STA_INDY:
 			{
-				uint16_t address = this->AddressIndirectY(cycles, memory);
+				uint16_t address = this->AddressIndirectY(cycles, memory, true);
 				this->WriteByte(cycles, address, memory, this->A);
-				--cycles; //TODO
 				// flags not affected
 			} break;
 			case INS_JSR:
 			{
 				uint16_t subroutineAddress = this->FetchWord(cycles, memory);
-				memory.WriteWord(cycles, this->PC - 1, this->SP++);
-				this->SP += 2;
+				this->PushProgramCounterToStack(cycles, memory);
 				this->PC = subroutineAddress;
-				--cycles; //TODO
+				--cycles;
+				// flags not affected
+			} break;
+			case INS_RTS:
+			{
+				uint16_t returnAddress = this->PopWordFromStack(cycles, memory);
+				this->PC = returnAddress + 1;
+				cycles -= 2;
 				// flags not affected
 			} break;
 			default:

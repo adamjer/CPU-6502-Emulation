@@ -15,7 +15,5 @@ public:
 
     //write 1 byte
     uint8_t& operator[] (uint32_t);
-
-    void WriteWord(int32_t&, const uint16_t&, const uint32_t&);
 };
 
