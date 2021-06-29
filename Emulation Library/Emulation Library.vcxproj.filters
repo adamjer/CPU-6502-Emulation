@@ -18,13 +18,13 @@
     <ClCompile Include="CPU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Flags.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusFlags.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,13 +32,13 @@
     <ClInclude Include="CPU.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Flags.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

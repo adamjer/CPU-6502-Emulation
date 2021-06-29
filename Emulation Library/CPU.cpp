@@ -291,73 +291,73 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			{
 				uint8_t address = this->AddressZeroPage(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->A);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STX_ZP:
 			{
 				uint8_t address = this->AddressZeroPage(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->X);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STY_ZP:
 			{
 				uint8_t address = this->AddressZeroPage(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->Y);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STA_ABS:
 			{
 				uint16_t address = this->AddressAbsolute(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->A);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STX_ABS:
 			{
 				uint16_t address = this->AddressAbsolute(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->X);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STY_ABS:
 			{
 				uint16_t address = this->AddressAbsolute(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->Y);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STA_ZPX:
 			{
 				uint8_t address = this->AddressZeroPageX(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->A);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STY_ZPX:
 			{
 				uint8_t address = this->AddressZeroPageX(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->Y);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STA_ABSX:
 			{
 				uint16_t address = this->AddressAbsoluteX(cycles, memory, true);
 				this->WriteByte(cycles, address, memory, this->A);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STA_ABSY:
 			{
 				uint16_t address = this->AddressAbsoluteY(cycles, memory, true);
 				this->WriteByte(cycles, address, memory, this->A);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STA_INDX:
 			{
 				uint16_t address = AddressIndirectX(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->A);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_STA_INDY:
 			{
 				uint16_t address = this->AddressIndirectY(cycles, memory, true);
 				this->WriteByte(cycles, address, memory, this->A);
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_JSR:
 			{
@@ -365,14 +365,27 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				this->PushProgramCounterToStack(cycles, memory);
 				this->PC = subroutineAddress;
 				--cycles;
-				// flags not affected
+				// StatusFlags not affected
 			} break;
 			case INS_RTS:
 			{
 				uint16_t returnAddress = this->PopWordFromStack(cycles, memory);
 				this->PC = returnAddress + 1;
 				cycles -= 2;
-				// flags not affected
+				// StatusFlags not affected
+			} break;
+			case INS_JMP_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				this->PC = address;
+				// StatusFlags not affected
+			} break;
+			case INS_JMP_IND:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				address = this->ReadWord(cycles, address, memory);
+				this->PC = address;
+				// StatusFlags not affected
 			} break;
 			default:
 			{

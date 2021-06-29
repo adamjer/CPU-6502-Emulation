@@ -20,13 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CPU.cpp" />
-    <ClCompile Include="Flags.cpp" />
+    <ClCompile Include="StatusFlags.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU.h" />
-    <ClInclude Include="Flags.h" />
+    <ClInclude Include="StatusFlags.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Source.h" />
   </ItemGroup>

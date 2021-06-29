@@ -25,7 +25,7 @@ void StoreRegisterTest::TestStoreRegisterZeroPage(uint8_t opcodeToTest, uint8_t 
     //then:
     EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
     EXPECT_EQ(memory[0x0080], 0x2F);
-    VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
+    VerifyUnmodifiedStatusFlagsFromStorageRegister(cpu, cpuCopy);
 }
 
 void StoreRegisterTest::TestStoreRegisterAbsolute(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
@@ -45,7 +45,7 @@ void StoreRegisterTest::TestStoreRegisterAbsolute(uint8_t opcodeToTest, uint8_t 
     //then:
     EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
     EXPECT_EQ(memory[0x8000], 0x2F);
-    VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
+    VerifyUnmodifiedStatusFlagsFromStorageRegister(cpu, cpuCopy);
 }
 
 void StoreRegisterTest::TestStoreRegisterZeroPageX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
@@ -65,7 +65,7 @@ void StoreRegisterTest::TestStoreRegisterZeroPageX(uint8_t opcodeToTest, uint8_t
     //then:
     EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
     EXPECT_EQ(memory[0x008F], 0x42);
-    VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
+    VerifyUnmodifiedStatusFlagsFromStorageRegister(cpu, cpuCopy);
 }
 
 
@@ -127,7 +127,7 @@ TEST_F(StoreRegisterTest, STAAbsoluteXCanStoreTheARegisterIntoMemory)
     //then:
     EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
     EXPECT_EQ(memory[0x800F], 0x42);
-    VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
+    VerifyUnmodifiedStatusFlagsFromStorageRegister(cpu, cpuCopy);
 }
 
 TEST_F(StoreRegisterTest, STAAbsoluteYCanStoreTheARegisterIntoMemory)
@@ -148,7 +148,7 @@ TEST_F(StoreRegisterTest, STAAbsoluteYCanStoreTheARegisterIntoMemory)
     //then:
     EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
     EXPECT_EQ(memory[0x800F], 0x42);
-    VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
+    VerifyUnmodifiedStatusFlagsFromStorageRegister(cpu, cpuCopy);
 }
 
 TEST_F(StoreRegisterTest, STAIndirectXCanStoreTheARegisterIntoMemory)
@@ -170,7 +170,7 @@ TEST_F(StoreRegisterTest, STAIndirectXCanStoreTheARegisterIntoMemory)
     //then:
     EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
     EXPECT_EQ(memory[0x8000], 0x42);
-    VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
+    VerifyUnmodifiedStatusFlagsFromStorageRegister(cpu, cpuCopy);
 }
 
 TEST_F(StoreRegisterTest, STAIndirectYCanStoreTheARegisterIntoMemory)
@@ -192,5 +192,5 @@ TEST_F(StoreRegisterTest, STAIndirectYCanStoreTheARegisterIntoMemory)
     //then:
     EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
     EXPECT_EQ(memory[0x8000 + 0x0F], 0x42);
-    VerifyUnmodifiedFlagsFromStorageRegister(cpu, cpuCopy);
+    VerifyUnmodifiedStatusFlagsFromStorageRegister(cpu, cpuCopy);
 }

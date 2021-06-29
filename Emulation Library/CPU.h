@@ -2,7 +2,7 @@
 
 #include <cstdio>
 #include "Memory.h"
-#include "Flags.h"
+#include "StatusFlags.h"
 
 class CPU
 {
@@ -12,7 +12,11 @@ public:
 
     uint8_t A, X, Y; // registers (accumulator, register X, register Y)
 
-    Flags Flags;
+    union // processor state
+    {
+        StatusFlags Flags;
+        uint8_t PS;
+    };
     
     // opcodes
     static constexpr uint8_t
@@ -54,6 +58,8 @@ public:
         INS_STY_ABS = 0x8C,
         INS_STY_ZPX = 0x94,
 
+        INS_JMP_ABS = 0x4C,
+        INS_JMP_IND = 0x6C,
         INS_JSR = 0x20,
         INS_RTS = 0x60;
 

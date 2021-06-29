@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-class Flags
+class StatusFlags
 {
 public:
 
@@ -11,10 +11,10 @@ public:
     uint8_t I : 1; // InterruptDisableFlag I;
     uint8_t D : 1; // DecimalModeFlag D;
     uint8_t B : 1; // BreakCommandFlag B;
+    uint8_t Unused : 1;
     uint8_t V : 1; // OverflowFlag V;
     uint8_t N : 1; // NegativeFlag N;
 
     void Reset();
     void Set();
 };
-

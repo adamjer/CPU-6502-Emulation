@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include "..\Emulation Library\Source.h"
 
-static void VerifyUnmodifiedFlagsFromLoadRegister(const CPU& cpu, const CPU& copy)
+static void VerifyUnmodifiedStatusFlagsFromLoadRegister(const CPU& cpu, const CPU& copy)
 {
     EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
     EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
