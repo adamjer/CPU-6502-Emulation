@@ -88,11 +88,28 @@ void CPU::PushProgramCounterToStack(int32_t& cycles, Memory& memory)
 	this->SP -= 2;
 }
 
-uint16_t CPU::PopWordFromStack(int32_t& cycles, Memory& memory)
+void CPU::PushByteOntoStack(int32_t& cycles, Memory& memory, uint8_t value)
 {
-	uint16_t value = ReadWord(cycles, this->StackPointerToAddress() + 1, memory);
-	this->SP += 2;
+	uint16_t address = this->StackPointerToAddress();
+	memory[address] = value;
 	--cycles;
+	--this->SP;
+	--cycles;
+}
+
+uint16_t CPU::PopWordFromStack(int32_t& cycles, const Memory& memory)
+{
+	this->SP += 2;
+	uint16_t value = ReadWord(cycles, this->StackPointerToAddress() - 1, memory);
+	--cycles;
+	return value;
+}
+
+uint8_t CPU::PopByteFromStack(int32_t& cycles, const Memory& memory)
+{
+	++this->SP;
+	uint8_t value = this->ReadByte(cycles, this->StackPointerToAddress(), memory);
+	cycles -= 2;
 	return value;
 }
 
@@ -385,6 +402,38 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint16_t address = this->AddressAbsolute(cycles, memory);
 				address = this->ReadWord(cycles, address, memory);
 				this->PC = address;
+				// StatusFlags not affected
+			} break;
+			case INS_TSX:
+			{
+				this->X = this->SP;
+				this->LoadRegisterSetStatus(this->X);
+				--cycles;
+			} break;
+			case INS_TXS:
+			{
+				this->SP = this->X;
+				--cycles;
+				// StatusFlags not affected
+			} break;
+			case INS_PHA:
+			{
+				this->PushByteOntoStack(cycles, memory, this->A);
+				// StatusFlags not affected
+			} break;
+			case INS_PLA:
+			{
+				this->A = this->PopByteFromStack(cycles, memory);
+				this->LoadRegisterSetStatus(this->A);
+			} break;
+			case INS_PHP:
+			{
+				this->PushByteOntoStack(cycles, memory, this->PS);
+				// StatusFlags not affected
+			} break;
+			case INS_PLP:
+			{
+				this->PS = this->PopByteFromStack(cycles, memory);
 				// StatusFlags not affected
 			} break;
 			default:

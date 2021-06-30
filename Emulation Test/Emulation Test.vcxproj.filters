@@ -8,7 +8,10 @@
     <ClCompile Include="StoreRegisterTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="JumpsAndCallsTests.cpp">
+    <ClCompile Include="JumpsAndCallsTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="StackOperationsTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
@@ -19,7 +22,10 @@
     <ClInclude Include="StoreRegisterTest.h">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="JumpsAndCallsTests.h">
+    <ClInclude Include="JumpsAndCallsTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="StackOperationsTest.h">
       <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>

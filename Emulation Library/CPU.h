@@ -58,6 +58,13 @@ public:
         INS_STY_ABS = 0x8C,
         INS_STY_ZPX = 0x94,
 
+        INS_TSX = 0xBA,
+        INS_TXS = 0x9A,
+        INS_PHA = 0x48,
+        INS_PHP = 0x08,
+        INS_PLA = 0x68,
+        INS_PLP = 0x28,
+
         INS_JMP_ABS = 0x4C,
         INS_JMP_IND = 0x6C,
         INS_JSR = 0x20,
@@ -78,7 +85,9 @@ public:
     void WriteWord(int32_t&, const uint16_t&, Memory&, const uint16_t);
     uint16_t StackPointerToAddress() const;
     void PushProgramCounterToStack(int32_t&, Memory&);
-    uint16_t PopWordFromStack(int32_t& cycles, Memory& memory);
+    void PushByteOntoStack(int32_t&, Memory&, uint8_t);
+    uint16_t PopWordFromStack(int32_t&, const Memory&);
+    uint8_t PopByteFromStack(int32_t&, const Memory&);
 
     uint16_t AddressZeroPage(int32_t&, const Memory&);
     uint16_t AddressZeroPageX(int32_t&, const Memory&);

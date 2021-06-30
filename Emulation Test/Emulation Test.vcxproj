@@ -33,17 +33,19 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClInclude Include="JumpsAndCallsTests.h" />
+    <ClInclude Include="JumpsAndCallsTest.h" />
     <ClInclude Include="LoadRegisterTest.h" />
+    <ClInclude Include="StackOperationsTest.h" />
     <ClInclude Include="StoreRegisterTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="JumpsAndCallsTests.cpp" />
+    <ClCompile Include="JumpsAndCallsTest.cpp" />
     <ClCompile Include="LoadRegisterTest.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="StackOperationsTest.cpp" />
     <ClCompile Include="StoreRegisterTest.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

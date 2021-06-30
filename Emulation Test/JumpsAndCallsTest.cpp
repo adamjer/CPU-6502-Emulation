@@ -1,38 +1,15 @@
-#include "JumpsAndCallsTests.h"
+#include "JumpsAndCallsTest.h"
 
-void JumpsAndCallsTests::SetUp()
+void JumpsAndCallsTest::SetUp()
 {
     cpu.Reset(memory);
 }
 
-void JumpsAndCallsTests::Teardown()
+void JumpsAndCallsTest::Teardown()
 {
 }
 
-//void JumpsAndCallsTests::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
-//{
-//    // given:
-//    cpu.Flags.Z = cpu.Flags.N = true;
-//    int address = 0x42;
-//    // start - inline a little program
-//    memory[0xFFFC] = opcodeToTest;
-//    memory[0xFFFD] = address;
-//    memory[address] = 0x37;
-//    // end -inline a little program
-//
-//    // when:
-//    CPU copy = cpu;
-//    int32_t cyclesUsed = cpu.Execute(3, memory);
-//
-//    // then:
-//    EXPECT_EQ(cpu.*RegisterToTest, 0x37);
-//    EXPECT_EQ(cyclesUsed, 3);
-//    EXPECT_FALSE(cpu.Flags.Z);
-//    EXPECT_FALSE(cpu.Flags.N);
-//    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
-//}
-
-TEST_F(JumpsAndCallsTests, CanJumpToASubroutineAndJumpBackAgain)
+TEST_F(JumpsAndCallsTest, CanJumpToASubroutineAndJumpBackAgain)
 {
     // given:
     uint16_t startOffset = 0xFF00;
@@ -58,7 +35,7 @@ TEST_F(JumpsAndCallsTests, CanJumpToASubroutineAndJumpBackAgain)
     EXPECT_EQ(cpu.SP, copy.SP);
 }
 
-TEST_F(JumpsAndCallsTests, JSRDoesNotAffectTheProcessorStatus)
+TEST_F(JumpsAndCallsTest, JSRDoesNotAffectTheProcessorStatus)
 {
     // given:
     uint16_t startOffset = 0xFF00;
@@ -81,7 +58,7 @@ TEST_F(JumpsAndCallsTests, JSRDoesNotAffectTheProcessorStatus)
     EXPECT_EQ(cpu.PC, 0x8000);
 }
 
-TEST_F(JumpsAndCallsTests, RTSDoesNotAffectTheProcessorStatus)
+TEST_F(JumpsAndCallsTest, RTSDoesNotAffectTheProcessorStatus)
 {
     // given:
     uint16_t startOffset = 0xFF00;
@@ -105,7 +82,7 @@ TEST_F(JumpsAndCallsTests, RTSDoesNotAffectTheProcessorStatus)
     EXPECT_EQ(cpu.PC, startOffset + 2 + 1);
 }
 
-TEST_F(JumpsAndCallsTests, JumpAbsoluteCanJumpToAnNewLocationInTheProgram)
+TEST_F(JumpsAndCallsTest, JumpAbsoluteCanJumpToAnNewLocationInTheProgram)
 {
     // given:
     uint16_t startOffset = 0xFF00;
@@ -130,7 +107,7 @@ TEST_F(JumpsAndCallsTests, JumpAbsoluteCanJumpToAnNewLocationInTheProgram)
     EXPECT_EQ(cpu.PC, 0x8000);
 }
 
-TEST_F(JumpsAndCallsTests, JumpIndirectCanJumpToAnNewLocationInTheProgram)
+TEST_F(JumpsAndCallsTest, JumpIndirectCanJumpToAnNewLocationInTheProgram)
 {
     // given:
     uint16_t startOffset = 0xFF00;

@@ -11,7 +11,7 @@ static void VerifyUnmodifiedStatusFlagsFromLoadRegister(const CPU& cpu, const CP
     EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
 }
 
-class JumpsAndCallsTests : public testing::Test
+class JumpsAndCallsTest : public testing::Test
 {
 public:
     Memory memory;
