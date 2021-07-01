@@ -1,14 +1,5 @@
 #include "JumpsAndCallsTest.h"
 
-void JumpsAndCallsTest::SetUp()
-{
-    cpu.Reset(memory);
-}
-
-void JumpsAndCallsTest::Teardown()
-{
-}
-
 TEST_F(JumpsAndCallsTest, CanJumpToASubroutineAndJumpBackAgain)
 {
     // given:

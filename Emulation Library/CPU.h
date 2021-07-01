@@ -68,7 +68,20 @@ public:
         INS_JMP_ABS = 0x4C,
         INS_JMP_IND = 0x6C,
         INS_JSR = 0x20,
-        INS_RTS = 0x60;
+        INS_RTS = 0x60,
+
+        //Logical Operations
+
+        //AND
+        INS_AND_IM = 0x29,
+
+        //OR
+        INS_OR_IM = 0x09,
+
+        //EOR
+        INS_EOR_IM = 0x49,
+        
+        INS_NOP = 0x70;
 
 
     void ResetRegisters();

@@ -3,11 +3,19 @@
 #include "BaseTest.h"
 #include "..\Emulation Library\Source.h"
 
-class LoadRegisterTest : public BaseTest
+enum class LogicalOperation
 {
-public:  
+    And,
+    Or,
+    Eor
+};
 
-    virtual void TestLoadRegisterImmediate(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
+class AndEorOraTest : public BaseTest
+{
+public:
+    uint8_t logicalOperation(uint8_t, uint8_t, LogicalOperation);
+
+    virtual void TestLogicalOperationOnARegisterImmediate(LogicalOperation);
     virtual void TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
     virtual void TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
     virtual void TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
@@ -17,3 +25,4 @@ public:
     virtual void TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
     virtual void TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
 };
+

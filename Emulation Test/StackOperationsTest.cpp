@@ -1,13 +1,5 @@
 #include "StackOperationsTest.h"
 
-void StackOperationsTest::SetUp()
-{
-    cpu.Reset(memory);
-}
-
-void StackOperationsTest::Teardown()
-{
-}
 
 TEST_F(StackOperationsTest, TSXCanTransferTheStackPointerToXRegister)
 {

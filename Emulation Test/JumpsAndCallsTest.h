@@ -1,23 +1,10 @@
 #pragma once
 #include "gtest/gtest.h"
+#include "BaseTest.h"
 #include "..\Emulation Library\Source.h"
 
-static void VerifyUnmodifiedStatusFlagsFromLoadRegister(const CPU& cpu, const CPU& copy)
-{
-    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
-    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
-    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
-    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
-    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
-}
-
-class JumpsAndCallsTest : public testing::Test
+class JumpsAndCallsTest : public BaseTest
 {
 public:
-    Memory memory;
-    CPU cpu;
-
-    virtual void SetUp();
-    virtual void Teardown();
 };
 

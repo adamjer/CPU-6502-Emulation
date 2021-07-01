@@ -14,6 +14,12 @@
     <ClCompile Include="StackOperationsTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="AndEorOraTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoadRegisterTest.h">
@@ -26,6 +32,12 @@
       <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="StackOperationsTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="AndEorOraTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseTest.h">
       <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,26 +1,60 @@
-#include "LoadRegisterTest.h"
+#include "AndEorOraTest.h"
 
-void LoadRegisterTest::TestLoadRegisterImmediate(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+
+uint8_t AndEorOraTest::logicalOperation(uint8_t A, uint8_t B, LogicalOperation operation)
+{
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        return A & B;
+        break;
+    case LogicalOperation::Or:
+        return A | B;
+        break;
+    case LogicalOperation::Eor:
+        return A ^ B;
+        break;
+    default:
+        break;
+    }
+
+    throw - 2; //invalid Logical Operation
+}
+
+void AndEorOraTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation operation)
 {
     // given:
-    cpu.Flags.Z = true;
-    cpu.Flags.N = false;
-    memory[0xFFFC] = opcodeToTest;
-    memory[0xFFFD] = 0x84;
+    uint8_t A = 0xcc, B = 0x84;
+    cpu.A = 0xCC;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
+    memory[0xFFFD] = B;
 
     // when:
     CPU copy = cpu;
     int32_t cyclesUsed = cpu.Execute(2, memory);
 
     // then:
-    EXPECT_EQ(cpu.*RegisterToTest, 0x84);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, 2);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void LoadRegisterTest::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
@@ -43,7 +77,7 @@ void LoadRegisterTest::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CP
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void LoadRegisterTest::TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
@@ -67,7 +101,7 @@ void LoadRegisterTest::TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t C
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void LoadRegisterTest::TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
@@ -91,7 +125,7 @@ void LoadRegisterTest::TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t C
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void LoadRegisterTest::TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
@@ -115,7 +149,7 @@ void LoadRegisterTest::TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CP
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void LoadRegisterTest::TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
@@ -140,7 +174,7 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t C
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void LoadRegisterTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
@@ -165,7 +199,7 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opc
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void LoadRegisterTest::TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
@@ -190,7 +224,7 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t C
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void LoadRegisterTest::TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
@@ -215,65 +249,27 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opc
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-TEST_F(LoadRegisterTest, TheCPUDoesNothingWhenWeExecuteZeroCycles)
+TEST_F(AndEorOraTest, TestLogicalANDOperationOnARegisterImmediate)
 {
-    // given:
-    constexpr int32_t NUM_CYCLES = 0;
-
-    // when:
-    int32_t cyclesUsed = cpu.Execute(0, memory);
-
-    // then:
-    EXPECT_EQ(cyclesUsed, 0);
+    this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::And);
 }
 
-TEST_F(LoadRegisterTest, CPUCanExecuteMoreCyclesThanRequestedIfRequiredByTheInstruction)
+TEST_F(AndEorOraTest, TestLogicalOROperationOnARegisterImmediate)
 {
-    // given:
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_IM;
-    memory[0xFFFD] = 0x84;
-    // end -inline a little program
-    constexpr int32_t NUM_CYCLES = 1;
-
-    // when:
-    int32_t cyclesUsed = cpu.Execute(NUM_CYCLES, memory);
-
-    // then:
-    EXPECT_EQ(cyclesUsed, 2);
+    this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::Or);
 }
 
-TEST_F(LoadRegisterTest, LDAImmediateCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, TestLogicalEOROperationOnARegisterImmediate)
 {
-    TestLoadRegisterImmediate(CPU::INS_LDA_IM, &CPU::A);
+    this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::Eor);
 }
 
-TEST_F(LoadRegisterTest, LDXImmediateCanLoadAValueIntoTheARegister)
-{
-    TestLoadRegisterImmediate(CPU::INS_LDX_IM, &CPU::X);
-}
-
-TEST_F(LoadRegisterTest, LDYImmediateCanLoadAValueIntoTheARegister)
-{
-    TestLoadRegisterImmediate(CPU::INS_LDY_IM, &CPU::Y);
-}
-
-TEST_F(LoadRegisterTest, LDAZeroPageCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, LDAZeroPageCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterZeroPage(CPU::INS_LDA_ZP, &CPU::A);
 }
 
-TEST_F(LoadRegisterTest, LDXZeroPageCanLoadAValueIntoTheXRegister)
-{
-    TestLoadRegisterZeroPage(CPU::INS_LDX_ZP, &CPU::X);
-}
-
-TEST_F(LoadRegisterTest, LDYZeroPageCanLoadAValueIntoTheYRegister)
-{
-    TestLoadRegisterZeroPage(CPU::INS_LDY_ZP, &CPU::Y);
-}
-
-TEST_F(LoadRegisterTest, LDAImmediateCanAffectZeroFlag)
+TEST_F(AndEorOraTest, LDAImmediateCanAffectZeroFlag)
 {
 
     // given:
@@ -293,22 +289,12 @@ TEST_F(LoadRegisterTest, LDAImmediateCanAffectZeroFlag)
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-TEST_F(LoadRegisterTest, LDAZeroPageXCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, LDAZeroPageXCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterZeroPageX(CPU::INS_LDA_ZPX, &CPU::A);
 }
 
-TEST_F(LoadRegisterTest, LDXZeroPageYCanLoadAValueIntoTheXRegister)
-{
-    TestLoadRegisterZeroPageY(CPU::INS_LDX_ZPY, &CPU::X);
-}
-
-TEST_F(LoadRegisterTest, LDYZeroPageXCanLoadAValueIntoTheARegister)
-{
-    TestLoadRegisterZeroPageX(CPU::INS_LDY_ZPX, &CPU::Y);
-}
-
-TEST_F(LoadRegisterTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps)
+TEST_F(AndEorOraTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps)
 {
 
     // given:
@@ -332,62 +318,32 @@ TEST_F(LoadRegisterTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps)
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-TEST_F(LoadRegisterTest, LDAAbsoluteCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, LDAAbsoluteCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterAbsolute(CPU::INS_LDA_ABS, &CPU::A);
 }
 
-TEST_F(LoadRegisterTest, LDXAbsoluteCanLoadAValueIntoTheXRegister)
-{
-    TestLoadRegisterAbsolute(CPU::INS_LDX_ABS, &CPU::X);
-}
-
-TEST_F(LoadRegisterTest, LDYAbsoluteCanLoadAValueIntoTheYRegister)
-{
-    TestLoadRegisterAbsolute(CPU::INS_LDY_ABS, &CPU::Y);
-}
-
-TEST_F(LoadRegisterTest, LDAAbsoluteXCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, LDAAbsoluteXCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterAbsoluteX(CPU::INS_LDA_ABSX, &CPU::A);
 }
 
-TEST_F(LoadRegisterTest, LDXAbsoluteYCanLoadAValueIntoTheXRegister)
-{
-    TestLoadRegisterAbsoluteY(CPU::INS_LDX_ABSY, &CPU::X);
-}
-
-TEST_F(LoadRegisterTest, LDYAbsoluteXCanLoadAValueIntoTheYRegister)
-{
-    TestLoadRegisterAbsoluteX(CPU::INS_LDY_ABSX, &CPU::Y);
-}
-
-TEST_F(LoadRegisterTest, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
+TEST_F(AndEorOraTest, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
 {
     TestLoadRegisterAbsoluteXWhenCrossingBoundary(CPU::INS_LDA_ABSX, &CPU::A);
 }
 
-TEST_F(LoadRegisterTest, LDYAbsoluteXCanLoadAValueIntoTheYRegisterWhenItCrossesPageBoundary)
-{
-    TestLoadRegisterAbsoluteXWhenCrossingBoundary(CPU::INS_LDY_ABSX, &CPU::Y);
-}
-
-TEST_F(LoadRegisterTest, LDAAbsoluteYCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, LDAAbsoluteYCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterAbsoluteY(CPU::INS_LDA_ABSY, &CPU::A);
 }
 
-TEST_F(LoadRegisterTest, LDXAbsoluteYCanLoadAValueIntoTheXRegisterWhenItCrossesPageBoundary)
-{
-    TestLoadRegisterAbsoluteYWhenCrossingBoundary(CPU::INS_LDA_ABSY, &CPU::A);
-}
-
-TEST_F(LoadRegisterTest, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
+TEST_F(AndEorOraTest, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
 {
     TestLoadRegisterAbsoluteYWhenCrossingBoundary(CPU::INS_LDX_ABSY, &CPU::X);
 }
 
-TEST_F(LoadRegisterTest, LDAIndirectXCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, LDAIndirectXCanLoadAValueIntoTheARegister)
 {
 
     // given:
@@ -413,7 +369,7 @@ TEST_F(LoadRegisterTest, LDAIndirectXCanLoadAValueIntoTheARegister)
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, LDAIndirectYCanLoadAValueIntoTheARegister)
 {
 
     // given:
@@ -439,7 +395,7 @@ TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegister)
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
+TEST_F(AndEorOraTest, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
 {
 
     // given:

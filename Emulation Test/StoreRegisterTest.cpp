@@ -1,14 +1,5 @@
 #include "StoreRegisterTest.h"
 
-void StoreRegisterTest::SetUp()
-{
-    cpu.Reset(memory);
-}
-
-void StoreRegisterTest::Teardown()
-{
-}
-
 void StoreRegisterTest::TestStoreRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     //given:
