@@ -13,7 +13,7 @@ TEST_F(JumpsAndCallsTest, CanJumpToASubroutineAndJumpBackAgain)
     memory[0x8000] = CPU::INS_RTS;
     memory[startOffset + 3] = CPU::INS_LDA_IM;
     memory[startOffset + 4] = result;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 6 + 6 + 2;
 
@@ -35,7 +35,7 @@ TEST_F(JumpsAndCallsTest, JSRDoesNotAffectTheProcessorStatus)
     memory[startOffset] = CPU::INS_JSR;
     memory[startOffset + 1] = 0x00;
     memory[startOffset + 2] = 0x80;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 6;
 
@@ -60,7 +60,7 @@ TEST_F(JumpsAndCallsTest, RTSDoesNotAffectTheProcessorStatus)
     memory[startOffset + 1] = 0x00;
     memory[startOffset + 2] = 0x80;
     memory[0x8000] = CPU::INS_RTS;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 6 + 6;
 
@@ -84,7 +84,7 @@ TEST_F(JumpsAndCallsTest, JumpAbsoluteCanJumpToAnNewLocationInTheProgram)
     memory[startOffset + 1] = 0x00;
     memory[startOffset + 2] = 0x80;
     memory[0x8000] = CPU::INS_RTS;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 3;
 
@@ -110,7 +110,7 @@ TEST_F(JumpsAndCallsTest, JumpIndirectCanJumpToAnNewLocationInTheProgram)
     memory[startOffset + 2] = 0x80;
     memory[0x8000] = 0x00;
     memory[0x8001] = 0x90;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 5;
 

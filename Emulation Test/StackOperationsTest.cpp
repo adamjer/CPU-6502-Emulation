@@ -13,7 +13,7 @@ TEST_F(StackOperationsTest, TSXCanTransferTheStackPointerToXRegister)
     cpu.Flags.Z = cpu.Flags.N = true;
     // start - inline a little program
     memory[startOffset] = CPU::INS_TSX;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 2;
 
@@ -40,7 +40,7 @@ TEST_F(StackOperationsTest, TSXCanTransferAZeroStackPointerToXRegister)
     cpu.Flags.Z = cpu.Flags.N = true;    
     // start - inline a little program
     memory[startOffset] = CPU::INS_TSX;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 2;
 
@@ -67,7 +67,7 @@ TEST_F(StackOperationsTest, TSXCanTransferANegativeStackPointerToXRegister)
     cpu.Flags.Z = cpu.Flags.N = false;  
     // start - inline a little program
     memory[startOffset] = CPU::INS_TSX;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 2;
 
@@ -92,7 +92,7 @@ TEST_F(StackOperationsTest, TXSCanTransferXRegisterToTheStackPointer)
     cpu.SP = 0x00;
     // start - inline a little program
     memory[startOffset] = CPU::INS_TXS;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 2;
 
@@ -115,7 +115,7 @@ TEST_F(StackOperationsTest, PHACanPushARegisterOntoTheStack)
     cpu.A = result;
     // start - inline a little program
     memory[startOffset] = CPU::INS_PHA;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 3;
 
@@ -141,7 +141,7 @@ TEST_F(StackOperationsTest, PLACanPullAValueFromStackIntoTheARegister)
     memory[0x01FF] = result;
     // start - inline a little program
     memory[startOffset] = CPU::INS_PLA;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 4;
 
@@ -168,7 +168,7 @@ TEST_F(StackOperationsTest, PLACanPullAZeroValueFromStackIntoTheARegister)
     memory[0x01FF] = result;
     // start - inline a little program
     memory[startOffset] = CPU::INS_PLA;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 4;
 
@@ -197,7 +197,7 @@ TEST_F(StackOperationsTest, PLACanPullANegativeValueFromStackIntoTheARegister)
     memory[0x01FF] = result;
     // start - inline a little program
     memory[startOffset] = CPU::INS_PLA;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 4;
 
@@ -222,7 +222,7 @@ TEST_F(StackOperationsTest, PHPCanPushProcessorStatusOntoStack)
     cpu.PS = result;
     // start - inline a little program
     memory[startOffset] = CPU::INS_PHP;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 3;
 
@@ -248,7 +248,7 @@ TEST_F(StackOperationsTest, PLPCanPullAValueFromStackIntoTheProcessorStatus)
     memory[0x01FF] = result;
     // start - inline a little program
     memory[startOffset] = CPU::INS_PLP;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
     constexpr uint32_t EXPECTED_CYCLES = 4;
 

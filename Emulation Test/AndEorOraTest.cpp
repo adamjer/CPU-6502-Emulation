@@ -24,8 +24,10 @@ uint8_t AndEorOraTest::logicalOperation(uint8_t A, uint8_t B, LogicalOperation o
 void AndEorOraTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation operation)
 {
     // given:
-    uint8_t A = 0xcc, B = 0x84;
-    cpu.A = 0xCC;
+    const uint8_t A = 0xCC, B = 0x84;
+    cpu.A = A;
+    cpu.Flags.Z = true;
+    cpu.Flags.N = false;
     switch (operation)
     {
     case LogicalOperation::And:
@@ -43,8 +45,10 @@ void AndEorOraTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation op
     memory[0xFFFD] = B;
 
     // when:
+    constexpr int32_t EXPECTED_CYCLES = 2;
     CPU copy = cpu;
-    int32_t cyclesUsed = cpu.Execute(2, memory);
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
     EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
@@ -54,195 +58,315 @@ void AndEorOraTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation op
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void AndEorOraTest::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLogicalOperationZeroPage(LogicalOperation operation)
 {
     // given:
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint16_t address = 0x42;
+    cpu.A = A;
     cpu.Flags.Z = cpu.Flags.N = true;
-    int address = 0x42;
-    // start - inline a little program
-    memory[0xFFFC] = opcodeToTest;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
     memory[0xFFFD] = address;
-    memory[address] = 0x37;
-    // end -inline a little program
+    memory[address] = B;
 
     // when:
     CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 3;
+
     int32_t cyclesUsed = cpu.Execute(3, memory);
 
     // then:
-    EXPECT_EQ(cpu.*RegisterToTest, 0x37);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, 3);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void AndEorOraTest::TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
 {
     // given:
-    cpu.Flags.Z = cpu.Flags.N = true;
-    cpu.X = 5;
-    int address = 0x42;
-    // start - inline a little program
-    memory[0xFFFC] = opcodeToTest;
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint16_t address = 0x42;
+    cpu.A = A;
+    cpu.X = 0x05;
+    cpu.Flags.Z = cpu.Flags.N = true;    
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
     memory[0xFFFD] = address;
-    memory[address + cpu.X] = 0x37;
-    // end -inline a little program
+    memory[address + cpu.X] = B;
 
     // when:
     CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 4;
+
     int32_t cyclesUsed = cpu.Execute(4, memory);
 
     // then:
-    EXPECT_EQ(cpu.*RegisterToTest, 0x37);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void AndEorOraTest::TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLogicalOperationZeroPageY(LogicalOperation operation)
 {
     // given:
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint16_t address = 0x42;
+    cpu.A = A;
+    cpu.Y = 0x05;
     cpu.Flags.Z = cpu.Flags.N = true;
-    cpu.Y = 5;
-    int address = 0x42;
-    // start - inline a little program
-    memory[0xFFFC] = opcodeToTest;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
     memory[0xFFFD] = address;
-    memory[address + cpu.Y] = 0x37;
-    // end -inline a little program
+    memory[address + cpu.Y] = B;
 
     // when:
     CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 4;
+
     int32_t cyclesUsed = cpu.Execute(4, memory);
 
     // then:
-    EXPECT_EQ(cpu.*RegisterToTest, 0x37);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void AndEorOraTest::TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLogicalOperationAbsolute(LogicalOperation operation)
 {
     // given:
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x44, 0x80 };
+    cpu.A = A;
     cpu.Flags.Z = cpu.Flags.N = true;
-    // start - inline a little program
-    memory[0xFFFC] = opcodeToTest;
-    memory[0xFFFD] = 0x80;
-    memory[0xFFFE] = 0x44;
-    memory[0x4480] = 0x37;
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 4;
-    CPU copy = cpu;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
+    memory[0xFFFD] = address[1];
+    memory[0xFFFE] = address[0];
+    memory[(address[0] << 8) + address[1]] = B;
 
     // when:    
+    CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 4;
+
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.*RegisterToTest, 0x37);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void AndEorOraTest::TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
 {
     // given:
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x44, 0x80 };
+    cpu.A = A;
+    cpu.X = 0x05;
     cpu.Flags.Z = cpu.Flags.N = true;
-    cpu.X = 0x1;
-    // start - inline a little program
-    memory[0xFFFC] = opcodeToTest;
-    memory[0xFFFD] = 0x80;
-    memory[0xFFFE] = 0x44;
-    memory[0x4481] = 0x37; //0x4480 + 0x01
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 4;
-    CPU copy = cpu;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
+    memory[0xFFFD] = address[1];
+    memory[0xFFFE] = address[0];
+    memory[(address[0] << 8) + address[1] + cpu.X] = B;
 
     // when:    
+    CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 4;
+
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.*RegisterToTest, 0x37);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void AndEorOraTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation operation)
 {
     // given:
-    cpu.Flags.Z = cpu.Flags.N = true;
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x44, 0x02 };
+    cpu.A = A;
     cpu.X = 0xFF;
-    // start - inline a little program
-    memory[0xFFFC] = opcodeToTest;
-    memory[0xFFFD] = 0x02;
-    memory[0xFFFE] = 0x44;
-    memory[0x4501] = 0x37; //0x4402+0xFF crosses page boundary
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 5;
-    CPU copy = cpu;
+    cpu.Flags.Z = cpu.Flags.N = true;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
+    memory[0xFFFD] = address[1];
+    memory[0xFFFE] = address[0];
+    memory[(address[0] << 8) + address[1] + cpu.X] = B;
 
     // when:    
+    CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 5;
+
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.*RegisterToTest, 0x37);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void AndEorOraTest::TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
 {
     // given:
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x44, 0x80 };
+    cpu.A = A;
+    cpu.Y = 0x05;
     cpu.Flags.Z = cpu.Flags.N = true;
-    cpu.Y = 0x1;
-    // start - inline a little program
-    memory[0xFFFC] = opcodeToTest;
-    memory[0xFFFD] = 0x80;
-    memory[0xFFFE] = 0x44;
-    memory[0x4481] = 0x37; //0x4480 + 0x01
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 4;
-    CPU copy = cpu;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
+    memory[0xFFFD] = address[1];
+    memory[0xFFFE] = address[0];
+    memory[(address[0] << 8) + address[1] + cpu.Y] = B;
 
     // when:    
+    CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 4;
+
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.*RegisterToTest, 0x37);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-void AndEorOraTest::TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+void AndEorOraTest::TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation operation)
 {
     // given:
-    cpu.Flags.Z = cpu.Flags.N = true;
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x44, 0x80 };
+    cpu.A = A;
     cpu.Y = 0xFF;
-    // start - inline a little program
-    memory[0xFFFC] = opcodeToTest;
-    memory[0xFFFD] = 0x02;
-    memory[0xFFFE] = 0x44;
-    memory[0x4501] = 0x37; //0x4402+0xFF crosses page boundary
-    // end -inline a little program
-    constexpr int32_t EXPECTED_CYCLES = 5;
-    CPU copy = cpu;
+    cpu.Flags.Z = cpu.Flags.N = true;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
+    memory[0xFFFD] = address[1];
+    memory[0xFFFE] = address[0];
+    memory[(address[0] << 8) + address[1] + cpu.Y] = B;
 
-    // when:    
+    // when:   
+    CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 5;
+
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.*RegisterToTest, 0x37);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
@@ -264,101 +388,223 @@ TEST_F(AndEorOraTest, TestLogicalEOROperationOnARegisterImmediate)
     this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::Eor);
 }
 
-TEST_F(AndEorOraTest, LDAZeroPageCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, TestLogicalANDOperationZeroPag)
 {
-    TestLoadRegisterZeroPage(CPU::INS_LDA_ZP, &CPU::A);
+    TestLogicalOperationZeroPage(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, LDAImmediateCanAffectZeroFlag)
+TEST_F(AndEorOraTest, TestLogicalOROperationZeroPag)
 {
+    TestLogicalOperationZeroPage(LogicalOperation::Or);
+}
 
+TEST_F(AndEorOraTest, TestLogicalEOROperationZeroPag)
+{
+    TestLogicalOperationZeroPage(LogicalOperation::Eor);
+}
+
+TEST_F(AndEorOraTest, TestLogicalOperationEORImmediateCanAffectZeroFlag)
+{
     // given:
-    cpu.A = 0x44;
-    // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_IM;
-    memory[0xFFFD] = 0x0;
-    // end -inline a little program
+    uint8_t A = 0xCC;
+    cpu.A = A;
+    memory[0xFFFC] = CPU::INS_EOR_IM;
+    memory[0xFFFD] = A;
+
+    //when:
+    constexpr int32_t EXPECTED_CYCLES = 2;
     CPU copy = cpu;
 
-    // when:    
-    int32_t cyclesUsed = cpu.Execute(2, memory);
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
-    // then:
+    //then:
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, A, LogicalOperation::Eor));
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, LDAZeroPageXCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, TestLogicalANDOperationZeroPageX)
 {
-    TestLoadRegisterZeroPageX(CPU::INS_LDA_ZPX, &CPU::A);
+    TestLogicalOperationZeroPageX(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps)
+TEST_F(AndEorOraTest, TestLogicalOROperationZeroPageX)
 {
+    TestLogicalOperationZeroPageX(LogicalOperation::Or);
+}
 
+TEST_F(AndEorOraTest, TestLogicalEOROperationZeroPageX)
+{
+    TestLogicalOperationZeroPageX(LogicalOperation::Eor);
+}
+
+void AndEorOraTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation operation)
+{
     // given:
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint16_t address = 0x80, wrapper = 0x100;
+    cpu.A = A;
     cpu.X = 0xFF;
-    int address = 0x80, wrapper = 0x100;
+    cpu.Flags.Z = cpu.Flags.N = true;
     // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_ZPX;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
     memory[0xFFFD] = address;
-    memory[(address + cpu.X) % wrapper] = 0x37;
-    // end -inline a little program
+    memory[(address + cpu.X) % wrapper] = B;
+    // end - inline a little program
 
     // when:
     CPU copy = cpu;
-    int32_t cyclesUsed = cpu.Execute(4, memory);
+    constexpr uint32_t EXPECTED_CYCLES = 4;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, 0x37);
+    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, LDAAbsoluteCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, TestLogicalANDOperationZeroPageXWhenItWraps)
 {
-    TestLoadRegisterAbsolute(CPU::INS_LDA_ABS, &CPU::A);
+    this->TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, LDAAbsoluteXCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, TestLogicalOROperationZeroPageXWhenItWraps)
 {
-    TestLoadRegisterAbsoluteX(CPU::INS_LDA_ABSX, &CPU::A);
+    this->TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
+TEST_F(AndEorOraTest, TestLogicalEOROperationZeroPageXWhenItWraps)
 {
-    TestLoadRegisterAbsoluteXWhenCrossingBoundary(CPU::INS_LDA_ABSX, &CPU::A);
+    this->TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation::Eor);
 }
 
-TEST_F(AndEorOraTest, LDAAbsoluteYCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, TestLogicalANDOperationAbsolute)
 {
-    TestLoadRegisterAbsoluteY(CPU::INS_LDA_ABSY, &CPU::A);
+    TestLogicalOperationAbsolute(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
+TEST_F(AndEorOraTest, TestLogicalOROperationAbsolute)
 {
-    TestLoadRegisterAbsoluteYWhenCrossingBoundary(CPU::INS_LDX_ABSY, &CPU::X);
+    TestLogicalOperationAbsolute(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, LDAIndirectXCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, TestLogicalEOROperationAbsolute)
 {
+    TestLogicalOperationAbsolute(LogicalOperation::Eor);
+}
 
+TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteX)
+{
+    TestLogicalOperationAbsoluteX(LogicalOperation::And);
+}
+
+TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteX)
+{
+    TestLogicalOperationAbsoluteX(LogicalOperation::Or);
+}
+
+TEST_F(AndEorOraTest, TestLogicalEOROperationAbsoluteX)
+{
+    TestLogicalOperationAbsoluteX(LogicalOperation::Eor);
+}
+
+TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteXWhenCrossingBoundary)
+{
+    TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation::And);
+}
+
+TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteXWhenCrossingBoundary)
+{
+    TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation::Or);
+}
+
+TEST_F(AndEorOraTest, TestLogicalEOROperationAbsoluteXWhenCrossingBoundary)
+{
+    TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation::Eor);
+}
+
+TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteY)
+{
+    TestLogicalOperationAbsoluteY(LogicalOperation::And);
+}
+
+TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteY)
+{
+    TestLogicalOperationAbsoluteY(LogicalOperation::Or);
+}
+
+TEST_F(AndEorOraTest, TestLogicalEOROperationAbsoluteY)
+{
+    TestLogicalOperationAbsoluteY(LogicalOperation::Eor);
+}
+
+TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteYWhenCrossingBoundary)
+{
+    TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation::And);
+}
+
+TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteYWhenCrossingBoundary)
+{
+    TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation::Or);
+}
+
+TEST_F(AndEorOraTest, TestLogicalEorOperationAbsoluteYWhenCrossingBoundary)
+{
+    TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation::Eor);
+}
+
+void AndEorOraTest::TestLogicalOperationIndirectX(LogicalOperation operation)
+{
     // given:
-    cpu.X = 0x04;
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x80, 0x00 };
+    const uint16_t offset = 0x02;
+    cpu.A = A;
+    cpu.X = 0x05;
+    cpu.Flags.Z = cpu.Flags.N = true;
     // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_INDX;
-    memory[0xFFFD] = 0x02;
-    memory[0x0006] = 0x00; //0x2 + 0x4
-    memory[0x0007] = 0x80;
-    memory[0x8000] = 0x37;
-    // end -inline a little program
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
+    memory[0xFFFD] = offset;
+    memory[offset + cpu.X] = address[1];
+    memory[offset + cpu.X + 1] = address[0];
+    memory[(address[0] << 8) + address[1]] = B;
+    // end - inline a little program
+
+    // when:   
     constexpr int32_t EXPECTED_CYCLES = 6;
     CPU copy = cpu;
 
-    // when:    
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
@@ -369,22 +615,55 @@ TEST_F(AndEorOraTest, LDAIndirectXCanLoadAValueIntoTheARegister)
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, LDAIndirectYCanLoadAValueIntoTheARegister)
+TEST_F(AndEorOraTest, TestLogicalANDOperationIndirectX)
 {
+    this->TestLogicalOperationIndirectX(LogicalOperation::And);
+}
 
+TEST_F(AndEorOraTest, TestLogicalOROperationIndirectX)
+{
+    this->TestLogicalOperationIndirectX(LogicalOperation::Or);
+}
+
+TEST_F(AndEorOraTest, TestLogicalEOROperationIndirectX)
+{
+    this->TestLogicalOperationIndirectX(LogicalOperation::Eor);
+}
+
+void AndEorOraTest::TestLogicalOperationIndirectY(LogicalOperation operation)
+{
     // given:
-    cpu.Y = 0x04;
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x80, 0x00 };
+    const uint16_t offset = 0x02;
+    cpu.A = A;
+    cpu.Y = 0x05;
+    cpu.Flags.Z = cpu.Flags.N = true;
     // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_INDY;
-    memory[0xFFFD] = 0x02;
-    memory[0x0002] = 0x00; //0x2 + 0x4
-    memory[0x0003] = 0x80;
-    memory[0x8004] = 0x37; //0x8000 + 0x4
-    // end -inline a little program
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
+    memory[0xFFFD] = offset;
+    memory[offset] = address[1]; //0x2 + 0x4
+    memory[offset + 1] = address[0];
+    memory[(address[0] << 8) + address[1] + cpu.Y] = 0x37; //0x8000 + 0x4
+    // end - inline a little program
+
+    // when:    
     constexpr int32_t EXPECTED_CYCLES = 5;
     CPU copy = cpu;
 
-    // when:    
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
@@ -395,22 +674,50 @@ TEST_F(AndEorOraTest, LDAIndirectYCanLoadAValueIntoTheARegister)
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
+TEST_F(AndEorOraTest, TestLogicalANDOperationIndirectY)
 {
+    this->TestLogicalOperationIndirectY(LogicalOperation::And);
+}
 
+TEST_F(AndEorOraTest, TestLogicalOROperationIndirectY)
+{
+    this->TestLogicalOperationIndirectY(LogicalOperation::Or);
+}
+
+TEST_F(AndEorOraTest, TestLogicalEOROperationIndirectY)
+{
+    this->TestLogicalOperationIndirectY(LogicalOperation::Eor);
+}
+
+void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPageBoundary(LogicalOperation operation)
+{
     // given:
     cpu.Y = 0xFF;
     // start - inline a little program
-    memory[0xFFFC] = CPU::INS_LDA_INDY;
+    switch (operation)
+    {
+    case LogicalOperation::And:
+        memory[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case LogicalOperation::Or:
+        memory[0xFFFC] = CPU::INS_OR_IM;
+        break;
+    case LogicalOperation::Eor:
+        memory[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    default:
+        break;
+    }
     memory[0xFFFD] = 0x02;
     memory[0x0002] = 0x02;
     memory[0x0003] = 0x80;
     memory[0x8101] = 0x37; //0x8002 + 0xFF
-    // end -inline a little program
+    // end - inline a little program
+
+    // when:    
     constexpr int32_t EXPECTED_CYCLES = 6;
     CPU copy = cpu;
 
-    // when:    
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
@@ -419,5 +726,10 @@ TEST_F(AndEorOraTest, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesPage
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
     VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+}
+
+TEST_F(AndEorOraTest, TestLogicalOperationIndirectYWhenItCrossesPageBoundary)
+{
+
 }
 

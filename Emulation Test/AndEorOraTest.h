@@ -16,13 +16,17 @@ public:
     uint8_t logicalOperation(uint8_t, uint8_t, LogicalOperation);
 
     virtual void TestLogicalOperationOnARegisterImmediate(LogicalOperation);
-    virtual void TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
-    virtual void TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
-    virtual void TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
-    virtual void TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
-    virtual void TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
-    virtual void TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
-    virtual void TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
-    virtual void TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest);
+    virtual void TestLogicalOperationZeroPage(LogicalOperation);
+    virtual void TestLogicalOperationZeroPageX(LogicalOperation);
+    virtual void TestLogicalOperationZeroPageY(LogicalOperation);
+    virtual void TestLogicalOperationAbsolute(LogicalOperation);
+    virtual void TestLogicalOperationAbsoluteX(LogicalOperation);
+    virtual void TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation);
+    virtual void TestLogicalOperationAbsoluteY(LogicalOperation);
+    virtual void TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation);
+    virtual void TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation);
+    virtual void TestLogicalOperationIndirectX(LogicalOperation);
+    virtual void TestLogicalOperationIndirectY(LogicalOperation);
+    virtual void TestLogicalOperationIndirectYWhenItCrossesPageBoundary(LogicalOperation)
 };
 

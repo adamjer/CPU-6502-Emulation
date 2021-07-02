@@ -23,13 +23,13 @@ void LoadRegisterTest::TestLoadRegisterImmediate(uint8_t opcodeToTest, uint8_t C
 void LoadRegisterTest::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
-    cpu.Flags.Z = cpu.Flags.N = true;
+
     int address = 0x42;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
     memory[0xFFFD] = address;
     memory[address] = 0x37;
-    // end -inline a little program
+    // end - inline a little program
 
     // when:
     CPU copy = cpu;
@@ -53,7 +53,7 @@ void LoadRegisterTest::TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t C
     memory[0xFFFC] = opcodeToTest;
     memory[0xFFFD] = address;
     memory[address + cpu.X] = 0x37;
-    // end -inline a little program
+    // end - inline a little program
 
     // when:
     CPU copy = cpu;
@@ -77,7 +77,7 @@ void LoadRegisterTest::TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t C
     memory[0xFFFC] = opcodeToTest;
     memory[0xFFFD] = address;
     memory[address + cpu.Y] = 0x37;
-    // end -inline a little program
+    // end - inline a little program
 
     // when:
     CPU copy = cpu;
@@ -100,7 +100,7 @@ void LoadRegisterTest::TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CP
     memory[0xFFFD] = 0x80;
     memory[0xFFFE] = 0x44;
     memory[0x4480] = 0x37;
-    // end -inline a little program
+    // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 4;
     CPU copy = cpu;
 
@@ -125,7 +125,7 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t C
     memory[0xFFFD] = 0x80;
     memory[0xFFFE] = 0x44;
     memory[0x4481] = 0x37; //0x4480 + 0x01
-    // end -inline a little program
+    // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 4;
     CPU copy = cpu;
 
@@ -150,7 +150,7 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opc
     memory[0xFFFD] = 0x02;
     memory[0xFFFE] = 0x44;
     memory[0x4501] = 0x37; //0x4402+0xFF crosses page boundary
-    // end -inline a little program
+    // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 5;
     CPU copy = cpu;
 
@@ -175,7 +175,7 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t C
     memory[0xFFFD] = 0x80;
     memory[0xFFFE] = 0x44;
     memory[0x4481] = 0x37; //0x4480 + 0x01
-    // end -inline a little program
+    // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 4;
     CPU copy = cpu;
 
@@ -200,7 +200,7 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opc
     memory[0xFFFD] = 0x02;
     memory[0xFFFE] = 0x44;
     memory[0x4501] = 0x37; //0x4402+0xFF crosses page boundary
-    // end -inline a little program
+    // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 5;
     CPU copy = cpu;
 
@@ -233,7 +233,7 @@ TEST_F(LoadRegisterTest, CPUCanExecuteMoreCyclesThanRequestedIfRequiredByTheInst
     // start - inline a little program
     memory[0xFFFC] = CPU::INS_LDA_IM;
     memory[0xFFFD] = 0x84;
-    // end -inline a little program
+    // end - inline a little program
     constexpr int32_t NUM_CYCLES = 1;
 
     // when:
@@ -281,7 +281,7 @@ TEST_F(LoadRegisterTest, LDAImmediateCanAffectZeroFlag)
     // start - inline a little program
     memory[0xFFFC] = CPU::INS_LDA_IM;
     memory[0xFFFD] = 0x0;
-    // end -inline a little program
+    // end - inline a little program
     CPU copy = cpu;
 
     // when:    
@@ -318,7 +318,7 @@ TEST_F(LoadRegisterTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps)
     memory[0xFFFC] = CPU::INS_LDA_ZPX;
     memory[0xFFFD] = address;
     memory[(address + cpu.X) % wrapper] = 0x37;
-    // end -inline a little program
+    // end - inline a little program
 
     // when:
     CPU copy = cpu;
@@ -398,7 +398,7 @@ TEST_F(LoadRegisterTest, LDAIndirectXCanLoadAValueIntoTheARegister)
     memory[0x0006] = 0x00; //0x2 + 0x4
     memory[0x0007] = 0x80;
     memory[0x8000] = 0x37;
-    // end -inline a little program
+    // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 6;
     CPU copy = cpu;
 
@@ -424,7 +424,7 @@ TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegister)
     memory[0x0002] = 0x00; //0x2 + 0x4
     memory[0x0003] = 0x80;
     memory[0x8004] = 0x37; //0x8000 + 0x4
-    // end -inline a little program
+    // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 5;
     CPU copy = cpu;
 
@@ -450,7 +450,7 @@ TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesP
     memory[0x0002] = 0x02;
     memory[0x0003] = 0x80;
     memory[0x8101] = 0x37; //0x8002 + 0xFF
-    // end -inline a little program
+    // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 6;
     CPU copy = cpu;
 
