@@ -22,6 +22,15 @@ static void VerifyUnmodifiedStatusFlagsFromStorageRegister(const CPU& cpu, const
     EXPECT_EQ(cpu.Flags.Z, copy.Flags.Z);
 }
 
+static void VerfifyUnmodifiedFlagsFromLogicalOpInstruction(const CPU& cpu, const CPU& copy)
+{
+    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
+    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
+    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
+    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
+    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
+}
+
 
 class BaseTest : public testing::Test
 {

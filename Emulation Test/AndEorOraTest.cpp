@@ -34,7 +34,7 @@ void AndEorOraTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation op
         memory[0xFFFC] = CPU::INS_AND_IM;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_IM;
         break;
     case LogicalOperation::Eor:
         memory[0xFFFC] = CPU::INS_EOR_IM;
@@ -55,7 +55,7 @@ void AndEorOraTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation op
     EXPECT_EQ(cyclesUsed, 2);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 void AndEorOraTest::TestLogicalOperationZeroPage(LogicalOperation operation)
@@ -68,13 +68,13 @@ void AndEorOraTest::TestLogicalOperationZeroPage(LogicalOperation operation)
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_ZP;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_ZP;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_ZP;
         break;
     default:
         break;
@@ -93,7 +93,7 @@ void AndEorOraTest::TestLogicalOperationZeroPage(LogicalOperation operation)
     EXPECT_EQ(cyclesUsed, 3);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 void AndEorOraTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
@@ -107,13 +107,13 @@ void AndEorOraTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_ZPX;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_ZPX;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_ZPX;
         break;
     default:
         break;
@@ -132,7 +132,7 @@ void AndEorOraTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 void AndEorOraTest::TestLogicalOperationZeroPageY(LogicalOperation operation)
@@ -149,7 +149,7 @@ void AndEorOraTest::TestLogicalOperationZeroPageY(LogicalOperation operation)
         memory[0xFFFC] = CPU::INS_AND_IM;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_IM;
         break;
     case LogicalOperation::Eor:
         memory[0xFFFC] = CPU::INS_EOR_IM;
@@ -171,7 +171,7 @@ void AndEorOraTest::TestLogicalOperationZeroPageY(LogicalOperation operation)
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 void AndEorOraTest::TestLogicalOperationAbsolute(LogicalOperation operation)
@@ -184,13 +184,13 @@ void AndEorOraTest::TestLogicalOperationAbsolute(LogicalOperation operation)
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_ABS;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_ABS;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_ABS;
         break;
     default:
         break;
@@ -210,7 +210,7 @@ void AndEorOraTest::TestLogicalOperationAbsolute(LogicalOperation operation)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 void AndEorOraTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
@@ -224,13 +224,13 @@ void AndEorOraTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_ABSX;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_ABSX;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_ABSX;
         break;
     default:
         break;
@@ -250,10 +250,10 @@ void AndEorOraTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation operation)
+void AndEorOraTest::TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -264,13 +264,13 @@ void AndEorOraTest::TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOpe
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_ABSX;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_ABSX;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_ABSX;
         break;
     default:
         break;
@@ -290,7 +290,7 @@ void AndEorOraTest::TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOpe
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 void AndEorOraTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
@@ -304,13 +304,13 @@ void AndEorOraTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_ABSY;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_ABSY;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_ABSY;
         break;
     default:
         break;
@@ -330,10 +330,10 @@ void AndEorOraTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation operation)
+void AndEorOraTest::TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -344,13 +344,13 @@ void AndEorOraTest::TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOpe
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_ABSY;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_ABSY;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_ABSY;
         break;
     default:
         break;
@@ -370,7 +370,7 @@ void AndEorOraTest::TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOpe
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 TEST_F(AndEorOraTest, TestLogicalANDOperationOnARegisterImmediate)
@@ -422,7 +422,7 @@ TEST_F(AndEorOraTest, TestLogicalOperationEORImmediateCanAffectZeroFlag)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 TEST_F(AndEorOraTest, TestLogicalANDOperationZeroPageX)
@@ -452,13 +452,13 @@ void AndEorOraTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation op
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_ZPX;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_ZPX;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_ZPX;
         break;
     default:
         break;
@@ -478,7 +478,7 @@ void AndEorOraTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation op
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 TEST_F(AndEorOraTest, TestLogicalANDOperationZeroPageXWhenItWraps)
@@ -528,17 +528,17 @@ TEST_F(AndEorOraTest, TestLogicalEOROperationAbsoluteX)
 
 TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteXWhenCrossingBoundary)
 {
-    TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation::And);
+    TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation::And);
 }
 
 TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteXWhenCrossingBoundary)
 {
-    TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation::Or);
+    TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation::Or);
 }
 
 TEST_F(AndEorOraTest, TestLogicalEOROperationAbsoluteXWhenCrossingBoundary)
 {
-    TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation::Eor);
+    TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation::Eor);
 }
 
 TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteY)
@@ -558,17 +558,17 @@ TEST_F(AndEorOraTest, TestLogicalEOROperationAbsoluteY)
 
 TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteYWhenCrossingBoundary)
 {
-    TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation::And);
+    TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation::And);
 }
 
 TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteYWhenCrossingBoundary)
 {
-    TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation::Or);
+    TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation::Or);
 }
 
 TEST_F(AndEorOraTest, TestLogicalEorOperationAbsoluteYWhenCrossingBoundary)
 {
-    TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation::Eor);
+    TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation::Eor);
 }
 
 void AndEorOraTest::TestLogicalOperationIndirectX(LogicalOperation operation)
@@ -584,13 +584,13 @@ void AndEorOraTest::TestLogicalOperationIndirectX(LogicalOperation operation)
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_INDX;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_INDX;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_INDX;
         break;
     default:
         break;
@@ -612,7 +612,7 @@ void AndEorOraTest::TestLogicalOperationIndirectX(LogicalOperation operation)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 TEST_F(AndEorOraTest, TestLogicalANDOperationIndirectX)
@@ -643,13 +643,13 @@ void AndEorOraTest::TestLogicalOperationIndirectY(LogicalOperation operation)
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_INDY;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_INDY;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_INDY;
         break;
     default:
         break;
@@ -671,7 +671,7 @@ void AndEorOraTest::TestLogicalOperationIndirectY(LogicalOperation operation)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
 TEST_F(AndEorOraTest, TestLogicalANDOperationIndirectY)
@@ -689,7 +689,7 @@ TEST_F(AndEorOraTest, TestLogicalEOROperationIndirectY)
     this->TestLogicalOperationIndirectY(LogicalOperation::Eor);
 }
 
-void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPageBoundary(LogicalOperation operation)
+void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPage(LogicalOperation operation)
 {
     // given:
     cpu.Y = 0xFF;
@@ -697,13 +697,13 @@ void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPageBoundary(Logic
     switch (operation)
     {
     case LogicalOperation::And:
-        memory[0xFFFC] = CPU::INS_AND_IM;
+        memory[0xFFFC] = CPU::INS_AND_INDY;
         break;
     case LogicalOperation::Or:
-        memory[0xFFFC] = CPU::INS_OR_IM;
+        memory[0xFFFC] = CPU::INS_ORA_INDY;
         break;
     case LogicalOperation::Eor:
-        memory[0xFFFC] = CPU::INS_EOR_IM;
+        memory[0xFFFC] = CPU::INS_EOR_INDY;
         break;
     default:
         break;
@@ -725,10 +725,10 @@ void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPageBoundary(Logic
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOperationIndirectYWhenItCrossesPageBoundary)
+TEST_F(AndEorOraTest, TestLogicalOperationIndirectYWhenItCrossesPage)
 {
 
 }

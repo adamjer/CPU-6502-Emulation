@@ -21,12 +21,12 @@ public:
     virtual void TestLogicalOperationZeroPageY(LogicalOperation);
     virtual void TestLogicalOperationAbsolute(LogicalOperation);
     virtual void TestLogicalOperationAbsoluteX(LogicalOperation);
-    virtual void TestLogicalOperationAbsoluteXWhenCrossingBoundary(LogicalOperation);
+    virtual void TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation);
     virtual void TestLogicalOperationAbsoluteY(LogicalOperation);
-    virtual void TestLogicalOperationAbsoluteYWhenCrossingBoundary(LogicalOperation);
+    virtual void TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation);
     virtual void TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation);
     virtual void TestLogicalOperationIndirectX(LogicalOperation);
     virtual void TestLogicalOperationIndirectY(LogicalOperation);
-    virtual void TestLogicalOperationIndirectYWhenItCrossesPageBoundary(LogicalOperation)
+    virtual void TestLogicalOperationIndirectYWhenItCrossesPage(LogicalOperation);
 };
 
