@@ -207,6 +207,27 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 		this->LoadRegisterSetStatus(registry);
 	};
 
+	//And the A register with the value from memory address
+	auto And = [&cycles, &memory, this](uint16_t address)
+	{
+		this->A &= this->ReadByte(cycles, address, memory);
+		this->LoadRegisterSetStatus(this->A);
+	};
+
+	//Or the A register with the value from memory address
+	auto Ora = [&cycles, &memory, this](uint16_t address)
+	{
+		this->A |= this->ReadByte(cycles, address, memory);
+		this->LoadRegisterSetStatus(this->A);
+	};
+
+	//Eor the A register with the value from memory address
+	auto Eor = [&cycles, &memory, this](uint16_t address)
+	{
+		this->A ^= this->ReadByte(cycles, address, memory);
+		this->LoadRegisterSetStatus(this->A);
+	};
+
 	const uint32_t cyclesRequested = cycles;
 	while (cycles > 0)
 	{
@@ -435,6 +456,126 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			{
 				this->PS = this->PopByteFromStack(cycles, memory);
 				// StatusFlags not affected
+			} break;
+			case INS_AND_IM:
+			{
+				this->A &= this->FetchByte(cycles, memory);
+				this->LoadRegisterSetStatus(A);
+			} break;
+			case INS_ORA_IM:
+			{
+				this->A |= this->FetchByte(cycles, memory);
+				this->LoadRegisterSetStatus(A);
+			} break;
+			case INS_EOR_IM:
+			{
+				this->A ^= this->FetchByte(cycles, memory);
+				this->LoadRegisterSetStatus(A);
+			} break;
+			case INS_AND_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				And(address);
+			} break;
+			case INS_ORA_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				Ora(address);
+			} break;
+			case INS_EOR_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				Eor(address);
+			} break;
+			case INS_AND_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				And(address);
+			} break;
+			case INS_ORA_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				Ora(address);
+			} break;
+			case INS_EOR_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				Eor(address);
+			} break;
+			case INS_AND_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				And(address);
+			} break;
+			case INS_ORA_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				Ora(address);
+			} break;
+			case INS_EOR_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				Eor(address);
+			} break;
+			case INS_AND_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory);
+				And(address);
+			} break;
+			case INS_ORA_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory);
+				Ora(address);
+			} break;
+			case INS_EOR_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory);
+				Eor(address);
+			} break;
+			case INS_AND_ABSY:
+			{
+				uint16_t address = this->AddressAbsoluteY(cycles, memory);
+				And(address);
+			} break;
+			case INS_ORA_ABSY:
+			{
+				uint16_t address = this->AddressAbsoluteY(cycles, memory);
+				Ora(address);
+			} break;
+			case INS_EOR_ABSY:
+			{
+				uint16_t address = this->AddressAbsoluteY(cycles, memory);
+				Eor(address);
+			} break;
+			case INS_AND_INDX:
+			{
+				uint16_t address = this->AddressIndirectX(cycles, memory);
+				And(address);
+			} break;
+			case INS_ORA_INDX:
+			{
+				uint16_t address = this->AddressIndirectX(cycles, memory);
+				Ora(address);
+			} break;
+			case INS_EOR_INDX:
+			{
+				uint16_t address = this->AddressIndirectX(cycles, memory);
+				Eor(address);
+			} break;
+			case INS_AND_INDY:
+			{
+				uint16_t address = this->AddressIndirectY(cycles, memory);
+				And(address);
+			} break;
+			case INS_ORA_INDY:
+			{
+				uint16_t address = this->AddressIndirectY(cycles, memory);
+				Ora(address);
+			} break;
+			case INS_EOR_INDY:
+			{
+				uint16_t address = this->AddressIndirectY(cycles, memory);
+				Eor(address);
 			} break;
 			default:
 			{

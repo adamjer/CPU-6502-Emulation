@@ -51,10 +51,12 @@ void AndEorOraTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation op
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A, expectedResult);
     EXPECT_EQ(cyclesUsed, 2);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_TRUE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -89,10 +91,12 @@ void AndEorOraTest::TestLogicalOperationZeroPage(LogicalOperation operation)
     int32_t cyclesUsed = cpu.Execute(3, memory);
 
     // then:
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
     EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, 3);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -128,10 +132,12 @@ void AndEorOraTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
     int32_t cyclesUsed = cpu.Execute(4, memory);
 
     // then:
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
     EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -206,10 +212,12 @@ void AndEorOraTest::TestLogicalOperationAbsolute(LogicalOperation operation)
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A, expectedResult);
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -246,10 +254,12 @@ void AndEorOraTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A, expectedResult);
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -286,10 +296,12 @@ void AndEorOraTest::TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperati
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A, expectedResult);
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -326,10 +338,12 @@ void AndEorOraTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A, expectedResult);
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -366,10 +380,12 @@ void AndEorOraTest::TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperati
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A, expectedResult);
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -474,10 +490,12 @@ void AndEorOraTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation op
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, this->logicalOperation(A, B, operation));
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A, expectedResult);
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -608,10 +626,12 @@ void AndEorOraTest::TestLogicalOperationIndirectX(LogicalOperation operation)
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, 0x37);
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A, expectedResult);
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -655,9 +675,9 @@ void AndEorOraTest::TestLogicalOperationIndirectY(LogicalOperation operation)
         break;
     }
     memory[0xFFFD] = offset;
-    memory[offset] = address[1]; //0x2 + 0x4
+    memory[offset] = address[1];
     memory[offset + 1] = address[0];
-    memory[(address[0] << 8) + address[1] + cpu.Y] = 0x37; //0x8000 + 0x4
+    memory[(address[0] << 8) + address[1] + cpu.Y] = B; //0x8000 + 0x5
     // end - inline a little program
 
     // when:    
@@ -667,10 +687,12 @@ void AndEorOraTest::TestLogicalOperationIndirectY(LogicalOperation operation)
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, 0x37);
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A, expectedResult);
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
@@ -692,7 +714,12 @@ TEST_F(AndEorOraTest, TestLogicalEOROperationIndirectY)
 void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPage(LogicalOperation operation)
 {
     // given:
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x80, 0x02 };
+    const uint16_t offset = 0x02;
+    cpu.A = A;
     cpu.Y = 0xFF;
+    cpu.Flags.Z = cpu.Flags.N = true;
     // start - inline a little program
     switch (operation)
     {
@@ -708,10 +735,10 @@ void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPage(LogicalOperat
     default:
         break;
     }
-    memory[0xFFFD] = 0x02;
-    memory[0x0002] = 0x02;
-    memory[0x0003] = 0x80;
-    memory[0x8101] = 0x37; //0x8002 + 0xFF
+    memory[0xFFFD] = offset;
+    memory[offset] = address[1];
+    memory[offset + 1] = address[0];
+    memory[(address[0] << 8) + address[1] + cpu.Y] = B; //0x8002 + 0xFF
     // end - inline a little program
 
     // when:    
@@ -721,15 +748,27 @@ void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPage(LogicalOperat
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
 
     // then:
-    EXPECT_EQ(cpu.A, 0x37);
+    const uint8_t expectedResult = this->logicalOperation(A, B, operation);
+    const bool isNegative = (expectedResult & 0b10000000) > 0;
+    EXPECT_EQ(cpu.A,expectedResult);
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
-    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_EQ(cpu.Flags.N, isNegative);
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOperationIndirectYWhenItCrossesPage)
+TEST_F(AndEorOraTest, TestLogicalANDOperationIndirectYWhenItCrossesPage)
 {
+    this->TestLogicalOperationIndirectY(LogicalOperation::And);
+}
 
+TEST_F(AndEorOraTest, TestLogicalORAOperationIndirectYWhenItCrossesPage)
+{
+    this->TestLogicalOperationIndirectY(LogicalOperation::Or);
+}
+
+TEST_F(AndEorOraTest, TestLogicalEOROperationIndirectYWhenItCrossesPage)
+{
+    this->TestLogicalOperationIndirectY(LogicalOperation::Eor);
 }
 
