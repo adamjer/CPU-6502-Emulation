@@ -14,7 +14,7 @@
     <ClCompile Include="StackOperationsTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="AndEorOraTest.cpp">
+    <ClCompile Include="LogicalOperationsTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="BaseTest.cpp">
@@ -34,7 +34,7 @@
     <ClInclude Include="StackOperationsTest.h">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="AndEorOraTest.h">
+    <ClInclude Include="LogicalOperationsTest.h">
       <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="BaseTest.h">

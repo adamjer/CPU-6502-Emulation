@@ -101,6 +101,9 @@ public:
         INS_EOR_ABSY = 0x59,
         INS_EOR_INDX = 0x41,
         INS_EOR_INDY = 0x51,
+
+        INS_BIT_ZP = 0x24,
+        INS_BIT_ABS = 0x2C,
         
         INS_NOP = 0x70;
 

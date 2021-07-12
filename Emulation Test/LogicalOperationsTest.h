@@ -10,7 +10,7 @@ enum class LogicalOperation
     Eor
 };
 
-class AndEorOraTest : public BaseTest
+class LogicalOperationsTest : public BaseTest
 {
 public:
     uint8_t logicalOperation(uint8_t, uint8_t, LogicalOperation);

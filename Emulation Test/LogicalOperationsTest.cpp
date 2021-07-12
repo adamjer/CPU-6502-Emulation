@@ -1,7 +1,7 @@
-#include "AndEorOraTest.h"
+#include "LogicalOperationsTest.h"
 
 
-uint8_t AndEorOraTest::logicalOperation(uint8_t A, uint8_t B, LogicalOperation operation)
+uint8_t LogicalOperationsTest::logicalOperation(uint8_t A, uint8_t B, LogicalOperation operation)
 {
     switch (operation)
     {
@@ -21,7 +21,7 @@ uint8_t AndEorOraTest::logicalOperation(uint8_t A, uint8_t B, LogicalOperation o
     throw - 2; //invalid Logical Operation
 }
 
-void AndEorOraTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -60,7 +60,7 @@ void AndEorOraTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation op
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationZeroPage(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationZeroPage(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -100,7 +100,7 @@ void AndEorOraTest::TestLogicalOperationZeroPage(LogicalOperation operation)
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -141,7 +141,7 @@ void AndEorOraTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationZeroPageY(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationZeroPageY(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -180,7 +180,7 @@ void AndEorOraTest::TestLogicalOperationZeroPageY(LogicalOperation operation)
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationAbsolute(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationAbsolute(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -221,7 +221,7 @@ void AndEorOraTest::TestLogicalOperationAbsolute(LogicalOperation operation)
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -263,7 +263,7 @@ void AndEorOraTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -305,7 +305,7 @@ void AndEorOraTest::TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperati
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -347,7 +347,7 @@ void AndEorOraTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-void AndEorOraTest::TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -389,37 +389,37 @@ void AndEorOraTest::TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperati
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationOnARegisterImmediate)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationOnARegisterImmediate)
 {
     this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationOnARegisterImmediate)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationOnARegisterImmediate)
 {
     this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationOnARegisterImmediate)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationOnARegisterImmediate)
 {
     this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::Eor);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationZeroPag)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationZeroPag)
 {
     TestLogicalOperationZeroPage(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationZeroPag)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationZeroPag)
 {
     TestLogicalOperationZeroPage(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationZeroPag)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationZeroPag)
 {
     TestLogicalOperationZeroPage(LogicalOperation::Eor);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOperationEORImmediateCanAffectZeroFlag)
+TEST_F(LogicalOperationsTest, TestLogicalOperationEORImmediateCanAffectZeroFlag)
 {
     // given:
     uint8_t A = 0xCC;
@@ -441,22 +441,22 @@ TEST_F(AndEorOraTest, TestLogicalOperationEORImmediateCanAffectZeroFlag)
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationZeroPageX)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationZeroPageX)
 {
     TestLogicalOperationZeroPageX(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationZeroPageX)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationZeroPageX)
 {
     TestLogicalOperationZeroPageX(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationZeroPageX)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationZeroPageX)
 {
     TestLogicalOperationZeroPageX(LogicalOperation::Eor);
 }
 
-void AndEorOraTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -499,97 +499,97 @@ void AndEorOraTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation op
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationZeroPageXWhenItWraps)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationZeroPageXWhenItWraps)
 {
     this->TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationZeroPageXWhenItWraps)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationZeroPageXWhenItWraps)
 {
     this->TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationZeroPageXWhenItWraps)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationZeroPageXWhenItWraps)
 {
     this->TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation::Eor);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationAbsolute)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsolute)
 {
     TestLogicalOperationAbsolute(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationAbsolute)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsolute)
 {
     TestLogicalOperationAbsolute(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationAbsolute)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationAbsolute)
 {
     TestLogicalOperationAbsolute(LogicalOperation::Eor);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteX)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsoluteX)
 {
     TestLogicalOperationAbsoluteX(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteX)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsoluteX)
 {
     TestLogicalOperationAbsoluteX(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationAbsoluteX)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationAbsoluteX)
 {
     TestLogicalOperationAbsoluteX(LogicalOperation::Eor);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteXWhenCrossingBoundary)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsoluteXWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteXWhenCrossingBoundary)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsoluteXWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationAbsoluteXWhenCrossingBoundary)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationAbsoluteXWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation::Eor);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteY)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsoluteY)
 {
     TestLogicalOperationAbsoluteY(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteY)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsoluteY)
 {
     TestLogicalOperationAbsoluteY(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationAbsoluteY)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationAbsoluteY)
 {
     TestLogicalOperationAbsoluteY(LogicalOperation::Eor);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationAbsoluteYWhenCrossingBoundary)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsoluteYWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationAbsoluteYWhenCrossingBoundary)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsoluteYWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEorOperationAbsoluteYWhenCrossingBoundary)
+TEST_F(LogicalOperationsTest, TestLogicalEorOperationAbsoluteYWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation::Eor);
 }
 
-void AndEorOraTest::TestLogicalOperationIndirectX(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationIndirectX(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -635,22 +635,22 @@ void AndEorOraTest::TestLogicalOperationIndirectX(LogicalOperation operation)
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationIndirectX)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationIndirectX)
 {
     this->TestLogicalOperationIndirectX(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationIndirectX)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationIndirectX)
 {
     this->TestLogicalOperationIndirectX(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationIndirectX)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationIndirectX)
 {
     this->TestLogicalOperationIndirectX(LogicalOperation::Eor);
 }
 
-void AndEorOraTest::TestLogicalOperationIndirectY(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationIndirectY(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -696,22 +696,22 @@ void AndEorOraTest::TestLogicalOperationIndirectY(LogicalOperation operation)
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationIndirectY)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationIndirectY)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalOROperationIndirectY)
+TEST_F(LogicalOperationsTest, TestLogicalOROperationIndirectY)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationIndirectY)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationIndirectY)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::Eor);
 }
 
-void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPage(LogicalOperation operation)
+void LogicalOperationsTest::TestLogicalOperationIndirectYWhenItCrossesPage(LogicalOperation operation)
 {
     // given:
     const uint8_t A = 0xCC, B = 0x84;
@@ -757,18 +757,246 @@ void AndEorOraTest::TestLogicalOperationIndirectYWhenItCrossesPage(LogicalOperat
     VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
 }
 
-TEST_F(AndEorOraTest, TestLogicalANDOperationIndirectYWhenItCrossesPage)
+TEST_F(LogicalOperationsTest, TestLogicalANDOperationIndirectYWhenItCrossesPage)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::And);
 }
 
-TEST_F(AndEorOraTest, TestLogicalORAOperationIndirectYWhenItCrossesPage)
+TEST_F(LogicalOperationsTest, TestLogicalORAOperationIndirectYWhenItCrossesPage)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::Or);
 }
 
-TEST_F(AndEorOraTest, TestLogicalEOROperationIndirectYWhenItCrossesPage)
+TEST_F(LogicalOperationsTest, TestLogicalEOROperationIndirectYWhenItCrossesPage)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::Eor);
+}
+
+TEST_F(LogicalOperationsTest, TestBitZeroPage)
+{
+    // given:
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x80, 0x02 };
+    const uint16_t offset = 0x02;
+    cpu.A = A;
+    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = true;
+    // start - inline a little program
+    memory[0xFFFC] = CPU::INS_BIT_ZP;
+    memory[0xFFFD] = offset;
+    memory[offset] = A;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 3;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, A);
+    EXPECT_FALSE(cpu.Flags.Z);
+    EXPECT_TRUE(cpu.Flags.N);
+    EXPECT_TRUE(cpu.Flags.V);
+}
+
+TEST_F(LogicalOperationsTest, TestBitZeroPageResultZero)
+{
+    // given:
+    const uint8_t A = 0xCC, B = 0x33;
+    const uint8_t address[2] = { 0x80, 0x02 };
+    const uint16_t offset = 0x02;
+    cpu.A = A;
+    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    // start - inline a little program
+    memory[0xFFFC] = CPU::INS_BIT_ZP;
+    memory[0xFFFD] = offset;
+    memory[offset] = B;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 3;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, A);
+    EXPECT_TRUE(cpu.Flags.Z);
+    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_FALSE(cpu.Flags.V);
+}
+
+TEST_F(LogicalOperationsTest, TestBitZeroPageResultZeroBits6And7Zero)
+{
+    // given:
+    const uint8_t A = 0xCC, B = 0x33;
+    const uint8_t address[2] = { 0x80, 0x02 };
+    const uint16_t offset = 0x02;
+    cpu.A = B;
+    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    // start - inline a little program
+    memory[0xFFFC] = CPU::INS_BIT_ZP;
+    memory[0xFFFD] = offset;
+    memory[offset] = A;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 3;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, B);
+    EXPECT_TRUE(cpu.Flags.Z);
+    EXPECT_TRUE(cpu.Flags.N);
+    EXPECT_TRUE(cpu.Flags.V);
+}
+
+TEST_F(LogicalOperationsTest, TestBitZeroPageResultZeroBits6And7Mixed)
+{
+    // given:
+    const uint8_t A = 0b01000000, B = 0x33;
+    const uint8_t address[2] = { 0x80, 0x02 };
+    const uint16_t offset = 0x02;
+    cpu.A = B;
+    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    // start - inline a little program
+    memory[0xFFFC] = CPU::INS_BIT_ZP;
+    memory[0xFFFD] = offset;
+    memory[offset] = A;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 3;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, B);
+    EXPECT_TRUE(cpu.Flags.Z);
+    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_TRUE(cpu.Flags.V);
+}
+
+TEST_F(LogicalOperationsTest, TestBitAbsolute)
+{
+    // given:
+    const uint8_t A = 0xCC, B = 0x84;
+    const uint8_t address[2] = { 0x80, 0x02 };
+    const uint16_t offset = 0x02;
+    cpu.A = A;
+    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = true;
+    // start - inline a little program
+    memory[0xFFFC] = CPU::INS_BIT_ABS;
+    memory[0xFFFD] = address[1];
+    memory[0xFFFE] = address[0];
+    memory[(address[0] << 8) + address[1]] = A;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 4;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, A);
+    EXPECT_FALSE(cpu.Flags.Z);
+    EXPECT_TRUE(cpu.Flags.N);
+    EXPECT_TRUE(cpu.Flags.V);
+}
+
+TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZero)
+{
+    // given:
+    const uint8_t A = 0xCC, B = 0x33;
+    const uint8_t address[2] = { 0x80, 0x02 };
+    const uint16_t offset = 0x02;
+    cpu.A = A;
+    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    // start - inline a little program
+    memory[0xFFFC] = CPU::INS_BIT_ABS;
+    memory[0xFFFD] = address[1];
+    memory[0xFFFE] = address[0];
+    memory[(address[0] << 8) + address[1]] = B;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 4;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, A);
+    EXPECT_TRUE(cpu.Flags.Z);
+    EXPECT_FALSE(cpu.Flags.N);
+    EXPECT_FALSE(cpu.Flags.V);
+}
+
+TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZeroBits6And7Zero)
+{
+    // given:
+    const uint8_t A = 0xCC, B = 0x33;
+    const uint8_t address[2] = { 0x80, 0x02 };
+    const uint16_t offset = 0x02;
+    cpu.A = B;
+    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    // start - inline a little program
+    memory[0xFFFC] = CPU::INS_BIT_ABS;
+    memory[0xFFFD] = address[1];
+    memory[0xFFFE] = address[0];
+    memory[(address[0] << 8) + address[1]] = A;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 4;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, B);
+    EXPECT_TRUE(cpu.Flags.Z);
+    EXPECT_TRUE(cpu.Flags.N);
+    EXPECT_TRUE(cpu.Flags.V);
+}
+
+TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZeroBits6And7Mixed)
+{
+    // given:
+    const uint8_t A = 0b10000000, B = 0x33;
+    const uint8_t address[2] = { 0x80, 0x02 };
+    const uint16_t offset = 0x02;
+    cpu.A = B;
+    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    // start - inline a little program
+    memory[0xFFFC] = CPU::INS_BIT_ABS;
+    memory[0xFFFD] = address[1];
+    memory[0xFFFE] = address[0];
+    memory[(address[0] << 8) + address[1]] = A;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 4;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, B);
+    EXPECT_TRUE(cpu.Flags.Z);
+    EXPECT_TRUE(cpu.Flags.N);
+    EXPECT_FALSE(cpu.Flags.V);
 }
 

@@ -577,6 +577,20 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint16_t address = this->AddressIndirectY(cycles, memory);
 				Eor(address);
 			} break;
+			case INS_BIT_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				this->Flags.Z = !(this->A & value);
+				this->PS |= (value & 0b11000000);
+			} break;
+			case INS_BIT_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				this->Flags.Z = !(this->A & value);
+				this->PS |= (value & 0b11000000);
+			} break;
 			default:
 			{
 				printf("Instruction not handled!\n");
