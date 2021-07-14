@@ -57,7 +57,7 @@ void LogicalOperationsTest::TestLogicalOperationOnARegisterImmediate(LogicalOper
     EXPECT_EQ(cyclesUsed, 2);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 void LogicalOperationsTest::TestLogicalOperationZeroPage(LogicalOperation operation)
@@ -97,7 +97,7 @@ void LogicalOperationsTest::TestLogicalOperationZeroPage(LogicalOperation operat
     EXPECT_EQ(cyclesUsed, 3);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 void LogicalOperationsTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
@@ -138,7 +138,7 @@ void LogicalOperationsTest::TestLogicalOperationZeroPageX(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 void LogicalOperationsTest::TestLogicalOperationZeroPageY(LogicalOperation operation)
@@ -177,7 +177,7 @@ void LogicalOperationsTest::TestLogicalOperationZeroPageY(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 void LogicalOperationsTest::TestLogicalOperationAbsolute(LogicalOperation operation)
@@ -218,7 +218,7 @@ void LogicalOperationsTest::TestLogicalOperationAbsolute(LogicalOperation operat
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 void LogicalOperationsTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
@@ -260,7 +260,7 @@ void LogicalOperationsTest::TestLogicalOperationAbsoluteX(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 void LogicalOperationsTest::TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation operation)
@@ -302,7 +302,7 @@ void LogicalOperationsTest::TestLogicalOperationAbsoluteXWhenCrossingPage(Logica
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 void LogicalOperationsTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
@@ -344,7 +344,7 @@ void LogicalOperationsTest::TestLogicalOperationAbsoluteY(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 void LogicalOperationsTest::TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation operation)
@@ -386,7 +386,7 @@ void LogicalOperationsTest::TestLogicalOperationAbsoluteYWhenCrossingPage(Logica
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationOnARegisterImmediate)
@@ -438,7 +438,7 @@ TEST_F(LogicalOperationsTest, TestLogicalOperationEORImmediateCanAffectZeroFlag)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationZeroPageX)
@@ -496,7 +496,7 @@ void LogicalOperationsTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOper
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationZeroPageXWhenItWraps)
@@ -632,7 +632,7 @@ void LogicalOperationsTest::TestLogicalOperationIndirectX(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationIndirectX)
@@ -693,7 +693,7 @@ void LogicalOperationsTest::TestLogicalOperationIndirectY(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationIndirectY)
@@ -754,7 +754,7 @@ void LogicalOperationsTest::TestLogicalOperationIndirectYWhenItCrossesPage(Logic
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOpInstruction(cpu, copy);
+    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
 }
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationIndirectYWhenItCrossesPage)
@@ -779,7 +779,8 @@ TEST_F(LogicalOperationsTest, TestBitZeroPage)
     const uint8_t address[2] = { 0x80, 0x02 };
     const uint16_t offset = 0x02;
     cpu.A = A;
-    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = true;
+    cpu.Flags.N = cpu.Flags.V = false;
+    cpu.Flags.Z = true;
     // start - inline a little program
     memory[0xFFFC] = CPU::INS_BIT_ZP;
     memory[0xFFFD] = offset;
@@ -807,7 +808,8 @@ TEST_F(LogicalOperationsTest, TestBitZeroPageResultZero)
     const uint8_t address[2] = { 0x80, 0x02 };
     const uint16_t offset = 0x02;
     cpu.A = A;
-    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    cpu.Flags.N = cpu.Flags.V = true;
+    cpu.Flags.Z = false;
     // start - inline a little program
     memory[0xFFFC] = CPU::INS_BIT_ZP;
     memory[0xFFFD] = offset;
@@ -863,7 +865,8 @@ TEST_F(LogicalOperationsTest, TestBitZeroPageResultZeroBits6And7Mixed)
     const uint8_t address[2] = { 0x80, 0x02 };
     const uint16_t offset = 0x02;
     cpu.A = B;
-    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    cpu.Flags.Z = cpu.Flags.V = false;
+    cpu.Flags.N = true;
     // start - inline a little program
     memory[0xFFFC] = CPU::INS_BIT_ZP;
     memory[0xFFFD] = offset;
@@ -891,7 +894,8 @@ TEST_F(LogicalOperationsTest, TestBitAbsolute)
     const uint8_t address[2] = { 0x80, 0x02 };
     const uint16_t offset = 0x02;
     cpu.A = A;
-    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = true;
+    cpu.Flags.N = cpu.Flags.V = false;
+    cpu.Flags.Z = true;
     // start - inline a little program
     memory[0xFFFC] = CPU::INS_BIT_ABS;
     memory[0xFFFD] = address[1];
@@ -920,7 +924,8 @@ TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZero)
     const uint8_t address[2] = { 0x80, 0x02 };
     const uint16_t offset = 0x02;
     cpu.A = A;
-    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    cpu.Flags.N = cpu.Flags.V = true;
+    cpu.Flags.Z = false;
     // start - inline a little program
     memory[0xFFFC] = CPU::INS_BIT_ABS;
     memory[0xFFFD] = address[1];
@@ -978,7 +983,8 @@ TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZeroBits6And7Mixed)
     const uint8_t address[2] = { 0x80, 0x02 };
     const uint16_t offset = 0x02;
     cpu.A = B;
-    cpu.Flags.Z = cpu.Flags.N = cpu.Flags.V = false;
+    cpu.Flags.Z = cpu.Flags.N = false;
+    cpu.Flags.V = true;
     // start - inline a little program
     memory[0xFFFC] = CPU::INS_BIT_ABS;
     memory[0xFFFD] = address[1];

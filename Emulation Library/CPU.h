@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdio>
+#include <vector>
 #include "Memory.h"
 #include "StatusFlags.h"
 
@@ -18,6 +19,11 @@ public:
         uint8_t PS;
     };
     
+    // process status bits
+    static constexpr uint8_t
+        NegativeFlagBit = 0b10000000,
+        OverflowFlagBit = 0b01000000;
+
     // opcodes
     static constexpr uint8_t
         //LDA
@@ -111,8 +117,11 @@ public:
     void ResetRegisters();
     void Reset(Memory&);
     void Reset(const uint16_t&, Memory&);
+    void Reset(const uint16_t&);
     int32_t Execute(int32_t, Memory&);
     void LoadRegisterSetStatus( uint8_t);
+    uint16_t LoadProgram(const std::vector<uint8_t>&, Memory&);
+    void PrintStatus() const;
 
     uint8_t FetchByte(int32_t&, const Memory&);   
     uint16_t FetchWord(int32_t&, const Memory&);

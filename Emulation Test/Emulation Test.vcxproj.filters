@@ -2,43 +2,49 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="test.cpp" />
-    <ClCompile Include="LoadRegisterTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="StoreRegisterTest.cpp">
-      <Filter>Tests</Filter>
+    <ClCompile Include="BaseTest.cpp">
+      <Filter>Tests\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="JumpsAndCallsTest.cpp">
-      <Filter>Tests</Filter>
+      <Filter>Tests\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StackOperationsTest.cpp">
-      <Filter>Tests</Filter>
+    <ClCompile Include="LoadRegisterTest.cpp">
+      <Filter>Tests\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LogicalOperationsTest.cpp">
-      <Filter>Tests</Filter>
+      <Filter>Tests\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BaseTest.cpp">
-      <Filter>Tests</Filter>
+    <ClCompile Include="StackOperationsTest.cpp">
+      <Filter>Tests\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreRegisterTest.cpp">
+      <Filter>Tests\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadProgramTest.cpp">
+      <Filter>Tests\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LoadRegisterTest.h">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="StoreRegisterTest.h">
-      <Filter>Tests</Filter>
+    <ClInclude Include="BaseTest.h">
+      <Filter>Tests\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="JumpsAndCallsTest.h">
-      <Filter>Tests</Filter>
+      <Filter>Tests\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StackOperationsTest.h">
-      <Filter>Tests</Filter>
+    <ClInclude Include="LoadRegisterTest.h">
+      <Filter>Tests\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LogicalOperationsTest.h">
-      <Filter>Tests</Filter>
+      <Filter>Tests\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BaseTest.h">
-      <Filter>Tests</Filter>
+    <ClInclude Include="StackOperationsTest.h">
+      <Filter>Tests\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StoreRegisterTest.h">
+      <Filter>Tests\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadProgramTest.h">
+      <Filter>Tests\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +53,12 @@
   <ItemGroup>
     <Filter Include="Tests">
       <UniqueIdentifier>{a6ed55b9-d9b0-4ffe-bd4b-3bf471d905c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Source Files">
+      <UniqueIdentifier>{376d1424-ae4f-4ba1-804c-3eb8b13b698c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Header Files">
+      <UniqueIdentifier>{eafd932f-65d9-43b7-a2be-6d011ab2f7ee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

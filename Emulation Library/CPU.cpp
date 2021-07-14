@@ -25,6 +25,14 @@ void CPU::Reset(const uint16_t& offset, Memory& memory)
 	memory.Initialize();
 }
 
+void CPU::Reset(const uint16_t& offset)
+{
+	this->PC = offset;
+	this->SP = 0xFF;
+	this->Flags.Reset();
+	this->ResetRegisters();
+}
+
 uint8_t CPU::FetchByte(int32_t& cycles, const Memory& memory)
 {
 	uint8_t data = memory[PC++];
@@ -582,14 +590,16 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint16_t address = this->AddressZeroPage(cycles, memory);
 				uint8_t value = this->ReadByte(cycles, address, memory);
 				this->Flags.Z = !(this->A & value);
-				this->PS |= (value & 0b11000000);
+				this->Flags.N = (value & NegativeFlagBit) != 0;
+				this->Flags.V = (value & OverflowFlagBit) != 0;
 			} break;
 			case INS_BIT_ABS:
 			{
 				uint16_t address = this->AddressAbsolute(cycles, memory);
 				uint8_t value = this->ReadByte(cycles, address, memory);
 				this->Flags.Z = !(this->A & value);
-				this->PS |= (value & 0b11000000);
+				this->Flags.N = (value & NegativeFlagBit) != 0;
+				this->Flags.V = (value & OverflowFlagBit) != 0;
 			} break;
 			default:
 			{
@@ -612,3 +622,25 @@ void CPU::LoadRegisterSetStatus(uint8_t reg)
 	Flags.N = (reg & 0b10000000) > 0;
 }
 
+uint16_t CPU::LoadProgram(const std::vector<uint8_t>& program, Memory& memory)
+{
+	uint16_t loadAddress = 0;
+	if (program.size() > 2)
+	{
+		uint32_t index = 0;
+		loadAddress = program[index++] + (program[index++] << 8);
+
+		for (uint16_t i = loadAddress; i < loadAddress + program.size() - 2; i++)
+		{
+			memory[i] = program[index++];
+		}
+	}
+	return loadAddress;
+}
+
+void CPU::PrintStatus() const
+{
+	printf("A: %d X: %d Y: %d\n", this->A, this->X, this->Y);
+	printf("PC: %d SP: %d\n", this->PC, this->SP);
+	printf("PS: %\n", this->PC, this->SP);
+}
