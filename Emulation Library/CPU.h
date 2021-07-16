@@ -118,6 +118,20 @@ public:
         INS_TXA = 0x8A,
         INS_TYA = 0x98,
 
+        //Increment and decrement
+        INS_INX = 0xE8,
+        INS_INY = 0xC8,
+        INS_DEX = 0xCA,
+        INS_DEY = 0x88,
+        INS_DEC_ZP = 0xC6,
+        INS_DEC_ZPX = 0xD6,
+        INS_DEC_ABS = 0xCE,
+        INS_DEC_ABSX = 0xDE,
+        INS_INC_ZP = 0xE6,
+        INS_INC_ZPX = 0xF6,
+        INS_INC_ABS = 0xEE,
+        INS_INC_ABSX = 0xFE,
+
         INS_NOP = 0x70;
 
 
@@ -126,8 +140,7 @@ public:
     void Reset(const uint16_t&, Memory&);
     void Reset(const uint16_t&);
     int32_t Execute(int32_t, Memory&);
-    void LoadRegisterSetStatus( uint8_t);
-    void TransferRegisterSetStatus(uint8_t);
+    void SetNegativeAndZeroFlags( uint8_t);
     uint16_t LoadProgram(const std::vector<uint8_t>&, Memory&);
     void PrintStatus() const;
 

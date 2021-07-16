@@ -212,28 +212,28 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	auto LoadRegister = [&cycles, &memory, this](uint16_t address, uint8_t& registry)
 	{
 		registry = this->ReadByte(cycles, address, memory);
-		this->LoadRegisterSetStatus(registry);
+		this->SetNegativeAndZeroFlags(registry);
 	};
 
 	//And the A register with the value from memory address
 	auto And = [&cycles, &memory, this](uint16_t address)
 	{
 		this->A &= this->ReadByte(cycles, address, memory);
-		this->LoadRegisterSetStatus(this->A);
+		this->SetNegativeAndZeroFlags(this->A);
 	};
 
 	//Or the A register with the value from memory address
 	auto Ora = [&cycles, &memory, this](uint16_t address)
 	{
 		this->A |= this->ReadByte(cycles, address, memory);
-		this->LoadRegisterSetStatus(this->A);
+		this->SetNegativeAndZeroFlags(this->A);
 	};
 
 	//Eor the A register with the value from memory address
 	auto Eor = [&cycles, &memory, this](uint16_t address)
 	{
 		this->A ^= this->ReadByte(cycles, address, memory);
-		this->LoadRegisterSetStatus(this->A);
+		this->SetNegativeAndZeroFlags(this->A);
 	};
 
 	const uint32_t cyclesRequested = cycles;
@@ -246,17 +246,17 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			case INS_LDA_IM:
 			{
 				this->A = this->FetchByte(cycles, memory);
-				this->LoadRegisterSetStatus(this->A);
+				this->SetNegativeAndZeroFlags(this->A);
 			} break;
 			case INS_LDX_IM:
 			{
 				this->X = this->FetchByte(cycles, memory);
-				this->LoadRegisterSetStatus(this->X);
+				this->SetNegativeAndZeroFlags(this->X);
 			} break;
 			case INS_LDY_IM:
 			{
 				this->Y = this->FetchByte(cycles, memory);
-				this->LoadRegisterSetStatus(this->Y);
+				this->SetNegativeAndZeroFlags(this->Y);
 			} break;
 			case INS_LDA_ZP:
 			{
@@ -436,7 +436,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			case INS_TSX:
 			{
 				this->X = this->SP;
-				this->LoadRegisterSetStatus(this->X);
+				this->SetNegativeAndZeroFlags(this->X);
 				--cycles;
 			} break;
 			case INS_TXS:
@@ -453,7 +453,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			case INS_PLA:
 			{
 				this->A = this->PopByteFromStack(cycles, memory);
-				this->LoadRegisterSetStatus(this->A);
+				this->SetNegativeAndZeroFlags(this->A);
 			} break;
 			case INS_PHP:
 			{
@@ -468,17 +468,17 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			case INS_AND_IM:
 			{
 				this->A &= this->FetchByte(cycles, memory);
-				this->LoadRegisterSetStatus(A);
+				this->SetNegativeAndZeroFlags(A);
 			} break;
 			case INS_ORA_IM:
 			{
 				this->A |= this->FetchByte(cycles, memory);
-				this->LoadRegisterSetStatus(A);
+				this->SetNegativeAndZeroFlags(A);
 			} break;
 			case INS_EOR_IM:
 			{
 				this->A ^= this->FetchByte(cycles, memory);
-				this->LoadRegisterSetStatus(A);
+				this->SetNegativeAndZeroFlags(A);
 			} break;
 			case INS_AND_ZP:
 			{
@@ -605,25 +605,121 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			{
 				this->X = this->A;
 				--cycles;
-				this->TransferRegisterSetStatus(this->X);
+				this->SetNegativeAndZeroFlags(this->X);
 			} break;
 			case INS_TAY:
 			{
 				this->Y = this->A;
 				--cycles;
-				this->TransferRegisterSetStatus(this->Y);
+				this->SetNegativeAndZeroFlags(this->Y);
 			} break;
 			case INS_TXA:
 			{
 				this->A = this->X;
 				--cycles;
-				this->TransferRegisterSetStatus(this->A);
+				this->SetNegativeAndZeroFlags(this->A);
 			} break;
 			case INS_TYA:
 			{
 				this->A = this->Y;
 				--cycles;
-				this->TransferRegisterSetStatus(this->A);
+				this->SetNegativeAndZeroFlags(this->A);
+			} break;
+			case INS_INX:
+			{
+				++this->X;
+				--cycles;
+				this->SetNegativeAndZeroFlags(this->X);
+			} break;
+			case INS_INY:
+			{
+				++this->Y;
+				--cycles;
+				this->SetNegativeAndZeroFlags(this->Y);
+			} break;
+			case INS_DEX:
+			{
+				--this->X;
+				--cycles;
+				this->SetNegativeAndZeroFlags(this->X);
+			} break;
+			case INS_DEY:
+			{
+				--this->Y;
+				--cycles;
+				this->SetNegativeAndZeroFlags(this->Y);
+			} break;
+			case INS_DEC_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				--value;
+				--cycles;
+				this->WriteByte(cycles, address, memory, value);
+				this->SetNegativeAndZeroFlags(value);
+			} break;
+			case INS_DEC_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				--value;
+				--cycles;
+				this->WriteByte(cycles, address, memory, value);
+				this->SetNegativeAndZeroFlags(value);
+			} break;
+			case INS_DEC_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				--value;
+				--cycles;
+				this->WriteByte(cycles, address, memory, value);
+				this->SetNegativeAndZeroFlags(value);
+			} break;
+			case INS_DEC_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory, true);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				--value;
+				--cycles;
+				this->WriteByte(cycles, address, memory, value);
+				this->SetNegativeAndZeroFlags(value);
+			} break;
+			case INS_INC_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				++value;
+				--cycles;
+				this->WriteByte(cycles, address, memory, value);
+				this->SetNegativeAndZeroFlags(value);
+			} break;
+			case INS_INC_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				++value;
+				--cycles;
+				this->WriteByte(cycles, address, memory, value);
+				this->SetNegativeAndZeroFlags(value);
+			} break;
+			case INS_INC_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				++value;
+				--cycles;
+				this->WriteByte(cycles, address, memory, value);
+				this->SetNegativeAndZeroFlags(value);
+			} break;
+			case INS_INC_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory, true);
+				uint8_t value = this->ReadByte(cycles, address, memory);
+				++value;
+				--cycles;
+				this->WriteByte(cycles, address, memory, value);
+				this->SetNegativeAndZeroFlags(value);
 			} break;
 			default:
 			{
@@ -637,22 +733,11 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	return cyclesUsed;
 }
 
-/**  Sets the correct Process status after a load register instruction
-*    LDA, LDX, LDY
-*    @reg A,X or Y Register*/
-void CPU::LoadRegisterSetStatus(uint8_t reg)
-{
-	Flags.Z = (reg == 0);
-	Flags.N = (reg & 0b10000000) > 0;
-}
 
-/**  Sets the correct Process status after a load register instruction
-*    LDA, LDX, LDY
-*    @reg A,X or Y Register*/
-void CPU::TransferRegisterSetStatus(uint8_t reg)
+void CPU::SetNegativeAndZeroFlags(uint8_t value)
 {
-	Flags.Z = (reg == 0);
-	Flags.N = (reg & 0b10000000) > 0;
+	Flags.Z = (value == 0);
+	Flags.N = (value & 0b10000000) > 0;
 }
 
 uint16_t CPU::LoadProgram(const std::vector<uint8_t>& program, Memory& memory)

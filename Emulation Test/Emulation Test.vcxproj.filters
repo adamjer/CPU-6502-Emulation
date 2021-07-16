@@ -26,6 +26,9 @@
     <ClCompile Include="TransferRegisterTest.cpp">
       <Filter>Tests\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IncrementDecrementTest.cpp">
+      <Filter>Tests\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseTest.h">
@@ -50,6 +53,9 @@
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TransferRegisterTest.h">
+      <Filter>Tests\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IncrementDecrementTest.h">
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
