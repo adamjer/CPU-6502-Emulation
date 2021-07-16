@@ -40,6 +40,7 @@
     <ClInclude Include="LoadRegisterTest.h" />
     <ClInclude Include="StackOperationsTest.h" />
     <ClInclude Include="StoreRegisterTest.h" />
+    <ClInclude Include="TransferRegisterTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LoadProgramTest.cpp" />
@@ -62,6 +63,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="TransferRegisterTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Emulation Library\Emulation Library.vcxproj">

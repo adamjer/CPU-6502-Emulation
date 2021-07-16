@@ -108,9 +108,16 @@ public:
         INS_EOR_INDX = 0x41,
         INS_EOR_INDY = 0x51,
 
+        //BIT
         INS_BIT_ZP = 0x24,
         INS_BIT_ABS = 0x2C,
-        
+
+        //Transfer Registers
+        INS_TAX = 0xAA,
+        INS_TAY = 0xA8,
+        INS_TXA = 0x8A,
+        INS_TYA = 0x98,
+
         INS_NOP = 0x70;
 
 
@@ -120,6 +127,7 @@ public:
     void Reset(const uint16_t&);
     int32_t Execute(int32_t, Memory&);
     void LoadRegisterSetStatus( uint8_t);
+    void TransferRegisterSetStatus(uint8_t);
     uint16_t LoadProgram(const std::vector<uint8_t>&, Memory&);
     void PrintStatus() const;
 

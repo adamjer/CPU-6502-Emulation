@@ -601,6 +601,30 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				this->Flags.N = (value & NegativeFlagBit) != 0;
 				this->Flags.V = (value & OverflowFlagBit) != 0;
 			} break;
+			case INS_TAX:
+			{
+				this->X = this->A;
+				--cycles;
+				this->TransferRegisterSetStatus(this->X);
+			} break;
+			case INS_TAY:
+			{
+				this->Y = this->A;
+				--cycles;
+				this->TransferRegisterSetStatus(this->Y);
+			} break;
+			case INS_TXA:
+			{
+				this->A = this->X;
+				--cycles;
+				this->TransferRegisterSetStatus(this->A);
+			} break;
+			case INS_TYA:
+			{
+				this->A = this->Y;
+				--cycles;
+				this->TransferRegisterSetStatus(this->A);
+			} break;
 			default:
 			{
 				printf("Instruction not handled!\n");
@@ -617,6 +641,15 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 *    LDA, LDX, LDY
 *    @reg A,X or Y Register*/
 void CPU::LoadRegisterSetStatus(uint8_t reg)
+{
+	Flags.Z = (reg == 0);
+	Flags.N = (reg & 0b10000000) > 0;
+}
+
+/**  Sets the correct Process status after a load register instruction
+*    LDA, LDX, LDY
+*    @reg A,X or Y Register*/
+void CPU::TransferRegisterSetStatus(uint8_t reg)
 {
 	Flags.Z = (reg == 0);
 	Flags.N = (reg & 0b10000000) > 0;
