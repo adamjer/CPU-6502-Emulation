@@ -32,7 +32,18 @@ const std::vector<uint8_t> p2 = {
         0x00, 0x10, 0xA9, 0x00, 0x85, 0x42, 0xE6,
         0x42, 0xA6, 0x42, 0xE8, 0x4C, 0x04, 0x10 };
 
-const static std::vector<std::vector<uint8_t>> programs = { p1, p2 };
+/**
+; p3
+* = $1000
+loop
+lda #0
+beq loop
+*/
+
+const std::vector<uint8_t> p3 = {
+        0x00, 0x10, 0xA9, 0x00, 0xF0, 0xFC };
+
+const static std::vector<std::vector<uint8_t>> programs = { p1, p2, p3 };
 
 class LoadProgramTest : public BaseTest
 {

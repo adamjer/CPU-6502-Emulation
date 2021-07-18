@@ -721,6 +721,22 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				this->WriteByte(cycles, address, memory, value);
 				this->SetNegativeAndZeroFlags(value);
 			} break;
+			case INS_BEQ:
+			{
+				uint8_t offset = this->FetchByte(cycles, memory);
+				if (this->Flags.Z)
+				{
+					uint16_t oldPC = this->PC;
+					this->PC += static_cast<int8_t>(offset);
+					--cycles;
+
+					const bool pageChanged = (this->PC >> 8) != (oldPC >> 8);
+					if (pageChanged)
+					{
+						cycles -= 2;
+					}
+				}
+			} break;
 			default:
 			{
 				printf("Instruction not handled!\n");

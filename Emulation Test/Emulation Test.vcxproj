@@ -33,6 +33,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClInclude Include="BranchesTest.h" />
     <ClInclude Include="IncrementDecrementTest.h" />
     <ClInclude Include="LoadProgramTest.h" />
     <ClInclude Include="LogicalOperationsTest.h" />
@@ -44,6 +45,7 @@
     <ClInclude Include="TransferRegisterTest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BranchesTest.cpp" />
     <ClCompile Include="IncrementDecrementTest.cpp" />
     <ClCompile Include="LoadProgramTest.cpp" />
     <ClCompile Include="LogicalOperationsTest.cpp" />

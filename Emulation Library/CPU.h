@@ -132,6 +132,8 @@ public:
         INS_INC_ABS = 0xEE,
         INS_INC_ABSX = 0xFE,
 
+        INS_BEQ = 0xF0,
+
         INS_NOP = 0x70;
 
 
