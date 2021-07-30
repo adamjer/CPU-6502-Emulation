@@ -132,6 +132,7 @@ public:
         INS_INC_ABS = 0xEE,
         INS_INC_ABSX = 0xFE,
 
+        //Branches
         INS_BEQ = 0xF0,
         INS_BNE = 0xD0,
         INS_BCS = 0xB0,
@@ -141,7 +142,17 @@ public:
         INS_BVC = 0x50,
         INS_BVS = 0x70,
 
-        INS_NOP = 0x70;
+        //Status flag changes
+        INS_CLC = 0x18,
+        INS_SEC = 0x38,
+        INS_CLD = 0xD8,
+        INS_SED = 0xF8,
+        INS_CLI = 0x58,
+        INS_SEI = 0x78,
+        INS_CLV = 0xB8,
+
+        //misc
+        INS_NOP = 0xEA;
 
 
     void ResetRegisters();

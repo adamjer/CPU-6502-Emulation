@@ -32,6 +32,9 @@
     <ClCompile Include="BranchesTest.cpp">
       <Filter>Tests\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StatusFlagChangeTest.cpp">
+      <Filter>Tests\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseTest.h">
@@ -62,6 +65,9 @@
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BranchesTest.h">
+      <Filter>Tests\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusFlagChangeTest.h">
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

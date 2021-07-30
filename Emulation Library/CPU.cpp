@@ -771,6 +771,45 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			{
 				BranchIf(this->Flags.V, false);
 			} break;
+			case INS_CLC:
+			{
+				this->Flags.C = false;
+				--cycles;
+			} break;
+			case INS_SEC:
+			{
+				this->Flags.C = true;
+				--cycles;
+			} break;
+			case INS_CLD:
+			{
+				this->Flags.D = false;
+				--cycles;
+			} break;
+			case INS_SED:
+			{
+				this->Flags.D = true;
+				--cycles;
+			} break;
+			case INS_CLI:
+			{
+				this->Flags.I = false;
+				--cycles;
+			} break;
+			case INS_SEI:
+			{
+				this->Flags.I = true;
+				--cycles;
+			} break;
+			case INS_CLV:
+			{
+				this->Flags.V = false;
+				--cycles;
+			} break;
+			case INS_NOP:
+			{
+				--cycles;
+			} break;
 			default:
 			{
 				printf("Instruction not handled!\n");
