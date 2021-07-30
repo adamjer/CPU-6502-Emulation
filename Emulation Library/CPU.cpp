@@ -236,6 +236,24 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 		this->SetNegativeAndZeroFlags(this->A);
 	};
 
+	// Conditional branch
+	auto BranchIf = [&cycles, &memory, this](bool test, bool expected)
+	{
+		uint8_t offset = this->FetchByte(cycles, memory);
+		if (test == expected)
+		{
+			uint16_t oldPC = this->PC;
+			this->PC += static_cast<int8_t>(offset);
+			--cycles;
+
+			const bool pageChanged = (this->PC >> 8) != (oldPC >> 8);
+			if (pageChanged)
+			{
+				cycles -= 2;
+			}
+		}
+	};
+
 	const uint32_t cyclesRequested = cycles;
 	while (cycles > 0)
 	{
@@ -723,19 +741,35 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			} break;
 			case INS_BEQ:
 			{
-				uint8_t offset = this->FetchByte(cycles, memory);
-				if (this->Flags.Z)
-				{
-					uint16_t oldPC = this->PC;
-					this->PC += static_cast<int8_t>(offset);
-					--cycles;
-
-					const bool pageChanged = (this->PC >> 8) != (oldPC >> 8);
-					if (pageChanged)
-					{
-						cycles -= 2;
-					}
-				}
+				BranchIf(this->Flags.Z, true);
+			} break;
+			case INS_BNE:
+			{
+				BranchIf(this->Flags.Z, false);
+			} break;
+			case INS_BCS:
+			{
+				BranchIf(this->Flags.C, true);
+			} break;
+			case INS_BCC:
+			{
+				BranchIf(this->Flags.C, false);
+			} break;
+			case INS_BMI:
+			{
+				BranchIf(this->Flags.N, true);
+			} break;
+			case INS_BPL:
+			{
+				BranchIf(this->Flags.N, false);
+			} break;
+			case INS_BVS:
+			{
+				BranchIf(this->Flags.V, true);
+			} break;
+			case INS_BVC:
+			{
+				BranchIf(this->Flags.V, false);
 			} break;
 			default:
 			{

@@ -75,6 +75,6 @@ TEST_F(BaseTest, TestLoadProgramLoopsInfintaly)
     for (int32_t clock = 1000; clock > 0;)
     {
         clock -= cpu.Execute(1, memory);
-        cpu.PrintStatus();
+        //cpu.PrintStatus();
     }
 }
