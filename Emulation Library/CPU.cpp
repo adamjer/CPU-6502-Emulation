@@ -1,9 +1,11 @@
 #include "CPU.h"
 
+
 void CPU::ResetRegisters()
 {
 	this->A = this->X = this->Y = 0;
 }
+
 
 void CPU::Reset(Memory& memory)
 {
@@ -15,6 +17,7 @@ void CPU::Reset(Memory& memory)
 	memory.Initialize();
 }
 
+
 void CPU::Reset(const uint16_t& offset, Memory& memory)
 {
 	this->PC = offset;
@@ -25,6 +28,7 @@ void CPU::Reset(const uint16_t& offset, Memory& memory)
 	memory.Initialize();
 }
 
+
 void CPU::Reset(const uint16_t& offset)
 {
 	this->PC = offset;
@@ -33,6 +37,7 @@ void CPU::Reset(const uint16_t& offset)
 	this->ResetRegisters();
 }
 
+
 uint8_t CPU::FetchByte(int32_t& cycles, const Memory& memory)
 {
 	uint8_t data = memory[PC++];
@@ -40,6 +45,7 @@ uint8_t CPU::FetchByte(int32_t& cycles, const Memory& memory)
 
 	return data;
 }
+
 
 uint16_t CPU::FetchWord(int32_t& cycles, const Memory& memory)
 {
@@ -52,6 +58,7 @@ uint16_t CPU::FetchWord(int32_t& cycles, const Memory& memory)
 	return data;
 }
 
+
 uint8_t CPU::ReadByte(int32_t& cycles, const uint16_t& address, const Memory& memory)
 {
 	uint8_t data = memory[address];
@@ -59,6 +66,7 @@ uint8_t CPU::ReadByte(int32_t& cycles, const uint16_t& address, const Memory& me
 
 	return data;
 }
+
 
 uint16_t CPU::ReadWord(int32_t& cycles, const uint16_t& address, const Memory& memory)
 {
@@ -68,12 +76,14 @@ uint16_t CPU::ReadWord(int32_t& cycles, const uint16_t& address, const Memory& m
 	return lowByte | (highByte << 8);
 }
 
+
 /*  Write 1 byte to memory*/
 void CPU::WriteByte(int32_t& cycles, const uint16_t& address, Memory& memory, const uint8_t value)
 {
 	memory[address] = value;
 	--cycles;
 }
+
 
 /*  Write 2 bytes to memory*/
 void CPU::WriteWord(int32_t& cycles, const uint16_t& address, Memory& memory, const uint16_t value)
@@ -83,11 +93,13 @@ void CPU::WriteWord(int32_t& cycles, const uint16_t& address, Memory& memory, co
 	cycles -= 2;
 }
 
+
 /*  Return the stack pointer as a full 16-bit address in the 1st page*/
 uint16_t CPU::StackPointerToAddress() const
 {
 	return 0x100 | this->SP;
 }
+
 
 /*  Push the PC-1 onto the stack*/
 void CPU::PushProgramCounterToStack(int32_t& cycles, Memory& memory)
@@ -95,6 +107,7 @@ void CPU::PushProgramCounterToStack(int32_t& cycles, Memory& memory)
 	this->WriteWord(cycles, this->StackPointerToAddress() - 1, memory, this->PC - 1);
 	this->SP -= 2;
 }
+
 
 void CPU::PushByteOntoStack(int32_t& cycles, Memory& memory, uint8_t value)
 {
@@ -105,6 +118,7 @@ void CPU::PushByteOntoStack(int32_t& cycles, Memory& memory, uint8_t value)
 	--cycles;
 }
 
+
 uint16_t CPU::PopWordFromStack(int32_t& cycles, const Memory& memory)
 {
 	this->SP += 2;
@@ -112,6 +126,7 @@ uint16_t CPU::PopWordFromStack(int32_t& cycles, const Memory& memory)
 	--cycles;
 	return value;
 }
+
 
 uint8_t CPU::PopByteFromStack(int32_t& cycles, const Memory& memory)
 {
@@ -121,12 +136,14 @@ uint8_t CPU::PopByteFromStack(int32_t& cycles, const Memory& memory)
 	return value;
 }
 
+
 /*  Addresing mode - Zero page*/
 uint16_t CPU::AddressZeroPage(int32_t& cycles, const Memory& memory)
 {
 	uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
 	return zeroPageAddress;
 }
+
 
 /*  Addresing mode - Zero page with X offset*/
 uint16_t CPU::AddressZeroPageX(int32_t& cycles, const Memory& memory)
@@ -137,6 +154,7 @@ uint16_t CPU::AddressZeroPageX(int32_t& cycles, const Memory& memory)
 	return zeroPageAddress;
 }
 
+
 /*  Addresing mode - Zero page with Y offset*/
 uint16_t CPU::AddressZeroPageY(int32_t& cycles, const Memory& memory)
 {
@@ -146,12 +164,14 @@ uint16_t CPU::AddressZeroPageY(int32_t& cycles, const Memory& memory)
 	return zeroPageAddress;
 }
 
+
 /*  Addresing mode - Absolute*/
 uint16_t CPU::AddressAbsolute(int32_t& cycles, const Memory& memory)
 {
 	uint16_t absoluteAddress = this->FetchWord(cycles, memory);
 	return absoluteAddress;
 }
+
 
 /*  Addresing mode - Absolute with X offset*/
 uint16_t CPU::AddressAbsoluteX(int32_t& cycles, const Memory& memory, bool alwaysConsumeCycle = false)
@@ -167,6 +187,7 @@ uint16_t CPU::AddressAbsoluteX(int32_t& cycles, const Memory& memory, bool alway
 	return absoluteAddressX;
 }
 
+
 /*  Addresing mode - Absolute with Y offset*/
 uint16_t CPU::AddressAbsoluteY(int32_t& cycles, const Memory& memory, bool alwaysConsumeCycle = false)
 {
@@ -180,6 +201,7 @@ uint16_t CPU::AddressAbsoluteY(int32_t& cycles, const Memory& memory, bool alway
 	return absoluteAddressY;
 }
 
+
 /*  Addresing mode - Indirect X | Indexed Indirect X*/
 uint16_t CPU::AddressIndirectX(int32_t& cycles, const Memory& memory)
 {
@@ -190,6 +212,7 @@ uint16_t CPU::AddressIndirectX(int32_t& cycles, const Memory& memory)
 
 	return effectiveAddress;
 }
+
 
 /*  Addresing mode - Indirect Y | Indexed Indirect Y*/
 uint16_t CPU::AddressIndirectY(int32_t& cycles, const Memory& memory, bool alwaysConsumeCycle = false)
@@ -204,6 +227,7 @@ uint16_t CPU::AddressIndirectY(int32_t& cycles, const Memory& memory, bool alway
 
 	return effectiveAddressY;
 }
+
 
 //return the number of cycles that were used
 int32_t CPU::Execute(int32_t cycles, Memory& memory)
@@ -253,6 +277,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			}
 		}
 	};
+
 
 	const uint32_t cyclesRequested = cycles;
 	while (cycles > 0)
@@ -806,6 +831,25 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				this->Flags.V = false;
 				--cycles;
 			} break;
+			case INS_ADC_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				const uint8_t oldA = this->A;
+				uint16_t sum = this->A;
+				sum += operand;
+				sum += this->Flags.C;
+				this->A = (sum & 0xFF);
+				Flags.C = (sum & 0xFF00) > 0;
+				Flags.Z = (this->A == 0);
+				Flags.N = (this->A & NegativeFlagBit) > 0;
+				Flags.V = false;
+				if (((oldA & NegativeFlagBit) ^ (operand & NegativeFlagBit)) == 0)
+					Flags.V = ((A & NegativeFlagBit) != (oldA & NegativeFlagBit));
+			} break;
+
+
+
 			case INS_NOP:
 			{
 				--cycles;
@@ -829,6 +873,7 @@ void CPU::SetNegativeAndZeroFlags(uint8_t value)
 	Flags.N = (value & 0b10000000) > 0;
 }
 
+
 uint16_t CPU::LoadProgram(const std::vector<uint8_t>& program, Memory& memory)
 {
 	uint16_t loadAddress = 0;
@@ -845,9 +890,9 @@ uint16_t CPU::LoadProgram(const std::vector<uint8_t>& program, Memory& memory)
 	return loadAddress;
 }
 
+
 void CPU::PrintStatus() const
 {
 	printf("A: %d X: %d Y: %d\n", this->A, this->X, this->Y);
 	printf("PC: %d SP: %d\n", this->PC, this->SP);
-	printf("PS: %\n", this->PC, this->SP);
 }

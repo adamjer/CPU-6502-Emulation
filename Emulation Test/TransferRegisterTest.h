@@ -3,5 +3,8 @@
 
 class TransferRegisterTest : public BaseTest
 {
+public:
+
+	void ExpectUnaffectedRegisters(const CPU&) override;
 };
 

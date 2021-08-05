@@ -1,6 +1,16 @@
 #include "TransferRegisterTest.h"
 
 
+void TransferRegisterTest::ExpectUnaffectedRegisters(const CPU& copy)
+{
+    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
+    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
+    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
+    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
+    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
+}
+
+
 TEST_F(TransferRegisterTest, TAXCanTransferANonNegativeNonZeroValue)
 {
     // given:
@@ -29,8 +39,9 @@ TEST_F(TransferRegisterTest, TAXCanTransferANonNegativeNonZeroValue)
     EXPECT_EQ(cpu.X, A);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TAXCanTransferANonNegativeZeroValue)
 {
@@ -60,8 +71,9 @@ TEST_F(TransferRegisterTest, TAXCanTransferANonNegativeZeroValue)
     EXPECT_EQ(cpu.X, A);
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TAXCanTransferANegativeValue)
 {
@@ -91,8 +103,9 @@ TEST_F(TransferRegisterTest, TAXCanTransferANegativeValue)
     EXPECT_EQ(cpu.X, A);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TAYCanTransferANonNegativeNonZeroValue)
 {
@@ -122,8 +135,9 @@ TEST_F(TransferRegisterTest, TAYCanTransferANonNegativeNonZeroValue)
     EXPECT_EQ(cpu.Y, A);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TAYCanTransferANonNegativeZeroValue)
 {
@@ -153,8 +167,9 @@ TEST_F(TransferRegisterTest, TAYCanTransferANonNegativeZeroValue)
     EXPECT_EQ(cpu.Y, A);
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TAYCanTransferANegativeValue)
 {
@@ -184,8 +199,9 @@ TEST_F(TransferRegisterTest, TAYCanTransferANegativeValue)
     EXPECT_EQ(cpu.Y, A);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TXACanTransferANonNegativeNonZeroValue)
 {
@@ -215,8 +231,9 @@ TEST_F(TransferRegisterTest, TXACanTransferANonNegativeNonZeroValue)
     EXPECT_EQ(cpu.X, A);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TXACanTransferANonNegativeZeroValue)
 {
@@ -246,8 +263,9 @@ TEST_F(TransferRegisterTest, TXACanTransferANonNegativeZeroValue)
     EXPECT_EQ(cpu.Y, A);
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TXACanTransferANegativeValue)
 {
@@ -277,8 +295,9 @@ TEST_F(TransferRegisterTest, TXACanTransferANegativeValue)
     EXPECT_EQ(cpu.X, A);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TYACanTransferANonNegativeNonZeroValue)
 {
@@ -308,8 +327,9 @@ TEST_F(TransferRegisterTest, TYACanTransferANonNegativeNonZeroValue)
     EXPECT_EQ(cpu.Y, A);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TYACanTransferANonNegativeZeroValue)
 {
@@ -339,8 +359,9 @@ TEST_F(TransferRegisterTest, TYACanTransferANonNegativeZeroValue)
     EXPECT_EQ(cpu.Y, A);
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }
+
 
 TEST_F(TransferRegisterTest, TYACanTransferANegativeValue)
 {
@@ -370,5 +391,5 @@ TEST_F(TransferRegisterTest, TYACanTransferANegativeValue)
     EXPECT_EQ(cpu.Y, A);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromTransferRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);;
 }

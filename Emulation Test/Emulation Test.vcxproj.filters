@@ -35,6 +35,9 @@
     <ClCompile Include="StatusFlagChangeTest.cpp">
       <Filter>Tests\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AddWithCarryTest.cpp">
+      <Filter>Tests\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseTest.h">
@@ -68,6 +71,9 @@
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StatusFlagChangeTest.h">
+      <Filter>Tests\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AddWithCarryTest.h">
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

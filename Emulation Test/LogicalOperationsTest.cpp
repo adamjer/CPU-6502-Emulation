@@ -1,6 +1,16 @@
 #include "LogicalOperationsTest.h"
 
 
+void LogicalOperationsTest::ExpectUnaffectedRegisters(const CPU& copy)
+{
+    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
+    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
+    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
+    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
+    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
+}
+
+
 uint8_t LogicalOperationsTest::logicalOperation(uint8_t A, uint8_t B, LogicalOperation operation)
 {
     switch (operation)
@@ -20,6 +30,7 @@ uint8_t LogicalOperationsTest::logicalOperation(uint8_t A, uint8_t B, LogicalOpe
 
     throw - 2; //invalid Logical Operation
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationOnARegisterImmediate(LogicalOperation operation)
 {
@@ -57,8 +68,9 @@ void LogicalOperationsTest::TestLogicalOperationOnARegisterImmediate(LogicalOper
     EXPECT_EQ(cyclesUsed, 2);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationZeroPage(LogicalOperation operation)
 {
@@ -97,8 +109,9 @@ void LogicalOperationsTest::TestLogicalOperationZeroPage(LogicalOperation operat
     EXPECT_EQ(cyclesUsed, 3);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationZeroPageX(LogicalOperation operation)
 {
@@ -138,8 +151,9 @@ void LogicalOperationsTest::TestLogicalOperationZeroPageX(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationZeroPageY(LogicalOperation operation)
 {
@@ -177,8 +191,9 @@ void LogicalOperationsTest::TestLogicalOperationZeroPageY(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationAbsolute(LogicalOperation operation)
 {
@@ -218,8 +233,9 @@ void LogicalOperationsTest::TestLogicalOperationAbsolute(LogicalOperation operat
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationAbsoluteX(LogicalOperation operation)
 {
@@ -260,8 +276,9 @@ void LogicalOperationsTest::TestLogicalOperationAbsoluteX(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation operation)
 {
@@ -302,8 +319,9 @@ void LogicalOperationsTest::TestLogicalOperationAbsoluteXWhenCrossingPage(Logica
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationAbsoluteY(LogicalOperation operation)
 {
@@ -344,8 +362,9 @@ void LogicalOperationsTest::TestLogicalOperationAbsoluteY(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation operation)
 {
@@ -386,38 +405,45 @@ void LogicalOperationsTest::TestLogicalOperationAbsoluteYWhenCrossingPage(Logica
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationOnARegisterImmediate)
 {
     this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::And);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalOROperationOnARegisterImmediate)
 {
     this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::Or);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationOnARegisterImmediate)
 {
     this->TestLogicalOperationOnARegisterImmediate(LogicalOperation::Eor);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationZeroPag)
 {
     TestLogicalOperationZeroPage(LogicalOperation::And);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalOROperationZeroPag)
 {
     TestLogicalOperationZeroPage(LogicalOperation::Or);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationZeroPag)
 {
     TestLogicalOperationZeroPage(LogicalOperation::Eor);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalOperationEORImmediateCanAffectZeroFlag)
 {
@@ -438,23 +464,27 @@ TEST_F(LogicalOperationsTest, TestLogicalOperationEORImmediateCanAffectZeroFlag)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationZeroPageX)
 {
     TestLogicalOperationZeroPageX(LogicalOperation::And);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalOROperationZeroPageX)
 {
     TestLogicalOperationZeroPageX(LogicalOperation::Or);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationZeroPageX)
 {
     TestLogicalOperationZeroPageX(LogicalOperation::Eor);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation operation)
 {
@@ -496,98 +526,117 @@ void LogicalOperationsTest::TestLogicalOperationZeroPageXWhenItWraps(LogicalOper
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationZeroPageXWhenItWraps)
 {
     this->TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation::And);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalOROperationZeroPageXWhenItWraps)
 {
     this->TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation::Or);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationZeroPageXWhenItWraps)
 {
     this->TestLogicalOperationZeroPageXWhenItWraps(LogicalOperation::Eor);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsolute)
 {
     TestLogicalOperationAbsolute(LogicalOperation::And);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsolute)
 {
     TestLogicalOperationAbsolute(LogicalOperation::Or);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationAbsolute)
 {
     TestLogicalOperationAbsolute(LogicalOperation::Eor);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsoluteX)
 {
     TestLogicalOperationAbsoluteX(LogicalOperation::And);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsoluteX)
 {
     TestLogicalOperationAbsoluteX(LogicalOperation::Or);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationAbsoluteX)
 {
     TestLogicalOperationAbsoluteX(LogicalOperation::Eor);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsoluteXWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation::And);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsoluteXWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation::Or);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationAbsoluteXWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteXWhenCrossingPage(LogicalOperation::Eor);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsoluteY)
 {
     TestLogicalOperationAbsoluteY(LogicalOperation::And);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsoluteY)
 {
     TestLogicalOperationAbsoluteY(LogicalOperation::Or);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationAbsoluteY)
 {
     TestLogicalOperationAbsoluteY(LogicalOperation::Eor);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationAbsoluteYWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation::And);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalOROperationAbsoluteYWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation::Or);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalEorOperationAbsoluteYWhenCrossingBoundary)
 {
     TestLogicalOperationAbsoluteYWhenCrossingPage(LogicalOperation::Eor);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationIndirectX(LogicalOperation operation)
 {
@@ -632,23 +681,27 @@ void LogicalOperationsTest::TestLogicalOperationIndirectX(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationIndirectX)
 {
     this->TestLogicalOperationIndirectX(LogicalOperation::And);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalOROperationIndirectX)
 {
     this->TestLogicalOperationIndirectX(LogicalOperation::Or);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationIndirectX)
 {
     this->TestLogicalOperationIndirectX(LogicalOperation::Eor);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationIndirectY(LogicalOperation operation)
 {
@@ -693,23 +746,27 @@ void LogicalOperationsTest::TestLogicalOperationIndirectY(LogicalOperation opera
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationIndirectY)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::And);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalOROperationIndirectY)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::Or);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationIndirectY)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::Eor);
 }
+
 
 void LogicalOperationsTest::TestLogicalOperationIndirectYWhenItCrossesPage(LogicalOperation operation)
 {
@@ -754,23 +811,27 @@ void LogicalOperationsTest::TestLogicalOperationIndirectYWhenItCrossesPage(Logic
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_EQ(cpu.Flags.N, isNegative);
-    VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LogicalOperationsTest, TestLogicalANDOperationIndirectYWhenItCrossesPage)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::And);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalORAOperationIndirectYWhenItCrossesPage)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::Or);
 }
 
+
 TEST_F(LogicalOperationsTest, TestLogicalEOROperationIndirectYWhenItCrossesPage)
 {
     this->TestLogicalOperationIndirectY(LogicalOperation::Eor);
 }
+
 
 TEST_F(LogicalOperationsTest, TestBitZeroPage)
 {
@@ -801,6 +862,7 @@ TEST_F(LogicalOperationsTest, TestBitZeroPage)
     EXPECT_TRUE(cpu.Flags.V);
 }
 
+
 TEST_F(LogicalOperationsTest, TestBitZeroPageResultZero)
 {
     // given:
@@ -830,6 +892,7 @@ TEST_F(LogicalOperationsTest, TestBitZeroPageResultZero)
     EXPECT_FALSE(cpu.Flags.V);
 }
 
+
 TEST_F(LogicalOperationsTest, TestBitZeroPageResultZeroBits6And7Zero)
 {
     // given:
@@ -857,6 +920,7 @@ TEST_F(LogicalOperationsTest, TestBitZeroPageResultZeroBits6And7Zero)
     EXPECT_TRUE(cpu.Flags.N);
     EXPECT_TRUE(cpu.Flags.V);
 }
+
 
 TEST_F(LogicalOperationsTest, TestBitZeroPageResultZeroBits6And7Mixed)
 {
@@ -886,6 +950,7 @@ TEST_F(LogicalOperationsTest, TestBitZeroPageResultZeroBits6And7Mixed)
     EXPECT_FALSE(cpu.Flags.N);
     EXPECT_TRUE(cpu.Flags.V);
 }
+
 
 TEST_F(LogicalOperationsTest, TestBitAbsolute)
 {
@@ -917,6 +982,7 @@ TEST_F(LogicalOperationsTest, TestBitAbsolute)
     EXPECT_TRUE(cpu.Flags.V);
 }
 
+
 TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZero)
 {
     // given:
@@ -947,6 +1013,7 @@ TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZero)
     EXPECT_FALSE(cpu.Flags.V);
 }
 
+
 TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZeroBits6And7Zero)
 {
     // given:
@@ -975,6 +1042,7 @@ TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZeroBits6And7Zero)
     EXPECT_TRUE(cpu.Flags.N);
     EXPECT_TRUE(cpu.Flags.V);
 }
+
 
 TEST_F(LogicalOperationsTest, TestBitAbsoluteResultZeroBits6And7Mixed)
 {

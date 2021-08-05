@@ -5,9 +5,11 @@
 #include "Memory.h"
 #include "StatusFlags.h"
 
+
 class CPU
 {
 public:
+
     uint16_t PC; // program counter
     uint8_t SP; // stack pointer
 
@@ -150,6 +152,9 @@ public:
         INS_CLI = 0x58,
         INS_SEI = 0x78,
         INS_CLV = 0xB8,
+
+        //Arithmetics
+        INS_ADC_ABS = 0x6D,
 
         //misc
         INS_NOP = 0xEA;

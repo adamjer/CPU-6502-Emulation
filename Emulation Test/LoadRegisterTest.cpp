@@ -1,5 +1,16 @@
 #include "LoadRegisterTest.h"
 
+
+void LoadRegisterTest::ExpectUnaffectedRegisters(const CPU& copy)
+{
+    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
+    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
+    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
+    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
+    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
+}
+
+
 void LoadRegisterTest::TestLoadRegisterImmediate(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
     // given:
@@ -17,8 +28,9 @@ void LoadRegisterTest::TestLoadRegisterImmediate(uint8_t opcodeToTest, uint8_t C
     EXPECT_EQ(cyclesUsed, 2);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LoadRegisterTest::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
@@ -40,8 +52,9 @@ void LoadRegisterTest::TestLoadRegisterZeroPage(uint8_t opcodeToTest, uint8_t CP
     EXPECT_EQ(cyclesUsed, 3);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LoadRegisterTest::TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
@@ -64,8 +77,9 @@ void LoadRegisterTest::TestLoadRegisterZeroPageX(uint8_t opcodeToTest, uint8_t C
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LoadRegisterTest::TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
@@ -88,8 +102,9 @@ void LoadRegisterTest::TestLoadRegisterZeroPageY(uint8_t opcodeToTest, uint8_t C
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LoadRegisterTest::TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
@@ -112,8 +127,9 @@ void LoadRegisterTest::TestLoadRegisterAbsolute(uint8_t opcodeToTest, uint8_t CP
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LoadRegisterTest::TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
@@ -137,8 +153,9 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteX(uint8_t opcodeToTest, uint8_t C
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LoadRegisterTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
@@ -162,8 +179,9 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opc
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LoadRegisterTest::TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
@@ -187,8 +205,9 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteY(uint8_t opcodeToTest, uint8_t C
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 void LoadRegisterTest::TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
 {
@@ -212,8 +231,9 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opc
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LoadRegisterTest, TheCPUDoesNothingWhenWeExecuteZeroCycles)
 {
@@ -226,6 +246,7 @@ TEST_F(LoadRegisterTest, TheCPUDoesNothingWhenWeExecuteZeroCycles)
     // then:
     EXPECT_EQ(cyclesUsed, 0);
 }
+
 
 TEST_F(LoadRegisterTest, CPUCanExecuteMoreCyclesThanRequestedIfRequiredByTheInstruction)
 {
@@ -243,35 +264,42 @@ TEST_F(LoadRegisterTest, CPUCanExecuteMoreCyclesThanRequestedIfRequiredByTheInst
     EXPECT_EQ(cyclesUsed, 2);
 }
 
+
 TEST_F(LoadRegisterTest, LDAImmediateCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterImmediate(CPU::INS_LDA_IM, &CPU::A);
 }
+
 
 TEST_F(LoadRegisterTest, LDXImmediateCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterImmediate(CPU::INS_LDX_IM, &CPU::X);
 }
 
+
 TEST_F(LoadRegisterTest, LDYImmediateCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterImmediate(CPU::INS_LDY_IM, &CPU::Y);
 }
+
 
 TEST_F(LoadRegisterTest, LDAZeroPageCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterZeroPage(CPU::INS_LDA_ZP, &CPU::A);
 }
 
+
 TEST_F(LoadRegisterTest, LDXZeroPageCanLoadAValueIntoTheXRegister)
 {
     TestLoadRegisterZeroPage(CPU::INS_LDX_ZP, &CPU::X);
 }
 
+
 TEST_F(LoadRegisterTest, LDYZeroPageCanLoadAValueIntoTheYRegister)
 {
     TestLoadRegisterZeroPage(CPU::INS_LDY_ZP, &CPU::Y);
 }
+
 
 TEST_F(LoadRegisterTest, LDAImmediateCanAffectZeroFlag)
 {
@@ -290,23 +318,27 @@ TEST_F(LoadRegisterTest, LDAImmediateCanAffectZeroFlag)
     // then:
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LoadRegisterTest, LDAZeroPageXCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterZeroPageX(CPU::INS_LDA_ZPX, &CPU::A);
 }
 
+
 TEST_F(LoadRegisterTest, LDXZeroPageYCanLoadAValueIntoTheXRegister)
 {
     TestLoadRegisterZeroPageY(CPU::INS_LDX_ZPY, &CPU::X);
 }
 
+
 TEST_F(LoadRegisterTest, LDYZeroPageXCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterZeroPageX(CPU::INS_LDY_ZPX, &CPU::Y);
 }
+
 
 TEST_F(LoadRegisterTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps)
 {
@@ -329,63 +361,75 @@ TEST_F(LoadRegisterTest, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps)
     EXPECT_EQ(cyclesUsed, 4);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LoadRegisterTest, LDAAbsoluteCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterAbsolute(CPU::INS_LDA_ABS, &CPU::A);
 }
 
+
 TEST_F(LoadRegisterTest, LDXAbsoluteCanLoadAValueIntoTheXRegister)
 {
     TestLoadRegisterAbsolute(CPU::INS_LDX_ABS, &CPU::X);
 }
+
 
 TEST_F(LoadRegisterTest, LDYAbsoluteCanLoadAValueIntoTheYRegister)
 {
     TestLoadRegisterAbsolute(CPU::INS_LDY_ABS, &CPU::Y);
 }
 
+
 TEST_F(LoadRegisterTest, LDAAbsoluteXCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterAbsoluteX(CPU::INS_LDA_ABSX, &CPU::A);
 }
+
 
 TEST_F(LoadRegisterTest, LDXAbsoluteYCanLoadAValueIntoTheXRegister)
 {
     TestLoadRegisterAbsoluteY(CPU::INS_LDX_ABSY, &CPU::X);
 }
 
+
 TEST_F(LoadRegisterTest, LDYAbsoluteXCanLoadAValueIntoTheYRegister)
 {
     TestLoadRegisterAbsoluteX(CPU::INS_LDY_ABSX, &CPU::Y);
 }
+
 
 TEST_F(LoadRegisterTest, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
 {
     TestLoadRegisterAbsoluteXWhenCrossingBoundary(CPU::INS_LDA_ABSX, &CPU::A);
 }
 
+
 TEST_F(LoadRegisterTest, LDYAbsoluteXCanLoadAValueIntoTheYRegisterWhenItCrossesPageBoundary)
 {
     TestLoadRegisterAbsoluteXWhenCrossingBoundary(CPU::INS_LDY_ABSX, &CPU::Y);
 }
+
 
 TEST_F(LoadRegisterTest, LDAAbsoluteYCanLoadAValueIntoTheARegister)
 {
     TestLoadRegisterAbsoluteY(CPU::INS_LDA_ABSY, &CPU::A);
 }
 
+
 TEST_F(LoadRegisterTest, LDXAbsoluteYCanLoadAValueIntoTheXRegisterWhenItCrossesPageBoundary)
 {
     TestLoadRegisterAbsoluteYWhenCrossingBoundary(CPU::INS_LDA_ABSY, &CPU::A);
 }
 
+
 TEST_F(LoadRegisterTest, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
 {
     TestLoadRegisterAbsoluteYWhenCrossingBoundary(CPU::INS_LDX_ABSY, &CPU::X);
 }
+
 
 TEST_F(LoadRegisterTest, LDAIndirectXCanLoadAValueIntoTheARegister)
 {
@@ -410,8 +454,9 @@ TEST_F(LoadRegisterTest, LDAIndirectXCanLoadAValueIntoTheARegister)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegister)
 {
@@ -436,8 +481,9 @@ TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegister)
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesPageBoundary)
 {
@@ -462,6 +508,6 @@ TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesP
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromLoadRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
 

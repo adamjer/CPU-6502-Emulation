@@ -2,45 +2,8 @@
 #include "gtest/gtest.h"
 #include "..\Emulation Library\Source.h"
 
-static void VerifyUnmodifiedStatusFlagsFromLoadRegister(const CPU& cpu, const CPU& copy)
-{
-    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
-    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
-    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
-    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
-    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
-}
-
-static void VerifyUnmodifiedStatusFlagsFromStorageRegister(const CPU& cpu, const CPU& copy)
-{
-    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
-    EXPECT_EQ(cpu.Flags.Z, copy.Flags.Z);
-    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
-    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
-    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
-    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
-    EXPECT_EQ(cpu.Flags.N, copy.Flags.N);   
-}
-
-static void VerfifyUnmodifiedFlagsFromLogicalOperaionInstruction(const CPU& cpu, const CPU& copy)
-{
-    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
-    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
-    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
-    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
-    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
-}
 
 static void VerifyUnmodifiedStatusFlagsFromTransferRegister(const CPU& cpu, const CPU& copy)
-{
-    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
-    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
-    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
-    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
-    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
-}
-
-static void VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(const CPU& cpu, const CPU& copy)
 {
     EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
     EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
@@ -58,5 +21,7 @@ protected:
 
     virtual void SetUp();
     virtual void Teardown();
+
+    virtual void ExpectUnaffectedRegisters(const CPU&);
 };
 

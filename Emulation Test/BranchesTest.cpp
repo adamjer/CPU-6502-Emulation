@@ -1,5 +1,6 @@
 #include "BranchesTest.h"
 
+
 TEST_F(BranchesTest, BEQCanBranchForwardWhenZeroFlagIsSet)
 {
     // given:
@@ -28,6 +29,7 @@ TEST_F(BranchesTest, BEQCanBranchForwardWhenZeroFlagIsSet)
     EXPECT_EQ(cpu.PC, startAddress + 2 + offset);
     EXPECT_EQ(cpu.PS, copy.PS);
 }
+
 
 TEST_F(BranchesTest, BEQDoesNotBranchForwardWhenZeroFlagIsClear)
 {
@@ -58,6 +60,7 @@ TEST_F(BranchesTest, BEQDoesNotBranchForwardWhenZeroFlagIsClear)
     EXPECT_EQ(cpu.PS, copy.PS);
 }
 
+
 TEST_F(BranchesTest, BEQCanBranchForwardIntoNewPageWhenZeroFlagIsSet)
 {
     // given:
@@ -86,6 +89,7 @@ TEST_F(BranchesTest, BEQCanBranchForwardIntoNewPageWhenZeroFlagIsSet)
     EXPECT_EQ(cpu.PC, startAddress + 2 + offset);
     EXPECT_EQ(cpu.PS, copy.PS);
 }
+
 
 TEST_F(BranchesTest, BEQCanBranchBackwardWhenZeroFlagIsSet)
 {
@@ -116,6 +120,7 @@ TEST_F(BranchesTest, BEQCanBranchBackwardWhenZeroFlagIsSet)
     EXPECT_EQ(cpu.PS, copy.PS);
 }
 
+
 TEST_F(BranchesTest, BEQDoesNotBranchBackwardWhenZeroFlagIsClear)
 {
     // given:
@@ -144,6 +149,7 @@ TEST_F(BranchesTest, BEQDoesNotBranchBackwardWhenZeroFlagIsClear)
     EXPECT_EQ(cpu.PC, startAddress + 2);
     EXPECT_EQ(cpu.PS, copy.PS);
 }
+
 
 TEST_F(BranchesTest, BNECanBranchForwardWhenZeroFlagIsClear)
 {
@@ -174,6 +180,7 @@ TEST_F(BranchesTest, BNECanBranchForwardWhenZeroFlagIsClear)
     EXPECT_EQ(cpu.PS, copy.PS);
 }
 
+
 TEST_F(BranchesTest, BCSCanBranchForwardWhenCarryFlagIsSet)
 {
     // given:
@@ -202,6 +209,7 @@ TEST_F(BranchesTest, BCSCanBranchForwardWhenCarryFlagIsSet)
     EXPECT_EQ(cpu.PC, startAddress + 2 + offset);
     EXPECT_EQ(cpu.PS, copy.PS);
 }
+
 
 TEST_F(BranchesTest, BCCCanBranchForwardWhenCarryFlagIsClear)
 {
@@ -232,6 +240,7 @@ TEST_F(BranchesTest, BCCCanBranchForwardWhenCarryFlagIsClear)
     EXPECT_EQ(cpu.PS, copy.PS);
 }
 
+
 TEST_F(BranchesTest, BMICanBranchForwardWhenNegativeFlagIsSet)
 {
     // given:
@@ -260,6 +269,7 @@ TEST_F(BranchesTest, BMICanBranchForwardWhenNegativeFlagIsSet)
     EXPECT_EQ(cpu.PC, startAddress + 2 + offset);
     EXPECT_EQ(cpu.PS, copy.PS);
 }
+
 
 TEST_F(BranchesTest, BPLCanBranchForwardWhenNegativeFlagIsClear)
 {
@@ -290,6 +300,7 @@ TEST_F(BranchesTest, BPLCanBranchForwardWhenNegativeFlagIsClear)
     EXPECT_EQ(cpu.PS, copy.PS);
 }
 
+
 TEST_F(BranchesTest, BVSCanBranchForwardWhenNegativeFlagIsSet)
 {
     // given:
@@ -318,6 +329,7 @@ TEST_F(BranchesTest, BVSCanBranchForwardWhenNegativeFlagIsSet)
     EXPECT_EQ(cpu.PC, startAddress + 2 + offset);
     EXPECT_EQ(cpu.PS, copy.PS);
 }
+
 
 TEST_F(BranchesTest, BVCCanBranchForwardWhenNegativeFlagIsClear)
 {

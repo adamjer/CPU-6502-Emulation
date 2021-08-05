@@ -1,6 +1,16 @@
 #include "IncrementDecrementTest.h"
 
 
+void IncrementDecrementTest::ExpectUnaffectedRegisters(const CPU& copy)
+{
+    EXPECT_EQ(cpu.Flags.C, copy.Flags.C);
+    EXPECT_EQ(cpu.Flags.I, copy.Flags.I);
+    EXPECT_EQ(cpu.Flags.D, copy.Flags.D);
+    EXPECT_EQ(cpu.Flags.B, copy.Flags.B);
+    EXPECT_EQ(cpu.Flags.V, copy.Flags.V);
+}
+
+
 TEST_F(IncrementDecrementTest, INXCanIncrementAZerovalue)
 {
     // given:
@@ -27,8 +37,9 @@ TEST_F(IncrementDecrementTest, INXCanIncrementAZerovalue)
     EXPECT_EQ(cpu.X, (uint8_t)(A + 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, INXCanIncrement255)
 {
@@ -56,8 +67,9 @@ TEST_F(IncrementDecrementTest, INXCanIncrement255)
     EXPECT_EQ(cpu.X, (uint8_t)(A + 1));
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, INXCanIncrementANegativeValue)
 {
@@ -85,8 +97,9 @@ TEST_F(IncrementDecrementTest, INXCanIncrementANegativeValue)
     EXPECT_EQ(cpu.X, (uint8_t)(A + 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, INYCanIncrementAZerovalue)
 {
@@ -114,8 +127,9 @@ TEST_F(IncrementDecrementTest, INYCanIncrementAZerovalue)
     EXPECT_EQ(cpu.Y, A + 1);
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, INYCanIncrement255)
 {
@@ -143,8 +157,9 @@ TEST_F(IncrementDecrementTest, INYCanIncrement255)
     EXPECT_EQ(cpu.Y, (uint8_t)(A + 1));
     EXPECT_TRUE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, INYCanIncrementANegativeValue)
 {
@@ -172,8 +187,9 @@ TEST_F(IncrementDecrementTest, INYCanIncrementANegativeValue)
     EXPECT_EQ(cpu.Y, (uint8_t)(A + 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DEXCanDecrementAZerovalue)
 {
@@ -201,8 +217,9 @@ TEST_F(IncrementDecrementTest, DEXCanDecrementAZerovalue)
     EXPECT_EQ(cpu.X, (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DEXCanDecrement255)
 {
@@ -230,8 +247,9 @@ TEST_F(IncrementDecrementTest, DEXCanDecrement255)
     EXPECT_EQ(cpu.X, (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DEXCanDecrementANegativeValue)
 {
@@ -259,8 +277,9 @@ TEST_F(IncrementDecrementTest, DEXCanDecrementANegativeValue)
     EXPECT_EQ(cpu.X, (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DEYCanDecrementAZerovalue)
 {
@@ -288,8 +307,9 @@ TEST_F(IncrementDecrementTest, DEYCanDecrementAZerovalue)
     EXPECT_EQ(cpu.Y, (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DEYCanDecrement255)
 {
@@ -317,8 +337,9 @@ TEST_F(IncrementDecrementTest, DEYCanDecrement255)
     EXPECT_EQ(cpu.Y, (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DEYCanDecrementANegativeValue)
 {
@@ -346,8 +367,9 @@ TEST_F(IncrementDecrementTest, DEYCanDecrementANegativeValue)
     EXPECT_EQ(cpu.Y, (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_TRUE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DECCanDecrementAValueZeroPage)
 {
@@ -376,8 +398,9 @@ TEST_F(IncrementDecrementTest, DECCanDecrementAValueZeroPage)
     EXPECT_EQ(memory[address[0]], (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DECCanDecrementAValueZeroPageX)
 {
@@ -407,8 +430,9 @@ TEST_F(IncrementDecrementTest, DECCanDecrementAValueZeroPageX)
     EXPECT_EQ(memory[address[0] + cpu.X], (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DECCanDecrementAValueAbsolute)
 {
@@ -438,8 +462,9 @@ TEST_F(IncrementDecrementTest, DECCanDecrementAValueAbsolute)
     EXPECT_EQ(memory[(address[0] << 8) + address[1]], (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, DECCanDecrementAValueAbsoluteX)
 {
@@ -470,8 +495,9 @@ TEST_F(IncrementDecrementTest, DECCanDecrementAValueAbsoluteX)
     EXPECT_EQ(memory[(address[0] << 8) + address[1] + cpu.X], (uint8_t)(A - 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, INCCanIncrementAValueZeroPage)
 {
@@ -500,8 +526,9 @@ TEST_F(IncrementDecrementTest, INCCanIncrementAValueZeroPage)
     EXPECT_EQ(memory[address[0]], (uint8_t)(A + 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, INCCanIncrementAValueZeroPageX)
 {
@@ -531,8 +558,9 @@ TEST_F(IncrementDecrementTest, INCCanIncrementAValueZeroPageX)
     EXPECT_EQ(memory[address[0] + cpu.X], (uint8_t)(A + 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, INCCanIncrementAValueAbsolute)
 {
@@ -562,8 +590,9 @@ TEST_F(IncrementDecrementTest, INCCanIncrementAValueAbsolute)
     EXPECT_EQ(memory[(address[0] << 8) + address[1]], (uint8_t)(A + 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+
 
 TEST_F(IncrementDecrementTest, INCCanIncrementAValueAbsoluteX)
 {
@@ -594,5 +623,6 @@ TEST_F(IncrementDecrementTest, INCCanIncrementAValueAbsoluteX)
     EXPECT_EQ(memory[(address[0] << 8) + address[1] + cpu.X], (uint8_t)(A + 1));
     EXPECT_FALSE(cpu.Flags.Z);
     EXPECT_FALSE(cpu.Flags.N);
-    VerifyUnmodifiedStatusFlagsFromIncrementDecrementRegister(cpu, copy);
+    this->ExpectUnaffectedRegisters(copy);
 }
+

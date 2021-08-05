@@ -1,5 +1,6 @@
 #include "JumpsAndCallsTest.h"
 
+
 TEST_F(JumpsAndCallsTest, CanJumpToASubroutineAndJumpBackAgain)
 {
     // given:
@@ -26,6 +27,7 @@ TEST_F(JumpsAndCallsTest, CanJumpToASubroutineAndJumpBackAgain)
     EXPECT_EQ(cpu.SP, copy.SP);
 }
 
+
 TEST_F(JumpsAndCallsTest, JSRDoesNotAffectTheProcessorStatus)
 {
     // given:
@@ -48,6 +50,7 @@ TEST_F(JumpsAndCallsTest, JSRDoesNotAffectTheProcessorStatus)
     EXPECT_NE(cpu.PS, copy.SP);
     EXPECT_EQ(cpu.PC, 0x8000);
 }
+
 
 TEST_F(JumpsAndCallsTest, RTSDoesNotAffectTheProcessorStatus)
 {
@@ -72,6 +75,7 @@ TEST_F(JumpsAndCallsTest, RTSDoesNotAffectTheProcessorStatus)
     EXPECT_EQ(cpu.PS, copy.PS);
     EXPECT_EQ(cpu.PC, startOffset + 2 + 1);
 }
+
 
 TEST_F(JumpsAndCallsTest, JumpAbsoluteCanJumpToAnNewLocationInTheProgram)
 {
@@ -98,6 +102,7 @@ TEST_F(JumpsAndCallsTest, JumpAbsoluteCanJumpToAnNewLocationInTheProgram)
     EXPECT_EQ(cpu.PC, 0x8000);
 }
 
+
 TEST_F(JumpsAndCallsTest, JumpIndirectCanJumpToAnNewLocationInTheProgram)
 {
     // given:
@@ -123,3 +128,4 @@ TEST_F(JumpsAndCallsTest, JumpIndirectCanJumpToAnNewLocationInTheProgram)
     EXPECT_EQ(cpu.SP, copy.SP);
     EXPECT_EQ(cpu.PC, 0x9000);
 }
+
