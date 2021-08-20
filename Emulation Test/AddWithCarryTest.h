@@ -18,7 +18,14 @@ public:
 		uint8_t answer;
 	};
 
-	void TestAbsolute(const TestData&);
+	void TestADCAbsolute(const TestData&);
+	void TestADCAbsoluteX(const TestData&);
+	void TestADCAbsoluteY(const TestData&);
+	void TestADCImmediate(const TestData&);
+	void TestADCZeroPage(const TestData&);
+	void TestADCZeroPageX(const TestData&);
+	void TestADCIndirectX(const TestData&);
+	void TestADCIndirectY(const TestData&);
 
 	void ExpectUnaffectedRegisters(const CPU&) override;
 };

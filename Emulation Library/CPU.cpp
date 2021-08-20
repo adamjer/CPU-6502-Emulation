@@ -1,4 +1,5 @@
 #include "CPU.h"
+#include <cassert>
 
 
 void CPU::ResetRegisters()
@@ -276,6 +277,21 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				cycles -= 2;
 			}
 		}
+	};
+
+	//Do add with carry given the operand
+	auto ADC = [&cycles, &memory, this](uint8_t operand)
+	{
+		assert(Flags.D == false, "haven't handled decimal mode!");
+		const bool areSignBitsTheSame = !((this->A ^ operand) & NegativeFlagBit);
+		uint16_t sum = this->A;
+		sum += operand;
+		sum += this->Flags.C;
+		this->A = (sum & 0xFF);
+		this->SetNegativeAndZeroFlags(A);
+		Flags.C = sum > 0xFF;
+		Flags.V = areSignBitsTheSame &&
+			((this->A ^ operand) & NegativeFlagBit);
 	};
 
 
@@ -831,25 +847,53 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				this->Flags.V = false;
 				--cycles;
 			} break;
+			case INS_ADC:
+			{
+				uint8_t operand = this->FetchByte(cycles, memory);
+				ADC(operand);
+			} break;
+			case INS_ADC_ZP:
+			{
+				uint16_t address = AddressZeroPage(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				ADC(operand);
+			} break;
+			case INS_ADC_ZPX:
+			{
+				uint16_t address = AddressZeroPageX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				ADC(operand);
+			} break;
 			case INS_ADC_ABS:
 			{
 				uint16_t address = this->AddressAbsolute(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
-				const uint8_t oldA = this->A;
-				uint16_t sum = this->A;
-				sum += operand;
-				sum += this->Flags.C;
-				this->A = (sum & 0xFF);
-				Flags.C = (sum & 0xFF00) > 0;
-				Flags.Z = (this->A == 0);
-				Flags.N = (this->A & NegativeFlagBit) > 0;
-				Flags.V = false;
-				if (((oldA & NegativeFlagBit) ^ (operand & NegativeFlagBit)) == 0)
-					Flags.V = ((A & NegativeFlagBit) != (oldA & NegativeFlagBit));
+				ADC(operand);
 			} break;
-
-
-
+			case INS_ADC_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				ADC(operand);
+			} break;
+			case INS_ADC_ABSY:
+			{
+				uint16_t address = this->AddressAbsoluteY(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				ADC(operand);
+			} break;
+			case INS_ADC_INDX:
+			{
+				uint16_t address = this->AddressIndirectX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				ADC(operand);
+			} break;
+			case INS_ADC_INDY:
+			{
+				uint16_t address = this->AddressIndirectY(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				ADC(operand);
+			} break;
 			case INS_NOP:
 			{
 				--cycles;
