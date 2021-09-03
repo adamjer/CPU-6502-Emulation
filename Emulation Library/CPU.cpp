@@ -294,6 +294,16 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			((this->A ^ operand) & NegativeFlagBit);
 	};
 
+	//Sets the processor status for CMP/CPX/CPY instructions
+	auto CMP = [&cycles, &memory, this](uint8_t operand)
+	{
+		uint8_t temp = this->A - operand;
+
+		this->Flags.C = this->A >= operand;
+		this->Flags.Z = this->A == operand;
+		this->Flags.N = (temp & NegativeFlagBit) > 0;
+	};
+
 
 	const uint32_t cyclesRequested = cycles;
 	while (cycles > 0)
@@ -897,11 +907,49 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			case INS_CMP:
 			{
 				uint8_t operand = this->FetchByte(cycles, memory);
-				uint8_t temp = this->A - operand;
-
-				this->Flags.C = this->A >= operand;
-				this->Flags.Z = this->A == operand;
-				this->Flags.N = (temp & NegativeFlagBit) > 0;
+				CMP(operand);
+			} break;
+			case INS_CMP_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand);
+			} break;
+			case INS_CMP_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand);
+			} break;
+			case INS_CMP_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand);
+			} break;
+			case INS_CMP_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand);
+			} break;
+			case INS_CMP_ABSY:
+			{
+				uint16_t address = this->AddressAbsoluteY(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand);
+			} break;
+			case INS_CMP_INDX:
+			{
+				uint16_t address = this->AddressIndirectX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand);
+			} break;
+			case INS_CMP_INDY:
+			{
+				uint16_t address = this->AddressIndirectY(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand);
 			} break;
 			case INS_NOP:
 			{
