@@ -38,6 +38,9 @@
     <ClCompile Include="AddWithCarryTest.cpp">
       <Filter>Tests\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CompareRegistersTest.cpp">
+      <Filter>Tests\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseTest.h">
@@ -74,6 +77,9 @@
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AddWithCarryTest.h">
+      <Filter>Tests\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompareRegistersTest.h">
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -35,6 +35,7 @@
   <ItemGroup>
     <ClInclude Include="AddWithCarryTest.h" />
     <ClInclude Include="BranchesTest.h" />
+    <ClInclude Include="CompareRegistersTest.h" />
     <ClInclude Include="IncrementDecrementTest.h" />
     <ClInclude Include="LoadProgramTest.h" />
     <ClInclude Include="LogicalOperationsTest.h" />
@@ -49,6 +50,7 @@
   <ItemGroup>
     <ClCompile Include="AddWithCarryTest.cpp" />
     <ClCompile Include="BranchesTest.cpp" />
+    <ClCompile Include="CompareRegistersTest.cpp" />
     <ClCompile Include="IncrementDecrementTest.cpp" />
     <ClCompile Include="LoadProgramTest.cpp" />
     <ClCompile Include="LogicalOperationsTest.cpp" />

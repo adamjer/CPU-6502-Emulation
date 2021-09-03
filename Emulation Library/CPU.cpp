@@ -894,6 +894,15 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint8_t operand = this->ReadByte(cycles, address, memory);
 				ADC(operand);
 			} break;
+			case INS_CMP:
+			{
+				uint8_t operand = this->FetchByte(cycles, memory);
+				uint8_t temp = this->A - operand;
+
+				this->Flags.C = this->A >= operand;
+				this->Flags.Z = this->A == operand;
+				this->Flags.N = (temp & NegativeFlagBit) > 0;
+			} break;
 			case INS_NOP:
 			{
 				--cycles;
