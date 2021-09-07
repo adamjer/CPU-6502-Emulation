@@ -295,12 +295,12 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	};
 
 	//Sets the processor status for CMP/CPX/CPY instructions
-	auto CMP = [&cycles, &memory, this](uint8_t operand)
+	auto CMP = [&cycles, &memory, this](uint8_t operand, const uint8_t value)
 	{
-		uint8_t temp = this->A - operand;
+		uint8_t temp = value - operand;
 
-		this->Flags.C = this->A >= operand;
-		this->Flags.Z = this->A == operand;
+		this->Flags.C = value >= operand;
+		this->Flags.Z = value == operand;
 		this->Flags.N = (temp & NegativeFlagBit) > 0;
 	};
 
@@ -907,49 +907,83 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			case INS_CMP:
 			{
 				uint8_t operand = this->FetchByte(cycles, memory);
-				CMP(operand);
+				CMP(operand, this->A);
 			} break;
 			case INS_CMP_ZP:
 			{
 				uint16_t address = this->AddressZeroPage(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
-				CMP(operand);
+				CMP(operand, this->A);
 			} break;
 			case INS_CMP_ZPX:
 			{
 				uint16_t address = this->AddressZeroPageX(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
-				CMP(operand);
+				CMP(operand, this->A);
 			} break;
 			case INS_CMP_ABS:
 			{
 				uint16_t address = this->AddressAbsolute(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
-				CMP(operand);
+				CMP(operand, this->A);
 			} break;
 			case INS_CMP_ABSX:
 			{
 				uint16_t address = this->AddressAbsoluteX(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
-				CMP(operand);
+				CMP(operand, this->A);
 			} break;
 			case INS_CMP_ABSY:
 			{
 				uint16_t address = this->AddressAbsoluteY(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
-				CMP(operand);
+				CMP(operand, this->A);
 			} break;
 			case INS_CMP_INDX:
 			{
 				uint16_t address = this->AddressIndirectX(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
-				CMP(operand);
+				CMP(operand, this->A);
 			} break;
 			case INS_CMP_INDY:
 			{
 				uint16_t address = this->AddressIndirectY(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
-				CMP(operand);
+				CMP(operand, this->A);
+			} break;
+			case INS_CPX:
+			{
+				uint8_t operand = this->FetchByte(cycles, memory);
+				CMP(operand, this->X);
+			} break;
+			case INS_CPY:
+			{
+				uint8_t operand = this->FetchByte(cycles, memory);
+				CMP(operand, this->Y);
+			} break;
+			case INS_CPX_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand, this->X);
+			} break;
+			case INS_CPY_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand, this->Y);
+			} break;
+			case INS_CPX_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand, this->X);
+			} break;
+			case INS_CPY_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				CMP(operand, this->Y);
 			} break;
 			case INS_NOP:
 			{

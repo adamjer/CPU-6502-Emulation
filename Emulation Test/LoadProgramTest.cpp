@@ -60,7 +60,8 @@ TEST_F(BaseTest, TestLoadProgramThatIncrementMemory)
     }
 }
 
-TEST_F(BaseTest, TestLoadProgramLoopsInfintaly)
+
+TEST_F(BaseTest, TestLoadProgramLoopsInfinitaly)
 {
     // given:
 
@@ -76,5 +77,25 @@ TEST_F(BaseTest, TestLoadProgramLoopsInfintaly)
     {
         clock -= cpu.Execute(1, memory);
         //cpu.PrintStatus();
+    }
+}
+
+
+TEST_F(BaseTest, TestLoadProgramLoop)
+{
+    // given:
+
+    // start - inline a little program
+
+    // end - inline a little program
+
+    // when:   
+    uint16_t startAddress = cpu.LoadProgram(programs[3], memory);
+    cpu.Reset(startAddress);
+
+    for (int32_t clock = 25; clock > 0;)
+    {
+        clock -= cpu.Execute(1, memory);
+        cpu.PrintStatus();
     }
 }

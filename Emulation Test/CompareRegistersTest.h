@@ -29,5 +29,11 @@ public:
 	void CMPAbsoluteY(const TestData&);
 	void CMPIndirectX(const TestData&);
 	void CMPIndirectY(const TestData&);
+	void CMPXImmediate(const TestData&);
+	void CMPYImmediate(const TestData&);
+	void CMPXZeroPage(const TestData&);
+	void CMPYZeroPage(const TestData&);
+	void CMPXAbsolute(const TestData&);
+	void CMPYAbsolute(const TestData&);
 };
 

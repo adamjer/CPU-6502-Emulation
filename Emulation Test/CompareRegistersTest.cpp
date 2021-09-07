@@ -517,3 +517,319 @@ TEST_F(CompareRegistersTest, CMPIndirectYCanCompareTwoValuesThatResultInANegativ
 {
     CMPIndirectY(CompareTwoValuesThatResultInANegative());
 }
+
+
+void CompareRegistersTest::CMPXImmediate(const TestData& test)
+{
+    // given:
+    cpu.Reset(test.startAddress, memory);
+    cpu.X = test.values[0];
+    cpu.Flags.C = !test.expectC;
+    cpu.Flags.Z = !test.expectZ;
+    cpu.Flags.N = !test.expectN;
+    // start - inline a little program
+    memory[test.startAddress] = CPU::INS_CPX;
+    memory[test.startAddress + 1] = test.values[1];
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 2;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.X, test.values[0]);
+    EXPECT_EQ(cpu.Flags.C, test.expectC);
+    EXPECT_EQ(cpu.Flags.Z, test.expectZ);
+    EXPECT_EQ(cpu.Flags.N, test.expectN);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(CompareRegistersTest, CMPXImmediateCanCompareTwoIdenticalValues)
+{
+    CMPXImmediate(CompareTwoIdenticalValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPXImmediateCanCompareTwoDifferentPositiveValues)
+{
+    CMPXImmediate(CompareTwoDifferentPositiveValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPXImmediateCanCompareANegativeNumberToAPositive)
+{
+    CMPXImmediate(CompareANegativeNumberToAPositive());
+}
+
+
+TEST_F(CompareRegistersTest, CMPXImmediateCanCompareTwoValuesThatResultInANegative)
+{
+    CMPXImmediate(CompareTwoValuesThatResultInANegative());
+}
+
+
+void CompareRegistersTest::CMPYImmediate(const TestData& test)
+{
+    // given:
+    cpu.Reset(test.startAddress, memory);
+    cpu.Y = test.values[0];
+    cpu.Flags.C = !test.expectC;
+    cpu.Flags.Z = !test.expectZ;
+    cpu.Flags.N = !test.expectN;
+    // start - inline a little program
+    memory[test.startAddress] = CPU::INS_CPY;
+    memory[test.startAddress + 1] = test.values[1];
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 2;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.Y, test.values[0]);
+    EXPECT_EQ(cpu.Flags.C, test.expectC);
+    EXPECT_EQ(cpu.Flags.Z, test.expectZ);
+    EXPECT_EQ(cpu.Flags.N, test.expectN);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(CompareRegistersTest, CMPYImmediateCanCompareTwoIdenticalValues)
+{
+    CMPYImmediate(CompareTwoIdenticalValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPYImmediateCanCompareTwoDifferentPositiveValues)
+{
+    CMPYImmediate(CompareTwoDifferentPositiveValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPYImmediateCanCompareANegativeNumberToAPositive)
+{
+    CMPYImmediate(CompareANegativeNumberToAPositive());
+}
+
+
+TEST_F(CompareRegistersTest, CMPYImmediateCanCompareTwoValuesThatResultInANegative)
+{
+    CMPYImmediate(CompareTwoValuesThatResultInANegative());
+}
+
+
+void CompareRegistersTest::CMPXZeroPage(const TestData& test)
+{
+    // given:
+    cpu.Reset(test.startAddress, memory);
+    cpu.X = test.values[0];
+    cpu.Flags.C = !test.expectC;
+    cpu.Flags.Z = !test.expectZ;
+    cpu.Flags.N = !test.expectN;
+    // start - inline a little program
+    memory[test.startAddress] = CPU::INS_CPX_ZP;
+    memory[test.startAddress + 1] = test.address[0];
+    memory[test.address[0]] = test.values[1];
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 3;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.X, test.values[0]);
+    EXPECT_EQ(cpu.Flags.C, test.expectC);
+    EXPECT_EQ(cpu.Flags.Z, test.expectZ);
+    EXPECT_EQ(cpu.Flags.N, test.expectN);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(CompareRegistersTest, CMPXZeroPageCanCompareTwoIdenticalValues)
+{
+    CMPXZeroPage(CompareTwoIdenticalValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPXZeroPageCanCompareTwoDifferentPositiveValues)
+{
+    CMPXZeroPage(CompareTwoDifferentPositiveValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPXZeroPageCanCompareANegativeNumberToAPositive)
+{
+    CMPXZeroPage(CompareANegativeNumberToAPositive());
+}
+
+
+TEST_F(CompareRegistersTest, CMPXZeroPageCanCompareTwoValuesThatResultInANegative)
+{
+    CMPXZeroPage(CompareTwoValuesThatResultInANegative());
+}
+
+
+void CompareRegistersTest::CMPYZeroPage(const TestData& test)
+{
+    // given:
+    cpu.Reset(test.startAddress, memory);
+    cpu.Y = test.values[0];
+    cpu.Flags.C = !test.expectC;
+    cpu.Flags.Z = !test.expectZ;
+    cpu.Flags.N = !test.expectN;
+    // start - inline a little program
+    memory[test.startAddress] = CPU::INS_CPY_ZP;
+    memory[test.startAddress + 1] = test.address[0];
+    memory[test.address[0]] = test.values[1];
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 3;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.Y, test.values[0]);
+    EXPECT_EQ(cpu.Flags.C, test.expectC);
+    EXPECT_EQ(cpu.Flags.Z, test.expectZ);
+    EXPECT_EQ(cpu.Flags.N, test.expectN);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(CompareRegistersTest, CMPYZeroPageCanCompareTwoIdenticalValues)
+{
+    CMPYZeroPage(CompareTwoIdenticalValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPYZeroPageCanCompareTwoDifferentPositiveValues)
+{
+    CMPYZeroPage(CompareTwoDifferentPositiveValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPYZeroPageCanCompareANegativeNumberToAPositive)
+{
+    CMPYZeroPage(CompareANegativeNumberToAPositive());
+}
+
+
+TEST_F(CompareRegistersTest, CMPYZeroPageCanCompareTwoValuesThatResultInANegative)
+{
+    CMPYZeroPage(CompareTwoValuesThatResultInANegative());
+}
+
+
+void CompareRegistersTest::CMPXAbsolute(const TestData& test)
+{
+    // given:
+    cpu.Reset(test.startAddress, memory);
+    cpu.X = test.values[0];
+    cpu.Flags.C = !test.expectC;
+    cpu.Flags.Z = !test.expectZ;
+    cpu.Flags.N = !test.expectN;
+    // start - inline a little program
+    memory[test.startAddress] = CPU::INS_CPX_ABS;
+    memory[test.startAddress + 1] = test.address[0];
+    memory[test.address[0]] = test.values[1];
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 4;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.X, test.values[0]);
+    EXPECT_EQ(cpu.Flags.C, test.expectC);
+    EXPECT_EQ(cpu.Flags.Z, test.expectZ);
+    EXPECT_EQ(cpu.Flags.N, test.expectN);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(CompareRegistersTest, CMPXAbsoluteCanCompareTwoIdenticalValues)
+{
+    CMPXAbsolute(CompareTwoIdenticalValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPXAbsoluteCanCompareTwoDifferentPositiveValues)
+{
+    CMPXAbsolute(CompareTwoDifferentPositiveValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPXAbsoluteCanCompareANegativeNumberToAPositive)
+{
+    CMPXAbsolute(CompareANegativeNumberToAPositive());
+}
+
+
+TEST_F(CompareRegistersTest, CMPXAbsoluteCanCompareTwoValuesThatResultInANegative)
+{
+    CMPXAbsolute(CompareTwoValuesThatResultInANegative());
+}
+
+
+void CompareRegistersTest::CMPYAbsolute(const TestData& test)
+{
+    // given:
+    cpu.Reset(test.startAddress, memory);
+    cpu.Y = test.values[0];
+    cpu.Flags.C = !test.expectC;
+    cpu.Flags.Z = !test.expectZ;
+    cpu.Flags.N = !test.expectN;
+    // start - inline a little program
+    memory[test.startAddress] = CPU::INS_CPY_ABS;
+    memory[test.startAddress + 1] = test.address[0];
+    memory[test.address[0]] = test.values[1];
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 4;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.Y, test.values[0]);
+    EXPECT_EQ(cpu.Flags.C, test.expectC);
+    EXPECT_EQ(cpu.Flags.Z, test.expectZ);
+    EXPECT_EQ(cpu.Flags.N, test.expectN);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(CompareRegistersTest, CMPYAbsoluteCanCompareTwoIdenticalValues)
+{
+    CMPYAbsolute(CompareTwoIdenticalValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPYAbsoluteCanCompareTwoDifferentPositiveValues)
+{
+    CMPYAbsolute(CompareTwoDifferentPositiveValues());
+}
+
+
+TEST_F(CompareRegistersTest, CMPYAbsoluteCanCompareANegativeNumberToAPositive)
+{
+    CMPYAbsolute(CompareANegativeNumberToAPositive());
+}
+
+
+TEST_F(CompareRegistersTest, CMPYAbsoluteCanCompareTwoValuesThatResultInANegative)
+{
+    CMPYAbsolute(CompareTwoValuesThatResultInANegative());
+}
