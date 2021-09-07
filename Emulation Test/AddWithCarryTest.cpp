@@ -9,7 +9,7 @@ void AddWithCarryTest::ExpectUnaffectedRegisters(const CPU& copy)
 }
 
 
-void AddWithCarryTest::TestADCAbsolute(const TestData& test)
+void AddWithCarryTest::TestADCAbsolute(const TestData& test, Operation operation = Operation::Add)
 {
     // given:
     cpu.Reset(test.startAddress, memory);
@@ -19,7 +19,7 @@ void AddWithCarryTest::TestADCAbsolute(const TestData& test)
     cpu.Flags.N = !test.expectN;
     cpu.Flags.V = !test.expectV;
     // start - inline a little program
-    memory[test.startAddress] = CPU::INS_ADC_ABS;
+    memory[test.startAddress] = (operation == Operation::Add) ? CPU::INS_ADC_ABS : CPU::INS_SBC_ABS;
     memory[test.startAddress + 1] = test.address[1];
     memory[test.startAddress + 2] = test.address[0];
     memory[(test.address[0] << 8) + test.address[1]] = test.values[1];
@@ -792,4 +792,179 @@ TEST_F(AddWithCarryTest, ADCIndirectYCanAddPositiveAndNegativeNumbersWithCarry)
     testData.answer = 4;
 
     TestADCIndirectY(testData);
+}
+
+
+//Substractions tests
+void AddWithCarryTest::TestSBCAbsolute(const TestData& test)
+{
+    TestADCAbsolute(test, Operation::Subtract);
+}
+
+
+TEST_F(AddWithCarryTest, SBCAbsCanSubtractZeroFromZeroAndGetZero)
+{
+    TestData testData;
+
+    testData.values[0] = 0x00;
+    testData.values[1] = 0x00;
+    testData.address[0] = 0x80;
+    testData.address[1] = 0x00;
+    testData.offset = 0x01;
+    testData.startAddress = 0xFF00;
+    testData.carryBefore = true;
+    testData.expectC = true;
+    testData.expectN = false;
+    testData.expectV = false;
+    testData.expectZ = true;
+    testData.answer = 0x00;
+
+    TestSBCAbsolute(testData);
+}
+
+
+TEST_F(AddWithCarryTest, SBCAbsCanSubtractZeroFromZeroAndCarryAndGetMinusOne)
+{
+    TestData testData;
+
+    testData.values[0] = 0x00;
+    testData.values[1] = 0x00;
+    testData.address[0] = 0x80;
+    testData.address[1] = 0x00;
+    testData.offset = 0x01;
+    testData.startAddress = 0xFF00;
+    testData.carryBefore = false;
+    testData.expectC = false;
+    testData.expectN = true;
+    testData.expectV = false;
+    testData.expectZ = false;
+    testData.answer = static_cast<uint8_t>(-1);
+
+    TestSBCAbsolute(testData);
+}
+
+
+TEST_F(AddWithCarryTest, SBCAbsCanSubtractOneFromZeroAndGetMinusOne)
+{
+    TestData testData;
+
+    testData.values[0] = 0x00;
+    testData.values[1] = 0x01;
+    testData.address[0] = 0x80;
+    testData.address[1] = 0x00;
+    testData.offset = 0x01;
+    testData.startAddress = 0xFF00;
+    testData.carryBefore = true;
+    testData.expectC = false;
+    testData.expectN = true;
+    testData.expectV = false;
+    testData.expectZ = false;
+    testData.answer = static_cast<uint8_t>(-1);
+
+    TestSBCAbsolute(testData);
+}
+
+
+TEST_F(AddWithCarryTest, SBCAbsCanSubtractOneFromZeroWithCarryAndGetMinusTwo)
+{
+    TestData testData;
+
+    testData.values[0] = 0x00;
+    testData.values[1] = 0x01;
+    testData.address[0] = 0x80;
+    testData.address[1] = 0x00;
+    testData.offset = 0x01;
+    testData.startAddress = 0xFF00;
+    testData.carryBefore = false;
+    testData.expectC = false;
+    testData.expectN = true;
+    testData.expectV = false;
+    testData.expectZ = false;
+    testData.answer = static_cast<uint8_t>(-2);
+
+    TestSBCAbsolute(testData);
+}
+
+
+TEST_F(AddWithCarryTest, SBCAbsCanSubtractTwoNegativeNumbersAndGetSignedOverflow)
+{
+    TestData testData;
+
+    testData.values[0] = static_cast<uint8_t>(-128);
+    testData.values[1] = 0x01;
+    testData.address[0] = 0x80;
+    testData.address[1] = 0x00;
+    testData.offset = 0x01;
+    testData.startAddress = 0xFF00;
+    testData.carryBefore = true;
+    testData.expectC = true;
+    testData.expectN = false;
+    testData.expectV = true;
+    testData.expectZ = false;
+    testData.answer = 127;
+
+    TestSBCAbsolute(testData);
+}
+
+
+TEST_F(AddWithCarryTest, SBCAbsCanSubtractAPositiveAndNegativeNumberAndGetSignedOverflow)
+{
+    TestData testData;
+
+    testData.values[0] = 127;
+    testData.values[1] = static_cast<uint8_t>(-1);
+    testData.address[0] = 0x80;
+    testData.address[1] = 0x00;
+    testData.offset = 0x01;
+    testData.startAddress = 0xFF00;
+    testData.carryBefore = true;
+    testData.expectC = false;
+    testData.expectN = true;
+    testData.expectV = true;
+    testData.expectZ = false;
+    testData.answer = 128;
+
+    TestSBCAbsolute(testData);
+}
+
+
+TEST_F(AddWithCarryTest, SBCAbsCanSubtractTwoPositiveNumbers)
+{
+    TestData testData;
+
+    testData.values[0] = 65;
+    testData.values[1] = 13;
+    testData.address[0] = 0x80;
+    testData.address[1] = 0x00;
+    testData.offset = 0x01;
+    testData.startAddress = 0xFF00;
+    testData.carryBefore = true;
+    testData.expectC = true;
+    testData.expectN = false;
+    testData.expectV = false;
+    testData.expectZ = false;
+    testData.answer = 52;
+
+    TestSBCAbsolute(testData);
+}
+
+
+TEST_F(AddWithCarryTest, SBCAbsCanSubtractTwoNegativeNumbers)
+{
+    TestData testData;
+
+    testData.values[0] = -20;
+    testData.values[1] = -17;
+    testData.address[0] = 0x80;
+    testData.address[1] = 0x00;
+    testData.offset = 0x01;
+    testData.startAddress = 0xFF00;
+    testData.carryBefore = true;
+    testData.expectC = false;
+    testData.expectN = true;
+    testData.expectV = false;
+    testData.expectZ = false;
+    testData.answer = -3;
+
+    TestSBCAbsolute(testData);
 }

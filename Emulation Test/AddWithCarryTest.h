@@ -6,6 +6,11 @@ class AddWithCarryTest : public BaseTest
 {
 public:
 
+	enum class Operation
+	{
+		Add, Subtract
+	};
+
 	struct TestData
 	{
 		uint8_t values[2];
@@ -18,7 +23,7 @@ public:
 		uint8_t answer;
 	};
 
-	void TestADCAbsolute(const TestData&);
+	void TestADCAbsolute(const TestData&, Operation);
 	void TestADCAbsoluteX(const TestData&);
 	void TestADCAbsoluteY(const TestData&);
 	void TestADCImmediate(const TestData&);
@@ -26,6 +31,7 @@ public:
 	void TestADCZeroPageX(const TestData&);
 	void TestADCIndirectX(const TestData&);
 	void TestADCIndirectY(const TestData&);
+	void TestSBCAbsolute(const TestData&);
 
 	void ExpectUnaffectedRegisters(const CPU&) override;
 };

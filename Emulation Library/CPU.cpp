@@ -294,6 +294,12 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			((this->A ^ operand) & NegativeFlagBit);
 	};
 
+	//Do subtract with carry given the operand
+	auto SBC = [&ADC](uint8_t operand)
+	{
+		ADC(~operand);
+	};
+
 	//Sets the processor status for CMP/CPX/CPY instructions
 	auto CMP = [&cycles, &memory, this](uint8_t operand)
 	{
@@ -903,6 +909,12 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint16_t address = this->AddressIndirectY(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
 				ADC(operand);
+			} break;
+			case INS_SBC_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				SBC(operand);
 			} break;
 			case INS_CMP:
 			{
