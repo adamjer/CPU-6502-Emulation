@@ -311,6 +311,18 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	};
 
 
+	//Shifts left 
+	auto ASL = [&cycles, this](uint8_t operand) -> uint8_t
+	{
+		uint8_t result = operand << 1;
+		Flags.C = (operand & NegativeFlagBit) > 0;
+		SetNegativeAndZeroFlags(result);
+		--cycles;
+
+		return result;
+	};
+
+
 	const uint32_t cyclesRequested = cycles;
 	while (cycles > 0)
 	{
@@ -996,6 +1008,38 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint16_t address = this->AddressAbsolute(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
 				CMP(operand, this->Y);
+			} break;
+			case INS_ASL:
+			{
+				this->A = ASL(this->A);
+			} break;
+			case INS_ASL_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				
+				this->WriteByte(cycles, address, memory, ASL(operand));
+			} break;
+			case INS_ASL_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ASL(operand));
+			} break;
+			case INS_ASL_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ASL(operand));
+			} break;
+			case INS_ASL_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory, true);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ASL(operand));
 			} break;
 			case INS_NOP:
 			{

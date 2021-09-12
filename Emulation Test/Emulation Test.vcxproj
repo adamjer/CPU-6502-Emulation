@@ -42,6 +42,7 @@
     <ClInclude Include="BaseTest.h" />
     <ClInclude Include="JumpsAndCallsTest.h" />
     <ClInclude Include="LoadRegisterTest.h" />
+    <ClInclude Include="ShiftsTest.h" />
     <ClInclude Include="StackOperationsTest.h" />
     <ClInclude Include="StatusFlagChangeTest.h" />
     <ClInclude Include="StoreRegisterTest.h" />
@@ -61,6 +62,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="ShiftsTest.cpp" />
     <ClCompile Include="StackOperationsTest.cpp" />
     <ClCompile Include="StatusFlagChangeTest.cpp" />
     <ClCompile Include="StoreRegisterTest.cpp">
