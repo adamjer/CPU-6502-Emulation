@@ -323,6 +323,19 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	};
 
 
+	//Shifts right 
+	auto LSR = [&cycles, this](uint8_t operand) -> uint8_t
+	{
+		uint8_t result = operand >> 1;
+		constexpr uint8_t BitZero = 0b00000001;
+		Flags.C = (operand & BitZero) > 0;
+		SetNegativeAndZeroFlags(result);
+		--cycles;
+
+		return result;
+	};
+
+
 	const uint32_t cyclesRequested = cycles;
 	while (cycles > 0)
 	{
@@ -1040,6 +1053,38 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint8_t operand = this->ReadByte(cycles, address, memory);
 
 				this->WriteByte(cycles, address, memory, ASL(operand));
+			} break;
+			case INS_LSR:
+			{
+				this->A = LSR(this->A);
+			} break;
+			case INS_LSR_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, LSR(operand));
+			} break;
+			case INS_LSR_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, LSR(operand));
+			} break;
+			case INS_LSR_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, LSR(operand));
+			} break;
+			case INS_LSR_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory, true);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, LSR(operand));
 			} break;
 			case INS_NOP:
 			{

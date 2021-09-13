@@ -364,3 +364,360 @@ TEST_F(ShiftsTest, ASLAbsoluteXCanShiftNegativeValue)
     EXPECT_EQ(cpu.Flags.N, true);
     this->ExpectUnaffectedRegisters(copy);
 }
+
+
+TEST_F(ShiftsTest, LSRCanShiftTheValueOfOne)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x01, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x01;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.A = values[0];
+    cpu.Flags.C = false;
+    cpu.Flags.Z = false;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 2;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, 0x00);
+    EXPECT_EQ(cpu.Flags.C, true);
+    EXPECT_EQ(cpu.Flags.Z, true);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(ShiftsTest, LSRCanShiftAZeroIntoTheCarryFlag)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x08, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x01;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.A = values[0];
+    cpu.Flags.C = true;
+    cpu.Flags.Z = true;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR;
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 2;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.A, 0x04);
+    EXPECT_EQ(cpu.Flags.C, false);
+    EXPECT_EQ(cpu.Flags.Z, false);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(ShiftsTest, LSRZeroPageCanShiftTheValueOfOne)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x01, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x01;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.A = values[0];
+    cpu.Flags.C = false;
+    cpu.Flags.Z = false;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR_ZP;
+    memory[startAddress + 1] = address[0];
+    memory[address[0]] = values[0];
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 5;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(memory[address[0]], 0x00);
+    EXPECT_EQ(cpu.Flags.C, true);
+    EXPECT_EQ(cpu.Flags.Z, true);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(ShiftsTest, LSRZeroPageCanShiftAZeroIntoTheCarryFlag)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x08, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x01;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.Flags.C = true;
+    cpu.Flags.Z = true;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR_ZP;
+    memory[startAddress + 1] = address[0];
+    memory[address[0]] = values[0];
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 5;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(memory[address[0]], 0x04);
+    EXPECT_EQ(cpu.Flags.C, false);
+    EXPECT_EQ(cpu.Flags.Z, false);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(ShiftsTest, LSRZeroPageXCanShiftTheValueOfOne)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x01, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x05;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.X = offset;
+    cpu.Flags.C = false;
+    cpu.Flags.Z = false;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR_ZPX;
+    memory[startAddress + 1] = address[0];
+    memory[address[0] + offset] = values[0];
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 6;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(memory[address[0] + offset], 0x00);
+    EXPECT_EQ(cpu.Flags.C, true);
+    EXPECT_EQ(cpu.Flags.Z, true);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(ShiftsTest, LSRZeroPageXCanShiftAZeroIntoTheCarryFlag)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x08, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x27;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.X = offset;
+    cpu.Flags.C = true;
+    cpu.Flags.Z = true;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR_ZPX;
+    memory[startAddress + 1] = address[0];
+    memory[address[0] + offset] = values[0];
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 6;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(memory[address[0] + offset], 0x04);
+    EXPECT_EQ(cpu.Flags.C, false);
+    EXPECT_EQ(cpu.Flags.Z, false);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(ShiftsTest, LSRAbsoluteCanShiftTheValueOfOne)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x01, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x05;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.Flags.C = false;
+    cpu.Flags.Z = false;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR_ABS;
+    memory[startAddress + 1] = address[1];
+    memory[startAddress + 2] = address[0];
+    memory[(address[0] << 8) + address[1]] = values[0];
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 6;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(memory[(address[0] << 8) + address[1]], 0x00);
+    EXPECT_EQ(cpu.Flags.C, true);
+    EXPECT_EQ(cpu.Flags.Z, true);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(ShiftsTest, LSRAbsoluteCanShiftAZeroIntoTheCarryFlag)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x08, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x27;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.Flags.C = true;
+    cpu.Flags.Z = true;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR_ABS;
+    memory[startAddress + 1] = address[1];
+    memory[startAddress + 2] = address[0];
+    memory[(address[0] << 8) + address[1]] = values[0];
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 6;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(memory[(address[0] << 8) + address[1]], 0x04);
+    EXPECT_EQ(cpu.Flags.C, false);
+    EXPECT_EQ(cpu.Flags.Z, false);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(ShiftsTest, LSRAbsoluteXCanShiftTheValueOfOne)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x01, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x05;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.X = offset;
+    cpu.Flags.C = false;
+    cpu.Flags.Z = false;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR_ABSX;
+    memory[startAddress + 1] = address[1];
+    memory[startAddress + 2] = address[0];
+    memory[(address[0] << 8) + address[1] + offset] = values[0];
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 7;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(memory[(address[0] << 8) + address[1] + offset], 0x00);
+    EXPECT_EQ(cpu.Flags.C, true);
+    EXPECT_EQ(cpu.Flags.Z, true);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
+TEST_F(ShiftsTest, LSRAbsoluteXCanShiftAZeroIntoTheCarryFlag)
+{
+    // given:
+    // given:
+    const uint8_t values[] = { 0x08, 0x00 };
+    const uint8_t address[] = { 0x80, 0x02 };
+    const uint16_t offset = 0x27;
+    const uint16_t startAddress = 0xFF00;
+
+    cpu.Reset(startAddress, memory);
+    cpu.X = offset;
+    cpu.Flags.C = true;
+    cpu.Flags.Z = true;
+    cpu.Flags.N = true;
+    // start - inline a little program
+    memory[startAddress] = CPU::INS_LSR_ABSX;
+    memory[startAddress + 1] = address[1];
+    memory[startAddress + 2] = address[0];
+    memory[(address[0] << 8) + address[1] + offset] = values[0];
+    // end - inline a little program
+
+    // when:    
+    constexpr int32_t EXPECTED_CYCLES = 7;
+    CPU copy = cpu;
+
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(memory[(address[0] << 8) + address[1] + offset], 0x04);
+    EXPECT_EQ(cpu.Flags.C, false);
+    EXPECT_EQ(cpu.Flags.Z, false);
+    EXPECT_EQ(cpu.Flags.N, false);
+    this->ExpectUnaffectedRegisters(copy);
+}
