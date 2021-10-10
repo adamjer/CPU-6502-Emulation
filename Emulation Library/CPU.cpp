@@ -336,6 +336,20 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	};
 
 
+	//Shifts left 
+	auto ROL = [&cycles, this](uint8_t operand) -> uint8_t
+	{
+		uint8_t newBit1 = Flags.C ? 0b0000001 : 0;
+		Flags.C = (operand & NegativeFlagBit) > 0;
+		operand <<= 1;
+		operand |= newBit1;
+		SetNegativeAndZeroFlags(operand);
+		--cycles;
+
+		return operand;
+	};
+
+
 	const uint32_t cyclesRequested = cycles;
 	while (cycles > 0)
 	{
@@ -1085,6 +1099,38 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint8_t operand = this->ReadByte(cycles, address, memory);
 
 				this->WriteByte(cycles, address, memory, LSR(operand));
+			} break;
+			case INS_ROL:
+			{
+				this->A = ROL(this->A);
+			} break;
+			case INS_ROL_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ROL(operand));
+			} break;
+			case INS_ROL_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ROL(operand));
+			} break;
+			case INS_ROL_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ROL(operand));
+			} break;
+			case INS_ROL_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory, true);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ROL(operand));
 			} break;
 			case INS_NOP:
 			{
