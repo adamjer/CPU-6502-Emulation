@@ -283,7 +283,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	auto ADC = [&cycles, &memory, this](uint8_t operand)
 	{
 		assert(Flags.D == false, "haven't handled decimal mode!");
-		const bool areSignBitsTheSame = !((this->A ^ operand) & NegativeFlagBit);
+		const bool areSignBitsTheSame = !((this->A ^ operand) & NegativeBit);
 		uint16_t sum = this->A;
 		sum += operand;
 		sum += this->Flags.C;
@@ -291,7 +291,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 		this->SetNegativeAndZeroFlags(A);
 		Flags.C = sum > 0xFF;
 		Flags.V = areSignBitsTheSame &&
-			((this->A ^ operand) & NegativeFlagBit);
+			((this->A ^ operand) & NegativeBit);
 	};
 
 	//Do subtract with carry given the operand
@@ -307,7 +307,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 
 		this->Flags.C = value >= operand;
 		this->Flags.Z = value == operand;
-		this->Flags.N = (temp & NegativeFlagBit) > 0;
+		this->Flags.N = (temp & NegativeBit) > 0;
 	};
 
 
@@ -315,7 +315,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	auto ASL = [&cycles, this](uint8_t operand) -> uint8_t
 	{
 		uint8_t result = operand << 1;
-		Flags.C = (operand & NegativeFlagBit) > 0;
+		Flags.C = (operand & NegativeBit) > 0;
 		SetNegativeAndZeroFlags(result);
 		--cycles;
 
@@ -327,8 +327,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	auto LSR = [&cycles, this](uint8_t operand) -> uint8_t
 	{
 		uint8_t result = operand >> 1;
-		constexpr uint8_t BitZero = 0b00000001;
-		Flags.C = (operand & BitZero) > 0;
+		Flags.C = (operand & ZeroBit) > 0;
 		SetNegativeAndZeroFlags(result);
 		--cycles;
 
@@ -339,10 +338,24 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	//Shifts left 
 	auto ROL = [&cycles, this](uint8_t operand) -> uint8_t
 	{
-		uint8_t newBit1 = Flags.C ? 0b0000001 : 0;
-		Flags.C = (operand & NegativeFlagBit) > 0;
+		uint8_t newBitZero = Flags.C ? ZeroBit : 0;
+		Flags.C = (operand & NegativeBit) > 0;
 		operand <<= 1;
-		operand |= newBit1;
+		operand |= newBitZero;
+		SetNegativeAndZeroFlags(operand);
+		--cycles;
+
+		return operand;
+	};
+
+
+	//Shifts right
+	auto ROR = [&cycles, this](uint8_t operand) -> uint8_t
+	{
+		uint8_t newBitSeven = Flags.C ? NegativeBit : 0;
+		Flags.C = (operand & ZeroBit) > 0;
+		operand >>= 1;
+		operand |= newBitSeven;
 		SetNegativeAndZeroFlags(operand);
 		--cycles;
 
@@ -704,16 +717,16 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint16_t address = this->AddressZeroPage(cycles, memory);
 				uint8_t value = this->ReadByte(cycles, address, memory);
 				this->Flags.Z = !(this->A & value);
-				this->Flags.N = (value & NegativeFlagBit) != 0;
-				this->Flags.V = (value & OverflowFlagBit) != 0;
+				this->Flags.N = (value & NegativeBit) != 0;
+				this->Flags.V = (value & OverflowBit) != 0;
 			} break;
 			case INS_BIT_ABS:
 			{
 				uint16_t address = this->AddressAbsolute(cycles, memory);
 				uint8_t value = this->ReadByte(cycles, address, memory);
 				this->Flags.Z = !(this->A & value);
-				this->Flags.N = (value & NegativeFlagBit) != 0;
-				this->Flags.V = (value & OverflowFlagBit) != 0;
+				this->Flags.N = (value & NegativeBit) != 0;
+				this->Flags.V = (value & OverflowBit) != 0;
 			} break;
 			case INS_TAX:
 			{
@@ -1131,6 +1144,38 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint8_t operand = this->ReadByte(cycles, address, memory);
 
 				this->WriteByte(cycles, address, memory, ROL(operand));
+			} break;
+			case INS_ROR:
+			{
+				this->A = ROR(this->A);
+			} break;
+			case INS_ROR_ZP:
+			{
+				uint16_t address = this->AddressZeroPage(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ROR(operand));
+			} break;
+			case INS_ROR_ZPX:
+			{
+				uint16_t address = this->AddressZeroPageX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ROR(operand));
+			} break;
+			case INS_ROR_ABS:
+			{
+				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ROR(operand));
+			} break;
+			case INS_ROR_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory, true);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+
+				this->WriteByte(cycles, address, memory, ROR(operand));
 			} break;
 			case INS_NOP:
 			{
