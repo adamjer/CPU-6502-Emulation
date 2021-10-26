@@ -195,34 +195,3 @@ TEST_F(StatusFlagChangeTest, CLVWillClearCarryFlag)
     EXPECT_EQ(cpu.PS | 0b01000000, copy.PS | 0b01000000);
     EXPECT_FALSE(cpu.Flags.V);
 }
-
-TEST_F(StatusFlagChangeTest, NOPWillDoNothingButConsumeCycle)
-{
-    // given:
-    const uint8_t values[] = { 0x42, 0x32 };
-    const uint8_t address[] = { 0x80, 0x02 };
-    const uint16_t offset = 0x01;
-    const uint16_t startAddress = 0xFF00;
-
-    cpu.Reset(startAddress, memory);
-    cpu.Y = values[0];
-    cpu.X = values[1];
-    // start - inline a little program
-    memory[startAddress] = CPU::INS_NOP;
-    // end - inline a little program
-
-    // when:    
-    constexpr int32_t EXPECTED_CYCLES = 2;
-    CPU copy = cpu;
-
-    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
-
-    // then:
-    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
-    EXPECT_EQ(cpu.PS, copy.PS);
-    EXPECT_EQ(cpu.PC, startAddress + 1);
-    EXPECT_EQ(cpu.X, copy.X);
-    EXPECT_EQ(cpu.Y, copy.Y);
-    EXPECT_EQ(cpu.A, copy.A);
-    EXPECT_EQ(cpu.SP, copy.SP);
-}

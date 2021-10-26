@@ -44,6 +44,9 @@
     <ClCompile Include="ShiftsTest.cpp">
       <Filter>Tests\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SystemFunctionsTest.cpp">
+      <Filter>Tests\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseTest.h">
@@ -86,6 +89,9 @@
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShiftsTest.h">
+      <Filter>Tests\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemFunctionsTest.h">
       <Filter>Tests\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,6 +19,7 @@ protected:
     Memory memory;
     CPU cpu;
 
+
     virtual void SetUp();
     virtual void Teardown();
 

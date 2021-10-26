@@ -46,6 +46,7 @@
     <ClInclude Include="StackOperationsTest.h" />
     <ClInclude Include="StatusFlagChangeTest.h" />
     <ClInclude Include="StoreRegisterTest.h" />
+    <ClInclude Include="SystemFunctionsTest.h" />
     <ClInclude Include="TransferRegisterTest.h" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +71,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="SystemFunctionsTest.cpp" />
     <ClCompile Include="test.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

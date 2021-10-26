@@ -17,4 +17,6 @@ public:
 
     void Reset();
     void Set();
+
+    bool operator== (const StatusFlags&) const;
 };

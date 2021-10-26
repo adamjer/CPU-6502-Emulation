@@ -102,11 +102,12 @@ uint16_t CPU::StackPointerToAddress() const
 }
 
 
-/*  Push the PC-1 onto the stack*/
-void CPU::PushProgramCounterToStack(int32_t& cycles, Memory& memory)
+void CPU::PushWordToStack(int32_t& cycles, Memory& memory, uint16_t value)
 {
-	this->WriteWord(cycles, this->StackPointerToAddress() - 1, memory, this->PC - 1);
-	this->SP -= 2;
+	this->WriteByte(cycles, StackPointerToAddress(), memory, value >> 8);
+	--this->SP;
+	this->WriteByte(cycles, StackPointerToAddress(), memory, value & 0xFF);
+	--this->SP;
 }
 
 
@@ -132,8 +133,8 @@ uint16_t CPU::PopWordFromStack(int32_t& cycles, const Memory& memory)
 uint8_t CPU::PopByteFromStack(int32_t& cycles, const Memory& memory)
 {
 	++this->SP;
+	--cycles;
 	uint8_t value = this->ReadByte(cycles, this->StackPointerToAddress(), memory);
-	cycles -= 2;
 	return value;
 }
 
@@ -535,7 +536,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			case INS_JSR:
 			{
 				uint16_t subroutineAddress = this->FetchWord(cycles, memory);
-				this->PushProgramCounterToStack(cycles, memory);
+				this->PushWordToStack(cycles, memory, this->PC - 1);
 				this->PC = subroutineAddress;
 				--cycles;
 				// StatusFlags not affected
@@ -581,6 +582,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			{
 				this->A = this->PopByteFromStack(cycles, memory);
 				this->SetNegativeAndZeroFlags(this->A);
+				--cycles;
 			} break;
 			case INS_PHP:
 			{
@@ -591,6 +593,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			{
 				this->PS = this->PopByteFromStack(cycles, memory);
 				// StatusFlags not affected
+				--cycles;
 			} break;
 			case INS_AND_IM:
 			{
@@ -1177,6 +1180,20 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 
 				this->WriteByte(cycles, address, memory, ROR(operand));
 			} break;
+			case INS_BRK:
+			{
+				constexpr uint16_t interruptVector = 0xFFFE;
+				PushWordToStack(cycles, memory, this->PC);
+				PushByteOntoStack(cycles, memory, this->PS);
+				this->PC = ReadWord(cycles, interruptVector, memory);
+				this->Flags.B = true;
+			} break;
+			case INS_RTI:
+			{
+				this->PS = PopByteFromStack(cycles, memory);
+				this->PC = PopWordFromStack(cycles, memory);
+				//this->
+			} break;
 			case INS_NOP:
 			{
 				--cycles;
@@ -1191,6 +1208,14 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 
 	const int32_t cyclesUsed = cyclesRequested - cycles;
 	return cyclesUsed;
+}
+
+
+bool CPU::operator==(const CPU& other) const
+{
+	if (this->PC == other.PC && this->PS == other.PS 
+		&& this->SP == other.SP && this->Flags == other.Flags)
+	return false;
 }
 
 

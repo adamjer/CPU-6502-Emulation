@@ -209,6 +209,8 @@ public:
         INS_ROR_ABSX = 0x7E,
 
         //misc
+        INS_BRK = 0x00,
+        INS_RTI = 0x40,
         INS_NOP = 0xEA;
 
 
@@ -228,7 +230,7 @@ public:
     void WriteByte(int32_t&, const uint16_t&, Memory&, const uint8_t);
     void WriteWord(int32_t&, const uint16_t&, Memory&, const uint16_t);
     uint16_t StackPointerToAddress() const;
-    void PushProgramCounterToStack(int32_t&, Memory&);
+    void PushWordToStack(int32_t&, Memory&, uint16_t);
     void PushByteOntoStack(int32_t&, Memory&, uint8_t);
     uint16_t PopWordFromStack(int32_t&, const Memory&);
     uint8_t PopByteFromStack(int32_t&, const Memory&);
@@ -241,5 +243,7 @@ public:
     uint16_t AddressAbsoluteY(int32_t&, const Memory&, bool);
     uint16_t AddressIndirectX(int32_t&, const Memory&);
     uint16_t AddressIndirectY(int32_t&, const Memory&, bool);
+
+    bool operator== (const CPU&) const;
 };
 
