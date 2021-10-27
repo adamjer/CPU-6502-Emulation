@@ -99,3 +99,34 @@ TEST_F(BaseTest, TestLoadProgramLoop)
         cpu.PrintStatus();
     }
 }
+
+
+TEST_F(BaseTest, LoadThe6502FunctionalTestProgram)
+{
+    // given:
+
+    // start - inline a little program
+
+    // end - inline a little program
+
+    // when:   
+    cpu.Reset(0x400, memory);
+    bool loop = true;
+
+    FILE* file;
+    if (fopen_s(&file, "-Emulation Functional Test\\6502_functional_test.bin", "rb") == 0) 
+    {
+        fread_s(&memory[0x000A], 65526, sizeof(uint8_t), 65526, file);
+        fclose(file);
+    }
+    else 
+    {
+        printf("Problem opening the file\n");
+        loop = false;
+    }
+
+    while (loop)
+    {
+        cpu.Execute(1, memory);
+    }
+}

@@ -97,6 +97,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Emulation Functional Test\6502_functional_test.a65">
+      <Filter>Functional Test</Filter>
+    </None>
+    <None Include="Emulation Functional Test\6502_functional_test.bin">
+      <Filter>Functional Test</Filter>
+    </None>
+    <None Include="Emulation Functional Test\6502_functional_test.lst">
+      <Filter>Functional Test</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">
@@ -107,6 +116,9 @@
     </Filter>
     <Filter Include="Tests\Header Files">
       <UniqueIdentifier>{eafd932f-65d9-43b7-a2be-6d011ab2f7ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Functional Test">
+      <UniqueIdentifier>{3e99800f-0737-4192-94a7-834d088b98ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

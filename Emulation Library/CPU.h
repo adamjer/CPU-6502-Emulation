@@ -23,9 +23,14 @@ public:
     
     // process status bits
     static constexpr uint8_t
-        NegativeBit = 0b10000000,
-        OverflowBit = 0b01000000,
-        ZeroBit = 0b00000001;
+        NegativeBit =   0b10000000,
+        OverflowBit =   0b01000000,
+        UnusedBit =     0b00100000,
+        BreakBit =      0b00010000,
+        DecimalBit =    0b00001000,
+        InterruptBit =  0b00000100,
+        ZeroBit =       0b00000010,
+        CarryBit =      0b00000001;
 
     // opcodes
     static constexpr uint8_t
@@ -216,8 +221,8 @@ public:
 
     void ResetRegisters();
     void Reset(Memory&);
-    void Reset(const uint16_t&, Memory&);
-    void Reset(const uint16_t&);
+    void Reset(const uint16_t, Memory&);
+    void Reset(const uint16_t);
     int32_t Execute(int32_t, Memory&);
     void SetNegativeAndZeroFlags( uint8_t);
     uint16_t LoadProgram(const std::vector<uint8_t>&, Memory&);
@@ -225,10 +230,10 @@ public:
 
     uint8_t FetchByte(int32_t&, const Memory&);   
     uint16_t FetchWord(int32_t&, const Memory&);
-    uint8_t ReadByte(int32_t&, const uint16_t&, const Memory&);
-    uint16_t ReadWord(int32_t&, const uint16_t&, const Memory&);
-    void WriteByte(int32_t&, const uint16_t&, Memory&, const uint8_t);
-    void WriteWord(int32_t&, const uint16_t&, Memory&, const uint16_t);
+    uint8_t ReadByte(int32_t&, const uint16_t, const Memory&);
+    uint16_t ReadWord(int32_t&, const uint16_t, const Memory&);
+    void WriteByte(int32_t&, const uint16_t, Memory&, const uint8_t);
+    void WriteWord(int32_t&, const uint16_t, Memory&, const uint16_t);
     uint16_t StackPointerToAddress() const;
     void PushWordToStack(int32_t&, Memory&, uint16_t);
     void PushByteOntoStack(int32_t&, Memory&, uint8_t);

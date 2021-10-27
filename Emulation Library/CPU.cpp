@@ -19,7 +19,7 @@ void CPU::Reset(Memory& memory)
 }
 
 
-void CPU::Reset(const uint16_t& offset, Memory& memory)
+void CPU::Reset(const uint16_t offset, Memory& memory)
 {
 	this->PC = offset;
 	this->SP = 0xFF;
@@ -30,7 +30,7 @@ void CPU::Reset(const uint16_t& offset, Memory& memory)
 }
 
 
-void CPU::Reset(const uint16_t& offset)
+void CPU::Reset(const uint16_t offset)
 {
 	this->PC = offset;
 	this->SP = 0xFF;
@@ -60,7 +60,7 @@ uint16_t CPU::FetchWord(int32_t& cycles, const Memory& memory)
 }
 
 
-uint8_t CPU::ReadByte(int32_t& cycles, const uint16_t& address, const Memory& memory)
+uint8_t CPU::ReadByte(int32_t& cycles, const uint16_t address, const Memory& memory)
 {
 	uint8_t data = memory[address];
 	--cycles;
@@ -69,7 +69,7 @@ uint8_t CPU::ReadByte(int32_t& cycles, const uint16_t& address, const Memory& me
 }
 
 
-uint16_t CPU::ReadWord(int32_t& cycles, const uint16_t& address, const Memory& memory)
+uint16_t CPU::ReadWord(int32_t& cycles, const uint16_t address, const Memory& memory)
 {
 	uint8_t lowByte = ReadByte(cycles, address, memory);
 	uint8_t highByte = ReadByte(cycles, address + 1, memory);
@@ -79,7 +79,7 @@ uint16_t CPU::ReadWord(int32_t& cycles, const uint16_t& address, const Memory& m
 
 
 /*  Write 1 byte to memory*/
-void CPU::WriteByte(int32_t& cycles, const uint16_t& address, Memory& memory, const uint8_t value)
+void CPU::WriteByte(int32_t& cycles, const uint16_t address, Memory& memory, const uint8_t value)
 {
 	memory[address] = value;
 	--cycles;
@@ -87,7 +87,7 @@ void CPU::WriteByte(int32_t& cycles, const uint16_t& address, Memory& memory, co
 
 
 /*  Write 2 bytes to memory*/
-void CPU::WriteWord(int32_t& cycles, const uint16_t& address, Memory& memory, const uint16_t value)
+void CPU::WriteWord(int32_t& cycles, const uint16_t address, Memory& memory, const uint16_t value)
 {
 	memory[address] = value & 0xFF;
 	memory[address + 1] = (value >> 8);
@@ -328,7 +328,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	auto LSR = [&cycles, this](uint8_t operand) -> uint8_t
 	{
 		uint8_t result = operand >> 1;
-		Flags.C = (operand & ZeroBit) > 0;
+		Flags.C = (operand & CarryBit) > 0;
 		SetNegativeAndZeroFlags(result);
 		--cycles;
 
@@ -339,7 +339,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	//Shifts left 
 	auto ROL = [&cycles, this](uint8_t operand) -> uint8_t
 	{
-		uint8_t newBitZero = Flags.C ? ZeroBit : 0;
+		uint8_t newBitZero = Flags.C ? CarryBit : 0;
 		Flags.C = (operand & NegativeBit) > 0;
 		operand <<= 1;
 		operand |= newBitZero;
@@ -354,13 +354,35 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 	auto ROR = [&cycles, this](uint8_t operand) -> uint8_t
 	{
 		uint8_t newBitSeven = Flags.C ? NegativeBit : 0;
-		Flags.C = (operand & ZeroBit) > 0;
+		Flags.C = (operand & CarryBit) > 0;
 		operand >>= 1;
 		operand |= newBitSeven;
 		SetNegativeAndZeroFlags(operand);
 		--cycles;
 
 		return operand;
+	};
+
+
+	// Push processor status onto the stack
+	// setting bits 4 & 5 on the stack
+	auto PushPSToStack = [&cycles, &memory, this](bool setIFlagOnStack)
+	{
+		uint8_t PSStack = this->PS | BreakBit | UnusedBit;
+		if (setIFlagOnStack)
+			PSStack |= InterruptBit;
+		PushByteOntoStack(cycles, memory, PSStack);
+	};
+
+
+	// Pop processor status from the stack
+	// ignoring bits 4 & 5 on the stack
+	auto PopPSFromStack = [&cycles, &memory, this]()
+	{
+		uint8_t PSFromStack = PopByteFromStack(cycles, memory);
+		PSFromStack &= ~(UnusedBit | BreakBit);
+		PS &= (UnusedBit | BreakBit);
+		PS |= PSFromStack;
 	};
 
 
@@ -586,13 +608,11 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			} break;
 			case INS_PHP:
 			{
-				this->PushByteOntoStack(cycles, memory, this->PS);
-				// StatusFlags not affected
+				PushPSToStack(false);
 			} break;
 			case INS_PLP:
 			{
-				this->PS = this->PopByteFromStack(cycles, memory);
-				// StatusFlags not affected
+				PopPSFromStack();
 				--cycles;
 			} break;
 			case INS_AND_IM:
@@ -1184,15 +1204,14 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			{
 				constexpr uint16_t interruptVector = 0xFFFE;
 				PushWordToStack(cycles, memory, this->PC);
-				PushByteOntoStack(cycles, memory, this->PS);
+				PushPSToStack(true);
 				this->PC = ReadWord(cycles, interruptVector, memory);
 				this->Flags.B = true;
 			} break;
 			case INS_RTI:
 			{
-				this->PS = PopByteFromStack(cycles, memory);
+				PopPSFromStack();
 				this->PC = PopWordFromStack(cycles, memory);
-				//this->
 			} break;
 			case INS_NOP:
 			{

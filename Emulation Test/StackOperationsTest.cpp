@@ -231,10 +231,42 @@ TEST_F(StackOperationsTest, PHPCanPushProcessorStatusOntoStack)
 
     // then:
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
-    EXPECT_EQ(memory[cpu.StackPointerToAddress() + 1], result);
+    EXPECT_EQ(memory[cpu.StackPointerToAddress() + 1], result | CPU::BreakBit | CPU::UnusedBit);
     EXPECT_EQ(cpu.PS, copy.PS);
     EXPECT_EQ(cpu.SP, 0xFE);
 }
+
+
+TEST_F(StackOperationsTest, PHPAlwaysSetsBits4And5OnTheStack)
+{
+    uint16_t startOffset = 0xFF00;
+
+    // given:
+    cpu.Reset(startOffset, memory);
+    cpu.PS = 0x0;
+    // start - inline a little program
+    memory[startOffset] = CPU::INS_PHP;
+    // end - inline a little program
+    CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 3;
+
+    // when:   
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    uint16_t addPSOnStack = cpu.StackPointerToAddress() + 1;
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+
+    // https://wiki.nesdev.org/w/index.php/Status_flags
+    /*Two interrupts(/ IRQ and / NMI) and two instructions(PHP and BRK) push the flags to the stack.
+      In the byte pushed, bit 5 is always set to 1, and bit 4 is 1 if from an instruction(PHP or BRK) 
+          or 0 if from an interrupt line being pulled low(/ IRQ or /NMI).
+      This is the only timeand place where the B flag actually exists : not in the status register itself, 
+          but in bit 4 of the copy that is written to the stack.*/
+    uint8_t flagsOnStack = CPU::BreakBit | CPU::UnusedBit;
+    EXPECT_EQ(memory[addPSOnStack], flagsOnStack);
+}
+
 
 TEST_F(StackOperationsTest, PLPCanPullAValueFromStackIntoTheProcessorStatus)
 {
@@ -245,7 +277,7 @@ TEST_F(StackOperationsTest, PLPCanPullAValueFromStackIntoTheProcessorStatus)
     cpu.Reset(startOffset, memory);
     cpu.SP = 0xFE;
     cpu.PS = 0x00;
-    memory[0x01FF] = result;
+    memory[0x01FF] = result | CPU::BreakBit | CPU::UnusedBit;
     // start - inline a little program
     memory[startOffset] = CPU::INS_PLP;
     // end - inline a little program
@@ -258,4 +290,29 @@ TEST_F(StackOperationsTest, PLPCanPullAValueFromStackIntoTheProcessorStatus)
     // then:
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_EQ(cpu.PS, result);
+}
+
+
+TEST_F(StackOperationsTest, PLPIgnoresBits4And5WhenPullingFromTheStack)
+{
+    uint16_t startOffset = 0xFF00;
+    uint8_t result = 0xCC;
+
+    // given:
+    cpu.Reset(startOffset, memory);
+    cpu.SP = 0xFE;
+    cpu.PS = CPU::BreakBit | CPU::UnusedBit;
+    memory[0x01FF] = CPU::BreakBit | CPU::UnusedBit;
+    // start - inline a little program
+    memory[startOffset] = CPU::INS_PLP;
+    // end - inline a little program
+    CPU copy = cpu;
+    constexpr uint32_t EXPECTED_CYCLES = 4;
+
+    // when:   
+    int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    // then:
+    EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
+    EXPECT_EQ(cpu.PS, CPU::BreakBit | CPU::UnusedBit);
 }

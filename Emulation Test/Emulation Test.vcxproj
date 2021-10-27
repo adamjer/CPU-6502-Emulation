@@ -85,6 +85,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Emulation Functional Test\6502_functional_test.a65" />
+    <None Include="Emulation Functional Test\6502_functional_test.bin" />
+    <None Include="Emulation Functional Test\6502_functional_test.lst" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemDefinitionGroup />

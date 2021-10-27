@@ -159,7 +159,7 @@ TEST_F(SystemFunctionsTest, BRKWillPushPCandPSOntoTheStack)
 
     // then:
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
-    EXPECT_EQ(memory[(0x100 | copy.SP) - 2], copy.PS);
+    EXPECT_EQ(memory[(0x100 | copy.SP) - 2], copy.PS | (CPU::BreakBit | CPU::UnusedBit));
     EXPECT_EQ(memory[(0x100 | copy.SP) - 1], (startAddress + 1) & 0xFF);
     EXPECT_EQ(memory[(0x100 | copy.SP) - 0], (startAddress + 1) >> 8);
 }
