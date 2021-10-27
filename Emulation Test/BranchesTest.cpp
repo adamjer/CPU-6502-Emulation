@@ -79,7 +79,7 @@ TEST_F(BranchesTest, BEQCanBranchForwardIntoNewPageWhenZeroFlagIsSet)
     // end - inline a little program
 
     // when:    
-    constexpr int32_t EXPECTED_CYCLES = 2 + 1 + 2;
+    constexpr int32_t EXPECTED_CYCLES = 2 + 2;
     CPU copy = cpu;
 
     int32_t cyclesUsed = cpu.Execute(EXPECTED_CYCLES, memory);

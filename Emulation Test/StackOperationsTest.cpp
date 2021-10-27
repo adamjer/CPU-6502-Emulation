@@ -293,15 +293,15 @@ TEST_F(StackOperationsTest, PLPCanPullAValueFromStackIntoTheProcessorStatus)
 }
 
 
-TEST_F(StackOperationsTest, PLPIgnoresBits4And5WhenPullingFromTheStack)
+TEST_F(StackOperationsTest, PLPClearesBits4And5WhenPullingFromTheStack)
 {
     uint16_t startOffset = 0xFF00;
-    uint8_t result = 0xCC;
+    uint8_t result = 0x00;
 
     // given:
     cpu.Reset(startOffset, memory);
     cpu.SP = 0xFE;
-    cpu.PS = CPU::BreakBit | CPU::UnusedBit;
+    cpu.PS = result;
     memory[0x01FF] = CPU::BreakBit | CPU::UnusedBit;
     // start - inline a little program
     memory[startOffset] = CPU::INS_PLP;
@@ -314,5 +314,5 @@ TEST_F(StackOperationsTest, PLPIgnoresBits4And5WhenPullingFromTheStack)
 
     // then:
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
-    EXPECT_EQ(cpu.PS, CPU::BreakBit | CPU::UnusedBit);
+    EXPECT_EQ(cpu.PS, result);
 }

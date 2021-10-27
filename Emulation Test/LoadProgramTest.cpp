@@ -101,6 +101,7 @@ TEST_F(BaseTest, TestLoadProgramLoop)
 }
 
 
+#if 1
 TEST_F(BaseTest, LoadThe6502FunctionalTestProgram)
 {
     // given:
@@ -114,7 +115,7 @@ TEST_F(BaseTest, LoadThe6502FunctionalTestProgram)
     bool loop = true;
 
     FILE* file;
-    if (fopen_s(&file, "-Emulation Functional Test\\6502_functional_test.bin", "rb") == 0) 
+    if (fopen_s(&file, "Emulation Functional Test\\6502_functional_test.bin", "rb") == 0) 
     {
         fread_s(&memory[0x000A], 65526, sizeof(uint8_t), 65526, file);
         fclose(file);
@@ -130,3 +131,4 @@ TEST_F(BaseTest, LoadThe6502FunctionalTestProgram)
         cpu.Execute(1, memory);
     }
 }
+#endif

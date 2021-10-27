@@ -160,8 +160,11 @@ TEST_F(SystemFunctionsTest, BRKWillPushPCandPSOntoTheStack)
     // then:
     EXPECT_EQ(cyclesUsed, EXPECTED_CYCLES);
     EXPECT_EQ(memory[(0x100 | copy.SP) - 2], copy.PS | (CPU::BreakBit | CPU::UnusedBit));
-    EXPECT_EQ(memory[(0x100 | copy.SP) - 1], (startAddress + 1) & 0xFF);
-    EXPECT_EQ(memory[(0x100 | copy.SP) - 0], (startAddress + 1) >> 8);
+    // https://www.c64-wiki.com/wiki/BRK
+    // Note that since BRK increments the program counter by 2 instead of 1, 
+    // it is advisable to use a NOP after it to avoid issues.
+    EXPECT_EQ(memory[(0x100 | copy.SP) - 1], (startAddress + 2) & 0xFF);
+    EXPECT_EQ(memory[(0x100 | copy.SP) - 0], (startAddress + 2) >> 8);
 }
 
 
@@ -194,5 +197,5 @@ TEST_F(SystemFunctionsTest, RTICanReturnFromInterruptLeavingCPUSameWhenEntered)
     EXPECT_EQ(cyclesUsedRTI, EXPECTED_CYCLES_RTI);
     EXPECT_EQ(cpu.SP, copy.SP);
     EXPECT_EQ(cpu.PS, copy.PS);
-    EXPECT_EQ(cpu.PC, startAddress + 1);
+    EXPECT_EQ(cpu.PC, startAddress + 2);
 }

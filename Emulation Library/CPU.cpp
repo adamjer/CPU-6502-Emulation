@@ -275,7 +275,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			const bool pageChanged = (this->PC >> 8) != (oldPC >> 8);
 			if (pageChanged)
 			{
-				cycles -= 2;
+				--cycles;
 			}
 		}
 	};
@@ -366,23 +366,20 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 
 	// Push processor status onto the stack
 	// setting bits 4 & 5 on the stack
-	auto PushPSToStack = [&cycles, &memory, this](bool setIFlagOnStack)
+	auto PushPSToStack = [&cycles, &memory, this]()
 	{
 		uint8_t PSStack = this->PS | BreakBit | UnusedBit;
-		if (setIFlagOnStack)
-			PSStack |= InterruptBit;
 		PushByteOntoStack(cycles, memory, PSStack);
 	};
 
 
 	// Pop processor status from the stack
-	// ignoring bits 4 & 5 on the stack
+	// clearing bits 4 & 5
 	auto PopPSFromStack = [&cycles, &memory, this]()
 	{
-		uint8_t PSFromStack = PopByteFromStack(cycles, memory);
-		PSFromStack &= ~(UnusedBit | BreakBit);
-		PS &= (UnusedBit | BreakBit);
-		PS |= PSFromStack;
+		this->PS = PopByteFromStack(cycles, memory);
+		this->Flags.B = false;
+		this->Flags.Unused = false;
 	};
 
 
@@ -492,6 +489,12 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			case INS_STX_ZP:
 			{
 				uint8_t address = this->AddressZeroPage(cycles, memory);
+				this->WriteByte(cycles, address, memory, this->X);
+				// StatusFlags not affected
+			} break;
+			case INS_STX_ZPY:
+			{
+				uint8_t address = this->AddressZeroPageY(cycles, memory);
 				this->WriteByte(cycles, address, memory, this->X);
 				// StatusFlags not affected
 			} break;
@@ -608,7 +611,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			} break;
 			case INS_PHP:
 			{
-				PushPSToStack(false);
+				PushPSToStack();
 			} break;
 			case INS_PLP:
 			{
@@ -985,9 +988,50 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 				uint8_t operand = this->ReadByte(cycles, address, memory);
 				ADC(operand);
 			} break;
+			case INS_SBC:
+			{
+				uint8_t operand = this->FetchByte(cycles, memory);
+				SBC(operand);
+			} break;
+			case INS_SBC_ZP:
+			{
+				uint16_t address = AddressZeroPage(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				SBC(operand);
+			} break;
+			case INS_SBC_ZPX:
+			{
+				uint16_t address = AddressZeroPageX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				SBC(operand);
+			} break;
 			case INS_SBC_ABS:
 			{
 				uint16_t address = this->AddressAbsolute(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				SBC(operand);
+			} break;
+			case INS_SBC_ABSX:
+			{
+				uint16_t address = this->AddressAbsoluteX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				SBC(operand);
+			} break;
+			case INS_SBC_ABSY:
+			{
+				uint16_t address = this->AddressAbsoluteY(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				SBC(operand);
+			} break;
+			case INS_SBC_INDX:
+			{
+				uint16_t address = this->AddressIndirectX(cycles, memory);
+				uint8_t operand = this->ReadByte(cycles, address, memory);
+				SBC(operand);
+			} break;
+			case INS_SBC_INDY:
+			{
+				uint16_t address = this->AddressIndirectY(cycles, memory);
 				uint8_t operand = this->ReadByte(cycles, address, memory);
 				SBC(operand);
 			} break;
@@ -1203,8 +1247,9 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			case INS_BRK:
 			{
 				constexpr uint16_t interruptVector = 0xFFFE;
-				PushWordToStack(cycles, memory, this->PC);
-				PushPSToStack(true);
+				PushWordToStack(cycles, memory, this->PC + 1);
+				PushPSToStack();
+				this->Flags.I = true;
 				this->PC = ReadWord(cycles, interruptVector, memory);
 				this->Flags.B = true;
 			} break;
@@ -1219,7 +1264,7 @@ int32_t CPU::Execute(int32_t cycles, Memory& memory)
 			} break;
 			default:
 			{
-				printf("Instruction not handled!\n");
+				printf("Instruction %#05x not handled!\n", instruction);
 				throw - 1;
 			} break;
 		}

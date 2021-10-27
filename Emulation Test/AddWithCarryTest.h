@@ -24,14 +24,21 @@ public:
 	};
 
 	void TestADCAbsolute(const TestData&, Operation);
-	void TestADCAbsoluteX(const TestData&);
-	void TestADCAbsoluteY(const TestData&);
-	void TestADCImmediate(const TestData&);
-	void TestADCZeroPage(const TestData&);
-	void TestADCZeroPageX(const TestData&);
-	void TestADCIndirectX(const TestData&);
-	void TestADCIndirectY(const TestData&);
+	void TestADCAbsoluteX(const TestData&, Operation);
+	void TestADCAbsoluteY(const TestData&, Operation);
+	void TestADCImmediate(const TestData&, Operation);
+	void TestADCZeroPage(const TestData&, Operation);
+	void TestADCZeroPageX(const TestData&, Operation);
+	void TestADCIndirectX(const TestData&, Operation);
+	void TestADCIndirectY(const TestData&, Operation);
 	void TestSBCAbsolute(const TestData&);
+	void TestSBCAbsoluteX(const TestData&);
+	void TestSBCAbsoluteY(const TestData&);
+	void TestSBCImmediate(const TestData&);
+	void TestSBCZeroPage(const TestData&);
+	void TestSBCZeroPageX(const TestData&);
+	void TestSBCIndirectX(const TestData&);
+	void TestSBCIndirectY(const TestData&);
 
 	void ExpectUnaffectedRegisters(const CPU&) override;
 };

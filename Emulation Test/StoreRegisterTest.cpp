@@ -75,6 +75,27 @@ void StoreRegisterTest::TestStoreRegisterZeroPageX(uint8_t opcodeToTest, uint8_t
 }
 
 
+void StoreRegisterTest::TestStoreRegisterZeroPageY(uint8_t opcodeToTest, uint8_t CPU::* RegisterToTest)
+{
+    //given:
+    cpu.*RegisterToTest = 0x42;
+    cpu.Y = 0x0F;
+    memory[0xFFFC] = opcodeToTest;
+    memory[0xFFFD] = 0x80;
+    memory[0x008F] = 0x00;
+    constexpr uint32_t EXPECTED_CYCLES = 4;
+    CPU copy = cpu;
+
+    //when:
+    const uint32_t actualCycles = cpu.Execute(EXPECTED_CYCLES, memory);
+
+    //then:
+    EXPECT_EQ(actualCycles, EXPECTED_CYCLES);
+    EXPECT_EQ(memory[0x008F], 0x42);
+    this->ExpectUnaffectedRegisters(copy);
+}
+
+
 TEST_F(StoreRegisterTest, STAZeroPageCanStoreTheARegisterIntoMemory)
 {
     TestStoreRegisterZeroPage(CPU::INS_STA_ZP, &CPU::A);
@@ -84,6 +105,12 @@ TEST_F(StoreRegisterTest, STAZeroPageCanStoreTheARegisterIntoMemory)
 TEST_F(StoreRegisterTest, STXZeroPageCanStoreTheXRegisterIntoMemory)
 {
     TestStoreRegisterZeroPage(CPU::INS_STX_ZP, &CPU::X);
+}
+
+
+TEST_F(StoreRegisterTest, STXZeroPageYCanStoreTheXRegisterIntoMemory)
+{
+    TestStoreRegisterZeroPageY(CPU::INS_STX_ZPY, &CPU::X);
 }
 
 

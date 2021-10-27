@@ -66,6 +66,7 @@ public:
         INS_STA_INDY = 0x91,
         //STX
         INS_STX_ZP = 0x86,
+        INS_STX_ZPY = 0x96,
         INS_STX_ABS = 0x8E,
         //STY
         INS_STY_ZP = 0x84,
@@ -169,7 +170,14 @@ public:
         INS_ADC_INDX = 0x61,
         INS_ADC_INDY = 0x71,
 
+        INS_SBC = 0xE9,
+        INS_SBC_ZP = 0xE5,
+        INS_SBC_ZPX = 0xF5,
         INS_SBC_ABS = 0xED,
+        INS_SBC_ABSX = 0xFD,
+        INS_SBC_ABSY = 0xF9,
+        INS_SBC_INDX = 0xE1,
+        INS_SBC_INDY = 0xF1,
 
         // Register comparision
         INS_CMP = 0xC9,
@@ -251,4 +259,3 @@ public:
 
     bool operator== (const CPU&) const;
 };
-
