@@ -181,9 +181,12 @@ uint16_t CPU::AddressAbsoluteX(int32_t& cycles, const Memory& memory, bool alway
 	uint16_t absoluteAddress = this->FetchWord(cycles, memory);
 	uint16_t absoluteAddressX = absoluteAddress + this->X;
 
+	bool crossedPageBoundary = //(absoluteAddress & 0xFF00) != (absoluteAddressX & 0xFF00);
+		(absoluteAddress ^ absoluteAddressX) >> 8;
+
 	if (alwaysConsumeCycle)
 		--cycles;
-	else if (absoluteAddressX - absoluteAddress >= 0xFF)
+	else if (crossedPageBoundary)
 		--cycles;
 
 	return absoluteAddressX;
@@ -195,9 +198,13 @@ uint16_t CPU::AddressAbsoluteY(int32_t& cycles, const Memory& memory, bool alway
 {
 	uint16_t absoluteAddress = this->FetchWord(cycles, memory);
 	uint16_t absoluteAddressY = absoluteAddress + this->Y;
+
+	bool crossedPageBoundary = //(absoluteAddress & 0xFF00) != (absoluteAddressY & 0xFF00);
+		(absoluteAddress ^ absoluteAddressY) >> 8;
+
 	if (alwaysConsumeCycle)
 		--cycles;
-	else if (absoluteAddressY - absoluteAddress >= 0xFF)
+	else if (crossedPageBoundary)
 		--cycles;
 
 	return absoluteAddressY;
@@ -222,9 +229,13 @@ uint16_t CPU::AddressIndirectY(int32_t& cycles, const Memory& memory, bool alway
 	uint8_t zeroPageAddress = this->FetchByte(cycles, memory);
 	uint16_t effectiveAddress = this->ReadWord(cycles, zeroPageAddress, memory);
 	uint16_t effectiveAddressY = effectiveAddress + this->Y;
+
+	bool crossedPageBoundary = //(effectiveAddress & 0xFF00) != (effectiveAddressY & 0xFF00);
+		(effectiveAddress ^ effectiveAddressY) >> 8;
+
 	if (alwaysConsumeCycle)
 		--cycles;
-	else if (effectiveAddressY - effectiveAddress >= 0xFF)
+	else if (crossedPageBoundary)
 		--cycles;
 
 	return effectiveAddressY;

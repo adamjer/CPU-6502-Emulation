@@ -96,7 +96,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Emulation Functional Test\6502_functional_test.a65">
       <Filter>Functional Test</Filter>
     </None>
@@ -106,6 +105,7 @@
     <None Include="Emulation Functional Test\6502_functional_test.lst">
       <Filter>Functional Test</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Tests">

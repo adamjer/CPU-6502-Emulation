@@ -161,12 +161,12 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteXWhenCrossingBoundary(uint8_t opc
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
-    cpu.X = 0xFF;
+    cpu.X = 0x01;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
-    memory[0xFFFD] = 0x02;
+    memory[0xFFFD] = 0xFF;
     memory[0xFFFE] = 0x44;
-    memory[0x4501] = 0x37; //0x4402+0xFF crosses page boundary
+    memory[0x4500] = 0x37; //0x4402+0x001 crosses page boundary
     // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 5;
     CPU copy = cpu;
@@ -213,12 +213,12 @@ void LoadRegisterTest::TestLoadRegisterAbsoluteYWhenCrossingBoundary(uint8_t opc
 {
     // given:
     cpu.Flags.Z = cpu.Flags.N = true;
-    cpu.Y = 0xFF;
+    cpu.Y = 0x01;
     // start - inline a little program
     memory[0xFFFC] = opcodeToTest;
-    memory[0xFFFD] = 0x02;
-    memory[0xFFFE] = 0x44;
-    memory[0x4501] = 0x37; //0x4402+0xFF crosses page boundary
+    memory[0xFFFD] = 0xFF;
+    memory[0xFFFE] = 0x44; //0x44FF
+    memory[0x4500] = 0x37; //0x44FF+0x01 crosses page boundary
     // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 5;
     CPU copy = cpu;
@@ -489,13 +489,13 @@ TEST_F(LoadRegisterTest, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesP
 {
 
     // given:
-    cpu.Y = 0xFF;
+    cpu.Y = 0x01;
     // start - inline a little program
     memory[0xFFFC] = CPU::INS_LDA_INDY;
-    memory[0xFFFD] = 0x02;
-    memory[0x0002] = 0x02;
-    memory[0x0003] = 0x80;
-    memory[0x8101] = 0x37; //0x8002 + 0xFF
+    memory[0xFFFD] = 0x05;
+    memory[0x0005] = 0xFF;
+    memory[0x0006] = 0x80;
+    memory[0x8100] = 0x37; //0x80FF + 0x01
     // end - inline a little program
     constexpr int32_t EXPECTED_CYCLES = 6;
     CPU copy = cpu;
